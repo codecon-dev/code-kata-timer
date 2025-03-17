@@ -182,5 +182,8 @@ function run() {
 
 function pause() {
   timerStarted = false;
-  clearInterval(intervalInstance);
+  if (intervalInstance) {
+    clearInterval(intervalInstance);
+    intervalInstance = null;
+  }
 }
