@@ -1,15 +1,42 @@
-let intervalInMillis = 10;
-
 let timerStarted = false;
-let millis = 0;
-let seconds = 30;
-let minutes = 0;
-let hours = 0;
+let seconds = 0;
 let intervalInstance;
 
-document.getElementById("hour").value = hours;
-document.getElementById("min").value = minutes;
-document.getElementById("sec").value = seconds;
+const convertInputsToSeconds = () => {
+  const hour = Number(document.getElementById("hour").value);
+  const min = Number(document.getElementById("min").value);
+  const sec = Number(document.getElementById("sec").value);
+
+  seconds = sec;
+
+  if( min > 0 )
+    seconds += min * 60;
+
+  if ( hour > 0 )
+    seconds += hour * 3600;
+}
+
+const convertSecondsToInputs = () => {
+  let hour = 0;
+  let min = 0;
+  let sec = 0;
+
+  if( seconds > 3600 ){
+    hour = Math.floor(  seconds / 3600  );
+    seconds = seconds % 3600;
+  }
+
+  if( seconds > 60 ){
+    min = Math.floor( seconds / 60);
+    sec = seconds % 60;
+  } else {
+    sec = seconds;
+  }
+
+  document.getElementById("hour").value = hour < 10 && hour > 0 ? '0' + hour : hour == 0 ? '00' : hour;
+  document.getElementById("min").value = min < 10 && min > 0 ? '0' + min : min == 0 ? '00' : min;
+  document.getElementById("sec").value = sec < 10 && sec > 0 ? '0' + sec : sec == 0 ? '00' : sec;
+}
 
 document.getElementById("startBtn").addEventListener("click", function () {
   timerStarted = true;
@@ -17,7 +44,6 @@ document.getElementById("startBtn").addEventListener("click", function () {
 });
 
 document.getElementById("pauseBtn").addEventListener("click", function () {
-  console.log("pause");
   pause();
 });
 
@@ -33,42 +59,17 @@ document.getElementById("toZeroBtn").addEventListener("click", function () {
 });
 
 function run() {
-  hours = document.getElementById("hour").value;
-  minutes = document.getElementById("min").value;
-  seconds = document.getElementById("sec").value;
-
   intervalInstance = setInterval(function () {
     if (timerStarted) {
+      convertInputsToSeconds();
       seconds--;
 
-      if (seconds == 0) {
-        if (minutes > 0) {
-          minutes--;
-
-          seconds = 0;
-          seconds = 59;
-        } else {
-          if (hours > 0) {
-            // sem condição
-          } else {
-            timerStarted = false;
-            clearInterval(intervalInstance);
-          }
-        }
+      if( seconds >= 0 ){
+        convertSecondsToInputs();
+      } else {
+        timerStarted = false;
+        clearInterval(intervalInstance);
       }
-
-      if (minutes == 0) {
-        if (hours > 0) {
-          hours--;
-          minutes = 59;
-        } else {
-          // sem condição
-        }
-      }
-
-      document.getElementById(`sec`).value = seconds;
-      document.getElementById(`min`).value = minutes;
-      document.getElementById(`hour`).value = hours;
     }
   }, 1000);
 }
