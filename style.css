@@ -1,28 +1,43 @@
 @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap");
+
+* {
+  font-family: "Orbitron", sans-serif;
+  font-size: 112px;
+}
+
 body {
   background-color: #1e1e1e;
-  font-family: "Orbitron", sans-serif;
-  font-optical-sizing: auto;
-  font-style: normal;
   color: #46ffbe;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  margin: 0px;
+  height: 100dvh;
+  width: 100dvw;
+  transition: background-color 0.5s ease;
+}
+
+body.zero {
+  background-color: #46ffbe;
+  color: #1e1e1e;
 }
 
 .input-stopwatch {
+  width: 100%;
   display: flex;
-  font-size: 112px;
+  justify-content: center;
 }
-.input-stopwatch input {
-  font-family: "Orbitron", sans-serif;
-  font-size: 112px;
-  width: 180px;
-  background-color: transparent;
-  border: none;
+
+input {
+  min-width: 1px;
+  width: auto;
+  max-width: 2ch;
   color: #46ffbe;
+  border: none;
+  background: none;
+  outline: none;
+  text-align: center;
 }
 
 button {
@@ -34,6 +49,11 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 .button-wrapper {
@@ -52,6 +72,22 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-input[type=number] {
-  -moz-appearance: textfield;
-}/*# sourceMappingURL=style.css.map */
+#countdown {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  flex-direction: column;
+  font-size: 112px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: inherit;
+  color: inherit;
+  z-index: 1000;
+}
+
+#countdown.hide {
+  display: none;
+}
