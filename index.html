@@ -7,6 +7,16 @@
     <title>Cronometro</title>
   </head>
   <body>
+    <div class="timer-countdown" id="timerCountdown">
+      <div class="timer-countdown-wrapper">
+        <span id="secCountdown">00</span>
+        <div class="button-wrapper-countdown" id="buttonWrapperCountdown">
+          <button class="js-close-countdown" id="closeCountdown">
+            <img src="/images/cancel.svg" alt="Resetar" />
+          </button>
+        </div>
+      </div>
+    </div>
     <div class="input-stopwatch">
       <input type="number" min="00" value="00" id="hour" />
       :

@@ -4,6 +4,7 @@ $background-color: #1e1e1e;
 $primary-color: #46ffbe;
 
 body {
+  position: relative;
   background-color: $background-color;
   font-family: "Orbitron", sans-serif;
   font-optical-sizing: auto;
@@ -14,6 +15,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  padding: 0;
 }
 
 .input-stopwatch {
@@ -39,6 +41,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 
 .button-wrapper {
@@ -59,4 +62,43 @@ input::-webkit-inner-spin-button {
 
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+.input-stopwatch {
+  input {
+    text-align: right;
+  }
+}
+
+.timer-countdown {
+  display: flex;
+  visibility: hidden;
+  position:absolute;
+  background-color: #242424;
+  min-width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+
+  span {
+    font-size: 140px;
+    // color: $background-color;
+  }
+
+  .button-wrapper-countdown {
+    display: flex;
+    flex-direction: row;
+    gap: 32px;
+  }
+
+  .timer-countdown-wrapper {
+    display: flex;
+    flex-direction: column;
+    // gap: 32px;
+    align-items: center;
+    justify-self: center;
+    width: 300px;
+  }
 }
