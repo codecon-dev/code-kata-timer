@@ -5,9 +5,7 @@ let minutes = 0;
 let hours = 0;
 let intervalInstance = null;
 
-document.getElementById("hour").value = hours;
-document.getElementById("min").value = minutes;
-document.getElementById("sec").value = seconds;
+parseStopwatch(hours, minutes, seconds);
 
 document.getElementById("startBtn").addEventListener("click", function () {
   if (!timerStarted) {
@@ -30,9 +28,7 @@ document.getElementById("toZeroBtn").addEventListener("click", function () {
   minutes = 0;
   seconds = 30;
 
-  document.getElementById("hour").value = hours;
-  document.getElementById("min").value = minutes;
-  document.getElementById("sec").value = seconds;
+  parseStopwatch(hours, minutes, seconds);
 });
 
 function run() {
@@ -72,9 +68,7 @@ function run() {
       seconds--;
     }
 
-    document.getElementById("sec").value = seconds;
-    document.getElementById("min").value = minutes;
-    document.getElementById("hour").value = hours;
+    parseStopwatch(hours, minutes, seconds);
   }, DEFAULT_INTERVAL);
 }
 
@@ -122,11 +116,28 @@ document.addEventListener("DOMContentLoaded", () => {
   finishEditButton.addEventListener("click", () => {
     editContainer.classList.add("hide");
     stopwatchButtons.classList.remove("hide");
-    hours = parseInt(document.getElementById("hour").value, 10);
-    minutes = parseInt(document.getElementById("min").value, 10);
-    seconds = parseInt(document.getElementById("sec").value, 10);
-    document.getElementById("hour").value = hours;
-    document.getElementById("min").value = minutes;
-    document.getElementById("sec").value = seconds;
+
+    let {hours, minutes, seconds} = parseToInt()
+    parseStopwatch(hours, minutes, seconds);
   });
 });
+
+function parseToInt() {
+  let hours = parseInt(document.getElementById("hour").value, 10);
+  let minutes = parseInt(document.getElementById("min").value, 10);
+  let seconds = parseInt(document.getElementById("sec").value, 10);
+
+  return {hours, minutes, seconds}
+}
+
+function parseStopwatch(hours, minutes, seconds) {
+
+  document.getElementById("hour").value = parseValueToText(hours);
+  document.getElementById("min").value = parseValueToText(minutes);
+  document.getElementById("sec").value = parseValueToText(seconds);
+}
+
+function parseValueToText(value) {
+  if(value >= 10 ) return value;
+  return `0${value}`; 
+}
