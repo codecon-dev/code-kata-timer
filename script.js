@@ -1,57 +1,52 @@
-const DEFAULT_INTERVAL = 1000;
 let timerStarted = false;
-let seconds = 30;
-let minutes = 0;
-let hours = 0;
-let intervalInstance = null;
+let intervalInstance;
 
-document.getElementById("hour").value = hours;
-document.getElementById("min").value = minutes;
-document.getElementById("sec").value = seconds;
+let hours = 0, minutes = 0, seconds = 0;
 
-document.getElementById("startBtn").addEventListener("click", function () {
-  if (!timerStarted) {
-    timerStarted = true;
-    if (intervalInstance) {
-      clearInterval(intervalInstance);
-    }
-    run();
+// Inicializa os valores de tempo a partir dos selects
+document.getElementById("hour").value = hours.toString().padStart(2, "0");
+document.getElementById("min").value = minutes.toString().padStart(2, "0");
+document.getElementById("sec").value = seconds.toString().padStart(2, "0");
+
+// Atualiza o cronômetro imediatamente ao selecionar qualquer valor
+document.getElementById("hour").addEventListener("change", updateTimerFromSelect);
+document.getElementById("min").addEventListener("change", updateTimerFromSelect);
+document.getElementById("sec").addEventListener("change", updateTimerFromSelect);
+
+document.getElementById("playPauseBtn").addEventListener("click", togglePlayPause);
+document.getElementById("toZeroBtn").addEventListener("click", reset);
+const fullscreenBtn = document.getElementById("fullscreenBtn");
+const timerContainer = document.getElementById("timerContainer");
+
+function updateTimerFromSelect() {
+  hours = parseInt(document.getElementById("hour").value, 10) || 0;
+  minutes = parseInt(document.getElementById("min").value, 10) || 0;
+  seconds = parseInt(document.getElementById("sec").value, 10) || 0;
+  updateDisplay();
+}
+
+function togglePlayPause() {
+  if (timerStarted) {
+    pause();
+    updatePlayPauseIcon("play");
+  } else {
+    start();
+    updatePlayPauseIcon("pause");
   }
-});
+}
 
-document.getElementById("pauseBtn").addEventListener("click", function () {
-  console.log("pause");
-  pause();
-});
+function start() {
+  timerStarted = true;
+  updateValues();
 
-document.getElementById("toZeroBtn").addEventListener("click", function () {
-  pause();
-  hours = 0;
-  minutes = 0;
-  seconds = 30;
-
-  document.getElementById("hour").value = hours;
-  document.getElementById("min").value = minutes;
-  document.getElementById("sec").value = seconds;
-});
-
-function run() {
-  hours = Math.max(0, parseInt(document.getElementById("hour").value, 10) || 0);
-  minutes = Math.max(
-    0,
-    parseInt(document.getElementById("min").value, 10) || 0
-  );
-  seconds = Math.max(
-    0,
-    parseInt(document.getElementById("sec").value, 10) || 0
-  );
-
-  if (intervalInstance) {
-    clearInterval(intervalInstance);
-  }
-
-  intervalInstance = setInterval(function () {
+  intervalInstance = setInterval(() => {
     if (!timerStarted) return;
+
+    if (hours === 0 && minutes === 0 && seconds === 0) {
+      pause();
+      updatePlayPauseIcon("play");
+      return;
+    }
 
     if (seconds === 0) {
       if (minutes > 0) {
@@ -61,72 +56,83 @@ function run() {
         hours--;
         minutes = 59;
         seconds = 59;
-      } else {
-        // Timer acabou
-        timerStarted = false;
-        clearInterval(intervalInstance);
-        intervalInstance = null;
-        return;
       }
     } else {
       seconds--;
     }
 
-    document.getElementById("sec").value = seconds;
-    document.getElementById("min").value = minutes;
-    document.getElementById("hour").value = hours;
-  }, DEFAULT_INTERVAL);
+    updateDisplay();
+  }, 1000);
 }
 
 function pause() {
   timerStarted = false;
-  if (intervalInstance) {
-    clearInterval(intervalInstance);
-    intervalInstance = null;
+  clearInterval(intervalInstance);
+}
+
+function reset() {
+  pause();
+  hours = 0;
+  minutes = 0;
+  seconds = 0;
+  updateDisplay();
+  updatePlayPauseIcon("play");
+}
+
+function updateValues() {
+  hours = parseInt(document.getElementById("hour").value, 10) || 0;
+  minutes = parseInt(document.getElementById("min").value, 10) || 0;
+  seconds = parseInt(document.getElementById("sec").value, 10) || 0;
+}
+
+function updateDisplay() {
+  document.getElementById("hour-display").textContent = hours.toString().padStart(2, "0");
+  document.getElementById("min-display").textContent = minutes.toString().padStart(2, "0");
+  document.getElementById("sec-display").textContent = seconds.toString().padStart(2, "0");
+}
+
+function updatePlayPauseIcon(action) {
+  const playPauseIcon = document.getElementById("playPauseIcon");
+  const playPauseText = document.getElementById("playPauseText");
+
+  if (action === "play") {
+    playPauseIcon.src = "/images/play.svg";
+    playPauseIcon.alt = "Iniciar";
+    playPauseText.textContent = "Iniciar"; // Alterando o texto
+  } else if (action === "pause") {
+    playPauseIcon.src = "/images/pause.svg";
+    playPauseIcon.alt = "Pausar";
+    playPauseText.textContent = "Pausar"; // Alterando o texto
   }
 }
 
-function stop() {
-  timerStarted = false;
-}
 
-// funcionalidade para o botão de tela cheia e editar
-document.addEventListener("DOMContentLoaded", () => {
-  const fullscreenButton = document.querySelector(".js-active-fullscreen");
-  const editButton = document.querySelector(".js-edit-stopwatch");
-  const editContainer = document.querySelector(".js-edit-container-stopwatch");
-  const stopwatchButtons = document.querySelector(".js-stopwatch-button");
-
-  fullscreenButton.addEventListener("click", () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      }
+// Função para tela cheia
+fullscreenBtn.addEventListener("click", () => {
+  if (!document.fullscreenElement) {
+    // Tentar entrar em tela cheia
+    if (timerContainer.requestFullscreen) {
+      timerContainer.requestFullscreen();
+    } else if (timerContainer.mozRequestFullScreen) { // Para Firefox
+      timerContainer.mozRequestFullScreen();
+    } else if (timerContainer.webkitRequestFullscreen) { // Para Chrome, Safari, Opera
+      timerContainer.webkitRequestFullscreen();
+    } else if (timerContainer.msRequestFullscreen) { // Para IE/Edge
+      timerContainer.msRequestFullscreen();
     }
-  });
-
-  editButton.addEventListener("click", () => {
-    editContainer.classList.toggle("hide");
-    stopwatchButtons.classList.toggle("hide");
-  });
-
-  const cancelButton = document.querySelector(".js-cancel-button");
-  cancelButton.addEventListener("click", () => {
-    editContainer.classList.add("hide");
-    stopwatchButtons.classList.remove("hide");
-  });
-
-  const finishEditButton = document.querySelector(".js-finish-edit-button");
-  finishEditButton.addEventListener("click", () => {
-    editContainer.classList.add("hide");
-    stopwatchButtons.classList.remove("hide");
-    hours = parseInt(document.getElementById("hour").value, 10);
-    minutes = parseInt(document.getElementById("min").value, 10);
-    seconds = parseInt(document.getElementById("sec").value, 10);
-    document.getElementById("hour").value = hours;
-    document.getElementById("min").value = minutes;
-    document.getElementById("sec").value = seconds;
-  });
+  } else {
+    // Sair de tela cheia
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) { // Para Firefox
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) { // Para Chrome, Safari, Opera
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) { // Para IE/Edge
+      document.msExitFullscreen();
+    }
+  }
 });
+
+
+
