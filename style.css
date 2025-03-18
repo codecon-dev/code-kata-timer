@@ -56,3 +56,10 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }/*# sourceMappingURL=style.css.map */
+
+
+/* Funcionalidade de contagem regressiva tela de 10 segundos */
+#lastTen {
+  display: none;
+  font-size: 112px;
+}

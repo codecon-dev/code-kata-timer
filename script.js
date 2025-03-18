@@ -1,13 +1,22 @@
 const DEFAULT_INTERVAL = 1000;
 let timerStarted = false;
-let seconds = 30;
+let seconds = 15;
 let minutes = 0;
 let hours = 0;
 let intervalInstance = null;
 
+const fullscreenButton = document.querySelector(".js-active-fullscreen");
+const editButton = document.querySelector(".js-edit-stopwatch");
+const editContainer = document.querySelector(".js-edit-container-stopwatch");
+const stopwatchButtons = document.querySelector(".js-stopwatch-button");
+const watchDisplay = document.querySelector(".input-stopwatch");
+
 document.getElementById("hour").value = hours;
 document.getElementById("min").value = minutes;
 document.getElementById("sec").value = seconds;
+
+const beepSound = new Audio("./assets/sounds/beepSound.mp3")
+const endSound = new Audio("./assets/sounds/endSound.mp3")
 
 document.getElementById("startBtn").addEventListener("click", function () {
   if (!timerStarted) {
@@ -28,7 +37,7 @@ document.getElementById("toZeroBtn").addEventListener("click", function () {
   pause();
   hours = 0;
   minutes = 0;
-  seconds = 30;
+  seconds = 15;
 
   document.getElementById("hour").value = hours;
   document.getElementById("min").value = minutes;
@@ -52,6 +61,28 @@ function run() {
 
   intervalInstance = setInterval(function () {
     if (!timerStarted) return;
+
+    if (seconds <= 10 && seconds >= 1 && hours == 0 && minutes == 0) {
+      beepSound.play()
+      document.body.style.background = "green"
+      watchDisplay.style.display = "none"
+      stopwatchButtons.style.display = "none"
+
+      lastTen.style.display = "block"
+      lastTen.children[0].innerHTML = seconds
+    }
+
+    if (seconds == 0 && hours == 0 && minutes == 0) {
+      lastTen.children[0].innerHTML = "0"
+      beepSound.pause()
+      endSound.play()
+      lastTenInterval = setInterval(() => {
+        lastTen.style.display = "none"
+        document.body.style.background = "#1e1e1e"
+        watchDisplay.style.display = "flex"
+        stopwatchButtons.style.display = "flex"
+      }, 6000);
+    }
 
     if (seconds === 0) {
       if (minutes > 0) {
@@ -92,11 +123,6 @@ function stop() {
 
 // funcionalidade para o botão de tela cheia e editar
 document.addEventListener("DOMContentLoaded", () => {
-  const fullscreenButton = document.querySelector(".js-active-fullscreen");
-  const editButton = document.querySelector(".js-edit-stopwatch");
-  const editContainer = document.querySelector(".js-edit-container-stopwatch");
-  const stopwatchButtons = document.querySelector(".js-stopwatch-button");
-
   fullscreenButton.addEventListener("click", () => {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen();

@@ -8,12 +8,17 @@
   </head>
   <body>
     <div class="input-stopwatch">
-      <input type="number" min="00" value="10" id="hour" />
+      <input type="number" min="00" value="00" id="hour" />
       :
       <input type="number" min="00" value="00" id="min" />
       :
-      <input type="number" min="00" value="30" id="sec" />
+      <input type="number" min="00" value="11" id="sec" />
     </div>
+
+    <div id="lastTen">
+      <span>0</span>
+    </div>
+
     <div class="button-wrapper js-stopwatch-button">
       <button class="js-active-fullscreen">
         <img src="/images/full-screen.svg" alt="Colocar em tela cheia" />
