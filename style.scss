@@ -30,6 +30,14 @@ body {
 	}
 }
 
+.button-wrapper {
+	transition: 150ms ease-in-out;
+
+	@media (prefers-reduced-motion: reduced) {
+		transition: 5ms ease-in-out;
+	}
+}
+
 button {
 	background-color: transparent;
 	border: 1px solid white;
@@ -39,6 +47,13 @@ button {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	cursor: pointer;
+	opacity: 1;
+	transition: 150ms ease-in-out;
+
+	&:hover {
+		background-color: #7575755b;
+	}
 }
 
 .button-wrapper {
@@ -48,7 +63,14 @@ button {
 }
 
 .hide {
-	display: none !important;
+	height: 0%;
+	visibility: hidden;
+	opacity: 0%;
+	transform: translateY(35px);
+
+	@media (prefers-reduced-motion: reduced) {
+		transform: translateY(5px) !important;
+	}
 }
 
 input::-webkit-outer-spin-button,

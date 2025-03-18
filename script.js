@@ -6,34 +6,14 @@ let seconds = "30";
 let minutes = "00";
 let hours = "00";
 let intervalInstance = null;
+
 const inputs = new Input("hour", "min", "sec");
-inputs.setAllInputsValues(hours, minutes, seconds);
-
-document.getElementById("startBtn").addEventListener("click", function () {
-	if (!timerStarted) {
-		timerStarted = true;
-		if (intervalInstance) {
-			clearInterval(intervalInstance);
-		}
-		run();
-	}
-});
-
-document.getElementById("pauseBtn").addEventListener("click", function () {
-	console.log("pause");
-	pause();
-});
-
-document.getElementById("toZeroBtn").addEventListener("click", function () {
-	pause();
-	inputs.setAllInputsValues(0, 0, 30);
-});
+inputs.setInputsValues(hours, minutes, seconds);
 
 function run() {
 	hours = inputs.hours;
 	minutes = inputs.minutes;
 	seconds = inputs.seconds;
-
 	inputs.format();
 
 	if (intervalInstance) {
@@ -62,7 +42,7 @@ function run() {
 			seconds--;
 		}
 
-		inputs.setAllInputsValues(hours, minutes, seconds);
+		inputs.setInputsValues(hours, minutes, seconds);
 	}, DEFAULT_INTERVAL);
 }
 
@@ -74,9 +54,36 @@ function pause() {
 	}
 }
 
-function stop() {
-	timerStarted = false;
-}
+const toggleBtn = document.getElementById("toggleBtn");
+const toZeroBtn = document.getElementById("toZeroBtn");
+
+toggleBtn.addEventListener("click", () => {
+	const img = document.getElementById("toggleIcon");
+	const PLAY_SVG = "/images/play.svg";
+	const PAUSE_SVG = "/images/pause.svg";
+
+	if (toggleBtn.dataset.state === "play") {
+		if (!timerStarted) {
+			timerStarted = true;
+			if (intervalInstance) {
+				clearInterval(intervalInstance);
+			}
+			run();
+		}
+
+		img.src = PAUSE_SVG;
+		toggleBtn.dataset.state = "pause";
+	} else {
+		pause();
+		img.src = PLAY_SVG;
+		toggleBtn.dataset.state = "play";
+	}
+});
+
+toZeroBtn.addEventListener("click", function () {
+	pause();
+	inputs.setInputsValues(0, 0, 30);
+});
 
 // funcionalidade para o botão de tela cheia e editar
 document.addEventListener("DOMContentLoaded", () => {
@@ -110,10 +117,12 @@ document.addEventListener("DOMContentLoaded", () => {
 	finishEditButton.addEventListener("click", () => {
 		editContainer.classList.add("hide");
 		stopwatchButtons.classList.remove("hide");
-		hours = parseInt(hourInput.value, 10);
-		minutes = parseInt(minInput.value, 10);
-		seconds = parseInt(secInput.value, 10);
+		hours = inputs.hours;
+		minutes = inputs.minutes;
+		seconds = inputs.seconds;
 
-		inputs.setAllInputsValues(hours, minutes, seconds);
+		inputs.setInputsValues(hours, minutes, seconds);
 	});
 });
+
+/* btn bs */

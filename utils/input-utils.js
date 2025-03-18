@@ -36,14 +36,7 @@ class Input {
 		return this._safelyConvertToInt(this._sec.value);
 	}
 
-	/**
-	 *
-	 * @param {string | number} value
-	 * @param {"hour" | "min" | "sec"} inputName
-	 */
-	/* setInputValue(value, inputName){} */
-
-	setAllInputsValues(hour, min, sec) {
+	setInputsValues(hour, min, sec) {
 		this._safelySetValue(this._hour, hour);
 		this._safelySetValue(this._min, min);
 		this._safelySetValue(this._sec, sec);
