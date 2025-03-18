@@ -1,0 +1,12 @@
+:root {
+    /* COLORS */
+    --primary-principal: #1e1e1e;
+    --second-color: #46ffbe;
+
+    /* FONT SIZE */
+    --font-size: 16px;
+    --xl-font-size: 112px;
+
+    /* GAPS */
+    --lg-gap: 32px;
+  }

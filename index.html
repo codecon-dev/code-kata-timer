@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="./assets/css/style.css" />
     <title>Cronometro</title>
   </head>
   <body>
@@ -14,6 +14,11 @@
       :
       <input type="number" min="00" value="30" id="sec" />
     </div>
+
+    <div id="lastTen">
+      <span>0</span>
+    </div>
+
     <div class="button-wrapper js-stopwatch-button">
       <button class="js-active-fullscreen">
         <img src="/images/full-screen.svg" alt="Colocar em tela cheia" />
