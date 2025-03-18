@@ -10,6 +10,7 @@ body {
   font-style: normal;
   color: $primary-color;
   display: flex;
+  gap: 1em;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -18,16 +19,35 @@ body {
 
 .input-stopwatch {
   display: flex;
+  flex-direction: row;
+  font-family: "Orbitron", sans-serif;
   font-size: 112px;
 
   input {
     font-family: "Orbitron", sans-serif;
     font-size: 112px;
-    width: 180px;
+    width: 2em;
     background-color: transparent;
     border: none;
+    outline: none;
     color: $primary-color;
   }
+}
+
+.input-stopwatch > div {
+  display: flex;
+  flex-direction: row;
+}
+
+.input-stopwatch > div > input {
+  font-family: "Orbitron", sans-serif;
+  font-size: 112px;
+  width: 2em;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  text-align: center;
+  color: $primary-color;
 }
 
 button {
@@ -39,6 +59,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 
 .button-wrapper {

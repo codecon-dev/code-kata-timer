@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap");
+
 body {
   background-color: #1e1e1e;
   font-family: "Orbitron", sans-serif;
@@ -6,6 +7,7 @@ body {
   font-style: normal;
   color: #46ffbe;
   display: flex;
+  gap: 1em;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -14,15 +16,29 @@ body {
 
 .input-stopwatch {
   display: flex;
-  font-size: 112px;
-}
-.input-stopwatch input {
+  flex-direction: row;
   font-family: "Orbitron", sans-serif;
   font-size: 112px;
-  width: 180px;
+}
+
+.input-stopwatch>div {
+  display: flex;
+  flex-direction: row;
+}
+
+.input-stopwatch>div>input {
+  font-family: "Orbitron", sans-serif;
+  font-size: 112px;
+  width: 2em;
   background-color: transparent;
   border: none;
+  outline: none;
+  text-align: center;
   color: #46ffbe;
+}
+
+.input-stopwatch>div:not(:last-child):not(:has(.hide))::after {
+  content: ':';
 }
 
 button {
@@ -55,4 +71,10 @@ input::-webkit-inner-spin-button {
 
 input[type=number] {
   -moz-appearance: textfield;
-}/*# sourceMappingURL=style.css.map */
+}
+
+.hide {
+  display: none;
+}
+
+/*# sourceMappingURL=style.css.map */

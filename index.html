@@ -8,17 +8,21 @@
   </head>
   <body>
     <div class="input-stopwatch">
-      <input type="number" min="00" value="00" id="hour" />
-      :
-      <input type="number" min="00" value="00" id="min" />
-      :
-      <input type="number" min="00" value="30" id="sec" />
+      <div>
+        <input type="number" min="00" value="00" maxlength="2" readonly id="hour" />
+      </div>
+      <div>
+        <input type="number" min="00" value="00" maxlength="2" readonly id="min" />
+      </div>
+      <div>
+        <input type="number" min="00" value="30" maxlength="2" readonly id="sec" />
+      </div>
     </div>
     <div class="button-wrapper js-stopwatch-button">
-      <button class="js-active-fullscreen">
+      <button class="js-active-fullscreen" id="fullScreenBtn">
         <img src="/images/full-screen.svg" alt="Colocar em tela cheia" />
       </button>
-      <button class="js-edit-stopwatch">
+      <button class="js-edit-stopwatch" id="editBtn">
         <img src="/images/edit.svg" alt="Editar" />
       </button>
       <button class="js-stop-button" id="toZeroBtn">
