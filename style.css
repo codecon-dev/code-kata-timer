@@ -25,6 +25,18 @@ body {
   color: #46ffbe;
 }
 
+.input-stopwatch-finals {
+  display: flex;
+}
+.input-stopwatch-finals input {
+  font-family: "Orbitron", sans-serif;
+  font-size: 200px;
+  width: 350px;
+  background-color: transparent;
+  border: none;
+  color: #46ffbe;
+}
+
 button {
   background-color: transparent;
   border: 1px solid white;
@@ -34,6 +46,14 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #2e2e2e;
+}
+button:disabled {
+  background-color: transparent;
+  cursor: default;
 }
 
 .button-wrapper {
@@ -44,6 +64,14 @@ button {
 
 .hide {
   display: none !important;
+}
+
+.blink-background {
+  background-color: #46ffbe;
+}
+
+.blink-font {
+  color: #1e1e1e !important;
 }
 
 input::-webkit-outer-spin-button,
