@@ -2,7 +2,6 @@
   "name": "timer",
   "version": "1.0.0",
   "description": "",
-  "main": "index.html",
   "scripts": {
     "dev": "parcel index.html",
     "build": "parcel build index.html"
@@ -11,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "parcel": "^2.13.3"
+    "parcel": "^2.13.3",
+    "svgo": "^3.3.2"
   }
 }
