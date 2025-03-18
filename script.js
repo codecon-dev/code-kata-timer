@@ -64,12 +64,13 @@ function run() {
 
     if (seconds <= 10 && seconds >= 1 && hours == 0 && minutes == 0) {
       beepSound.play()
-      document.body.style.background = "green"
-      watchDisplay.style.display = "none"
-      stopwatchButtons.style.display = "none"
+      document.body.style.background =  getComputedStyle(document.documentElement).getPropertyValue('--second-color');
+      watchDisplay.classList.add("hide")
+      stopwatchButtons.classList.add("hide")
 
       lastTen.style.display = "block"
       lastTen.children[0].innerHTML = seconds
+      lastTen.children[0].style.color = getComputedStyle(document.documentElement).getPropertyValue('--primary-principal');
     }
 
     if (seconds == 0 && hours == 0 && minutes == 0) {
@@ -78,9 +79,9 @@ function run() {
       endSound.play()
       lastTenInterval = setInterval(() => {
         lastTen.style.display = "none"
-        document.body.style.background = "#1e1e1e"
-        watchDisplay.style.display = "flex"
-        stopwatchButtons.style.display = "flex"
+        document.body.style.background = getComputedStyle(document.documentElement).getPropertyValue('--primary-principal');
+        watchDisplay.classList.remove("hide")
+      stopwatchButtons.classList.remove("hide")
       }, 6000);
     }
 

@@ -1,10 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap");
+@import url("variables.css");
 body {
-  background-color: #1e1e1e;
+  background-color: var(--primary-principal);
   font-family: "Orbitron", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
-  color: #46ffbe;
+  color: var(--second-color);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -14,15 +15,15 @@ body {
 
 .input-stopwatch {
   display: flex;
-  font-size: 112px;
+  font-size: var(--xl-font-size);
 }
 .input-stopwatch input {
   font-family: "Orbitron", sans-serif;
-  font-size: 112px;
+  font-size: var(--xl-font-size);
   width: 180px;
   background-color: transparent;
   border: none;
-  color: #46ffbe;
+  color: var(--second-color);
 }
 
 button {
@@ -40,7 +41,7 @@ button {
 .button-wrapper {
   display: flex;
   flex-direction: row;
-  gap: 32px;
+  gap: var(--lg-gap);
 }
 
 .hide {
@@ -61,5 +62,5 @@ input[type=number] {
 /* Funcionalidade de contagem regressiva tela de 10 segundos */
 #lastTen {
   display: none;
-  font-size: 112px;
+  font-size: var(--xl-font-size);
 }
