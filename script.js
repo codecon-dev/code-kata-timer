@@ -1,13 +1,7 @@
 const DEFAULT_INTERVAL = 1000;
 let timerStarted = false;
-let seconds = 30;
-let minutes = 0;
-let hours = 0;
+let time = 30;
 let intervalInstance = null;
-
-document.getElementById("hour").value = hours;
-document.getElementById("min").value = minutes;
-document.getElementById("sec").value = seconds;
 
 document.getElementById("startBtn").addEventListener("click", function () {
   if (!timerStarted) {
@@ -30,21 +24,12 @@ document.getElementById("toZeroBtn").addEventListener("click", function () {
   minutes = 0;
   seconds = 30;
 
-  document.getElementById("hour").value = hours;
-  document.getElementById("min").value = minutes;
-  document.getElementById("sec").value = seconds;
+  setValues(hours, minutes, seconds);
 });
 
 function run() {
-  hours = Math.max(0, parseInt(document.getElementById("hour").value, 10) || 0);
-  minutes = Math.max(
-    0,
-    parseInt(document.getElementById("min").value, 10) || 0
-  );
-  seconds = Math.max(
-    0,
-    parseInt(document.getElementById("sec").value, 10) || 0
-  );
+  const { hour, minute, second } = getValues();
+  let time = hour * 3600 + minute * 60 + second;
 
   if (intervalInstance) {
     clearInterval(intervalInstance);
@@ -53,29 +38,35 @@ function run() {
   intervalInstance = setInterval(function () {
     if (!timerStarted) return;
 
-    if (seconds === 0) {
-      if (minutes > 0) {
-        minutes--;
-        seconds = 59;
-      } else if (hours > 0) {
-        hours--;
-        minutes = 59;
-        seconds = 59;
-      } else {
-        // Timer acabou
-        timerStarted = false;
-        clearInterval(intervalInstance);
-        intervalInstance = null;
-        return;
-      }
+    if (time === 0) {
+      timerStarted = false;
+      clearInterval(intervalInstance);
+      intervalInstance = null;
+      return;
     } else {
-      seconds--;
+      time--;
     }
 
-    document.getElementById("sec").value = seconds;
-    document.getElementById("min").value = minutes;
-    document.getElementById("hour").value = hours;
+    const hour = Math.floor(time / 3600);
+    const minute = Math.floor((time % 3600) / 60);
+    const second = time % 60;
+
+    setValues(hour, minute, second);
   }, DEFAULT_INTERVAL);
+}
+
+function setValues(hour, minute, second) {
+  document.getElementById("hour").value = hour.toString().padStart(2, "0");
+  document.getElementById("min").value = minute.toString().padStart(2, "0");
+  document.getElementById("sec").value = second.toString().padStart(2, "0");
+}
+
+function getValues() {
+  return {
+    hour: parseInt(document.getElementById("hour").value, 10),
+    minute: parseInt(document.getElementById("min").value, 10),
+    second: parseInt(document.getElementById("sec").value, 10),
+  };
 }
 
 function pause() {
@@ -122,11 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
   finishEditButton.addEventListener("click", () => {
     editContainer.classList.add("hide");
     stopwatchButtons.classList.remove("hide");
-    hours = parseInt(document.getElementById("hour").value, 10);
-    minutes = parseInt(document.getElementById("min").value, 10);
-    seconds = parseInt(document.getElementById("sec").value, 10);
-    document.getElementById("hour").value = hours;
-    document.getElementById("min").value = minutes;
-    document.getElementById("sec").value = seconds;
+    const { hour, minute, second } = getValues();
+    setValues(hour, minute, second);
   });
 });
