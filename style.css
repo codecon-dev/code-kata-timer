@@ -41,6 +41,10 @@ body {
   }
 }
 
+.container.blink .input-stopwatch {
+  font-size: 200px;
+}
+
 .input-stopwatch {
   display: flex;
   flex-direction: row;
@@ -55,7 +59,7 @@ body {
 
 .input-stopwatch>div>input {
   font-family: "Orbitron", sans-serif;
-  font-size: 112px;
+  font-size: 1em;
   width: 2em;
   background-color: transparent;
   border: none;
