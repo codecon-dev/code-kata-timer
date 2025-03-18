@@ -3,7 +3,7 @@ name: Publish Website
 on:
   push:
     branches: # triggers on any push to master
-    - master
+    - main
 
 jobs:
   build-deploy:
