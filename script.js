@@ -1,7 +1,8 @@
+const DEFAULT_INTERVAL = 1000;
 const DEFAULT_SECONDS = 30;
-let isRunning = false;
 let TIMER_STATUS = "STOPED";
 
+// Definindo as acoes
 document.getElementById("startBtn").addEventListener("click", start);
 document.getElementById("pauseBtn").addEventListener("click", pause);
 document.getElementById("toZeroBtn").addEventListener("click", stop);
@@ -19,14 +20,19 @@ document
   .querySelector(".js-active-fullscreen")
   .addEventListener("click", handleFullscreen);
 
+// Definindo formatacao automatica no input
 document.querySelectorAll("input").forEach((input) => {
   input.addEventListener("input", () => {
     input.value = formatInput(input.value);
   });
 });
 
+
+// Definindo o valor default ao abrir a pagina
 setValues(DEFAULT_SECONDS);
 
+
+// Magica que faz os segundos descerem
 function timer() {
   let seconds = getSeconds();
 
@@ -47,9 +53,45 @@ function timer() {
         timer();
       }
     }
-  }, 1000);
+  }, DEFAULT_INTERVAL);
 }
 
+// Utilitario de formatacao do input
+function formatInput(value = 0) {
+  return value.toString().padStart(2, "0").slice(-2);
+}
+
+// Pega o valor do timer em segundos
+function getSeconds() {
+  const { seconds, minutes, hours } = getValues();
+
+  const sumMinutes = hours * 60 + minutes;
+  const sumSeconds = sumMinutes * 60 + seconds;
+
+  return sumSeconds;
+}
+
+// Pega os valores do timer separadamente
+function getValues() {
+  const hours = parseInt(document.getElementById("hour").value) || 0;
+  const minutes = parseInt(document.getElementById("min").value) || 0;
+  const seconds = parseInt(document.getElementById("sec").value) || 0;
+
+  return { seconds, minutes, hours };
+}
+
+// Insere os valores formatados no timer a partir dos segundos informados
+function setValues(fromSeconds = 0) {
+  const hours = Math.floor(fromSeconds / 3600);
+  const minutes = Math.floor((fromSeconds % 3600) / 60);
+  const seconds = fromSeconds % 60;
+
+  document.getElementById(`sec`).value = formatInput(seconds);
+  document.getElementById(`min`).value = formatInput(minutes);
+  document.getElementById(`hour`).value = formatInput(hours);
+}
+
+// Funcoes auxiliares dos botoes
 function start() {
   TIMER_STATUS = "RUNNING";
   applyStyles();
@@ -65,37 +107,6 @@ function stop() {
   TIMER_STATUS = "STOPED";
   applyStyles();
   setValues(DEFAULT_SECONDS);
-}
-
-function formatInput(value = 0) {
-  return value.toString().padStart(2, "0").slice(-2);
-}
-
-function getSeconds() {
-  const { seconds, minutes, hours } = getValues();
-
-  const sumMinutes = hours * 60 + minutes;
-  const sumSeconds = sumMinutes * 60 + seconds;
-
-  return sumSeconds;
-}
-
-function getValues() {
-  const hours = parseInt(document.getElementById("hour").value) || 0;
-  const minutes = parseInt(document.getElementById("min").value) || 0;
-  const seconds = parseInt(document.getElementById("sec").value) || 0;
-
-  return { seconds, minutes, hours };
-}
-
-function setValues(fromSeconds = 0) {
-  const hours = Math.floor(fromSeconds / 3600);
-  const minutes = Math.floor((fromSeconds % 3600) / 60);
-  const seconds = fromSeconds % 60;
-
-  document.getElementById(`sec`).value = formatInput(seconds);
-  document.getElementById(`min`).value = formatInput(minutes);
-  document.getElementById(`hour`).value = formatInput(hours);
 }
 
 function handleFullscreen() {
@@ -141,10 +152,12 @@ function closeEdit() {
   applyStyles();
 }
 
+// Apenas verifica se o timer ta rodando
 function validateStatus() {
   return ["RUNNING", "COUNTDOWN"].includes(TIMER_STATUS);
 }
 
+// Utilitarios para aplicar e remover os estilos
 function resetStyles() {
   document.querySelector(".js-play-button").style = "";
   document.querySelector(".js-stop-button").style = "";
