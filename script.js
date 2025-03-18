@@ -1,19 +1,33 @@
 const DEFAULT_INTERVAL = 1000;
-let timerStarted = false;
-let seconds = 30;
-let minutes = 0;
-let hours = 0;
-let intervalInstance = null;
+// let timerStarted = false;
+// let seconds = 30;
+// let minutes = 0;
+// let hours = 0;
+// let intervalInstance = null;
 
-document.getElementById("hour").value = hours;
-document.getElementById("min").value = minutes;
-document.getElementById("sec").value = seconds;
+class Timer {
+  constructor(hours, minutes, seconds) {
+    this.hours = hours;
+    this.minutes = minutes;
+    this.seconds = seconds;
+    this.timerStarted = false;
+    this.intervalInstance = null;
+  }
+}
+
+const timer = new Timer('00', '00', '50');
+const alarmSound = new Audio('./sounds/alarm.wav');
+const popSound = new Audio('./sounds/pop2.wav');
+
+document.getElementById("hour").value = timer.hours;
+document.getElementById("min").value = timer.minutes;
+document.getElementById("sec").value = timer.seconds;
 
 document.getElementById("startBtn").addEventListener("click", function () {
-  if (!timerStarted) {
-    timerStarted = true;
-    if (intervalInstance) {
-      clearInterval(intervalInstance);
+  if (!timer.timerStarted) {
+    timer.timerStarted = true;
+    if (timer.intervalInstance) {
+      clearInterval(timer.intervalInstance);
     }
     run();
   }
@@ -26,68 +40,133 @@ document.getElementById("pauseBtn").addEventListener("click", function () {
 
 document.getElementById("toZeroBtn").addEventListener("click", function () {
   pause();
-  hours = 0;
-  minutes = 0;
-  seconds = 30;
+  timer.hours = '00';
+  timer.minutes = '00';
+  timer.seconds = '30';
 
-  document.getElementById("hour").value = hours;
-  document.getElementById("min").value = minutes;
-  document.getElementById("sec").value = seconds;
+  console.log(timer.seconds.length);
+  if (timer.hours.length === 1) {
+    console.log(timer.hours.length);
+    timer.hours = "0" + timer.hours;
+  }
+  if (timer.minutes.length === 1) {
+    timer.minutes = "0" + timer.minutes;
+  }
+  if (timer.seconds.length === 1) {
+    timer.seconds = "0" + timer.seconds;
+  }
+
+  document.getElementById("hour").value = timer.hours;
+  document.getElementById("min").value = timer.minutes;
+  document.getElementById("sec").value = timer.seconds;
 });
 
 function run() {
-  hours = Math.max(0, parseInt(document.getElementById("hour").value, 10) || 0);
-  minutes = Math.max(
+  timer.hours = Math.max(0, parseInt(document.getElementById("hour").value, 10) || 0);
+  timer.minutes = Math.max(
     0,
     parseInt(document.getElementById("min").value, 10) || 0
   );
-  seconds = Math.max(
+  timer.seconds = Math.max(
     0,
     parseInt(document.getElementById("sec").value, 10) || 0
   );
 
-  if (intervalInstance) {
-    clearInterval(intervalInstance);
+  if (timer.intervalInstance) {
+    clearInterval(timer.intervalInstance);
   }
 
-  intervalInstance = setInterval(function () {
-    if (!timerStarted) return;
+  console.log('primeiro')
+  console.log(timer.seconds, timer.minutes, timer.hours);
 
-    if (seconds === 0) {
-      if (minutes > 0) {
-        minutes--;
-        seconds = 59;
+
+  timer.intervalInstance = setInterval(function () {
+    timer.seconds = parseInt(timer.seconds, 10);
+    timer.minutes = parseInt(timer.minutes, 10);
+    timer.hours = parseInt(timer.hours, 10);
+
+    if (!timer.timerStarted) return;
+
+    if (timer.seconds === 0) {
+      if (timer.minutes > 0) {
+        timer.minutes--;
+        timer.seconds = 59;
       } else if (hours > 0) {
-        hours--;
-        minutes = 59;
-        seconds = 59;
+        timer.hours--;
+        timer.minutes = 59;
+        timer.seconds = 59;
       } else {
         // Timer acabou
-        timerStarted = false;
-        clearInterval(intervalInstance);
-        intervalInstance = null;
+        timer.timerStarted = false;
+        clearInterval(timer.intervalInstance);
+        timer.intervalInstance = null;
         return;
       }
     } else {
-      seconds--;
+      timer.seconds--;
     }
 
-    document.getElementById("sec").value = seconds;
-    document.getElementById("min").value = minutes;
-    document.getElementById("hour").value = hours;
+    console.log('mamaco');
+    console.log(timer.seconds, timer.minutes, timer.hours);
+
+    if (timer.hours === 0 && timer.minutes === 0 && timer.seconds <= 10) {
+      // console.log(document.getElementById('timerCountdown').style)
+      document.getElementById('timerCountdown').style.visibility = 'visible'
+      document.getElementById('secCountdown').innerText = timer.seconds;
+      document.getElementById('secCountdown').style.color = '#46ffbe'
+      document.getElementById('timerCountdown').style.backgroundColor = '#1e1e1e'
+
+      if (timer.seconds > 0) {
+        popSound.play();
+      }
+    }
+
+    if (timer.hours === 0 && timer.minutes === 0 && timer.seconds === 0) {
+      // console.log(document.getElementById('timerCountdown').style)
+      timer.timerStarted = false;
+      clearInterval(timer.intervalInstance);
+      timer.intervalInstance = null;
+      document.getElementById('timerCountdown').style.backgroundColor = '#46FFBE'
+      document.getElementById('secCountdown').style.color = '#1e1e1e'
+      document.getElementById('buttonWrapperCountdown').querySelectorAll('button').forEach(button => {
+        button.style.borderColor = 'black'
+      })
+      alarmSound.play();
+    }
+
+    timer.hours = timer.hours.toString();
+    timer.minutes = timer.minutes.toString();
+    timer.seconds = timer.seconds.toString();
+
+    if (timer.hours.length === 1) {
+      timer.hours = "0" + timer.hours;
+    }
+    if (timer.minutes.length === 1) {
+      timer.minutes = "0" + timer.minutes;
+    }
+    if (timer.seconds.length === 1) {
+      timer.seconds = "0" + timer.seconds
+    }
+
+    console.log('segundo')
+    console.log(timer.seconds, timer.minutes, timer.hours);
+
+    document.getElementById("sec").value = timer.seconds;
+    document.getElementById("min").value = timer.minutes;
+    document.getElementById("hour").value = timer.hours;
   }, DEFAULT_INTERVAL);
 }
 
 function pause() {
-  timerStarted = false;
-  if (intervalInstance) {
-    clearInterval(intervalInstance);
-    intervalInstance = null;
+  timer.timerStarted = false;
+  if (timer.intervalInstance) {
+    clearInterval(timer.intervalInstance);
+    timer.intervalInstance = null;
   }
 }
 
 function stop() {
-  timerStarted = false;
+  timer.timerStarted = false;
 }
 
 // funcionalidade para o botão de tela cheia e editar
@@ -96,6 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const editButton = document.querySelector(".js-edit-stopwatch");
   const editContainer = document.querySelector(".js-edit-container-stopwatch");
   const stopwatchButtons = document.querySelector(".js-stopwatch-button");
+  const closeCountdown = document.querySelector(".js-close-countdown");
 
   fullscreenButton.addEventListener("click", () => {
     if (!document.fullscreenElement) {
@@ -112,6 +192,13 @@ document.addEventListener("DOMContentLoaded", () => {
     stopwatchButtons.classList.toggle("hide");
   });
 
+  closeCountdown.addEventListener("click", () => {
+    document.getElementById('timerCountdown').style.visibility = 'hidden'
+    document.getElementById('buttonWrapperCountdown').querySelectorAll('button').forEach(button => {
+      button.style.borderColor = 'white'
+    })
+  });
+
   const cancelButton = document.querySelector(".js-cancel-button");
   cancelButton.addEventListener("click", () => {
     editContainer.classList.add("hide");
@@ -122,11 +209,13 @@ document.addEventListener("DOMContentLoaded", () => {
   finishEditButton.addEventListener("click", () => {
     editContainer.classList.add("hide");
     stopwatchButtons.classList.remove("hide");
-    hours = parseInt(document.getElementById("hour").value, 10);
-    minutes = parseInt(document.getElementById("min").value, 10);
-    seconds = parseInt(document.getElementById("sec").value, 10);
-    document.getElementById("hour").value = hours;
-    document.getElementById("min").value = minutes;
-    document.getElementById("sec").value = seconds;
+    timer.hours = parseInt(document.getElementById("hour").value, 10);
+    timer.minutes = parseInt(document.getElementById("min").value, 10);
+    timer.seconds = parseInt(document.getElementById("sec").value, 10);
+    document.getElementById("hour").value = timer.hours;
+    document.getElementById("min").value = timer.minutes;
+    document.getElementById("sec").value = timer.seconds;
   });
 });
+
+// tonylimaoo passou por aqui
