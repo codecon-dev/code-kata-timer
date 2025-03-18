@@ -1,13 +1,20 @@
 @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap");
 
+:root {
+  --primary-bg-color: #242424;
+  --primary-text-color: #46ffbe;
+  --secondary-bg-color: #46ffbe;
+  --secondary-text-color: #444444;
+}
+
 * {
   font-family: "Orbitron", sans-serif;
   font-size: 112px;
 }
 
 body {
-  background-color: #1e1e1e;
-  color: #46ffbe;
+  background-color: var(--primary-bg-color);
+  color: var(--primary-text-color);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -19,8 +26,8 @@ body {
 }
 
 body.zero {
-  background-color: #46ffbe;
-  color: #1e1e1e;
+  background-color: var(--secondary-bg-color);
+  color: var(--secondary-text-color);
 }
 
 .input-stopwatch {
@@ -33,7 +40,7 @@ input {
   min-width: 1px;
   width: auto;
   max-width: 2ch;
-  color: #46ffbe;
+  color: var(--primary-text-color);
   border: none;
   background: none;
   outline: none;
@@ -86,8 +93,25 @@ input::-webkit-inner-spin-button {
   background-color: inherit;
   color: inherit;
   z-index: 1000;
+  font-size: 202px;
 }
 
 #countdown.hide {
   display: none;
+}
+
+.press-start {
+  background-color: rgba(70, 255, 190, 0.25);
+}
+
+.press-stop {
+  background-color: rgba(255, 70, 70, 0.25);
+}
+
+.press-pause {
+  background-color: rgba(255, 221, 70, 0.25);
+}
+
+.press-edit {
+  background-color: rgba(255, 255, 255, 0.25);
 }

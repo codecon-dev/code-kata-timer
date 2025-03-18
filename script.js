@@ -8,7 +8,7 @@ document.getElementById("pauseBtn").addEventListener("click", pause);
 document.getElementById("toZeroBtn").addEventListener("click", stop);
 document.getElementById("restartBtn").addEventListener("click", stop);
 document
-  .querySelector(".js-edit-stopwatch")
+  .querySelector(".js-edit-button")
   .addEventListener("click", openEdit);
 document
   .querySelector(".js-finish-edit-button")
@@ -159,10 +159,10 @@ function validateStatus() {
 
 // Utilitarios para aplicar e remover os estilos
 function resetStyles() {
-  document.querySelector(".js-play-button").style = "";
-  document.querySelector(".js-stop-button").style = "";
-  document.querySelector(".js-pause-button").style = "";
-  document.querySelector(".js-edit-stopwatch").style = "";
+  document.querySelector(".js-play-button").classList.remove('press-start');
+  document.querySelector(".js-stop-button").classList.remove('press-stop');
+  document.querySelector(".js-pause-button").classList.remove('press-pause');
+  document.querySelector(".js-edit-button").classList.remove('press-edit');
   document.querySelector(".input-stopwatch").classList.remove("hide");
   document.querySelector(".js-stopwatch-button").classList.remove("hide");
   document.getElementById("countdown").classList.add("hide");
@@ -181,11 +181,6 @@ function applyStyles() {
   styles[TIMER_STATUS]?.();
 }
 
-function styleRunning() {
-  document.querySelector(".js-play-button").style =
-    "background-color: rgba(70, 255, 190, 0.25)";
-}
-
 function styleCountdown(seconds = 0) {
   document.querySelector(".input-stopwatch").classList.add("hide");
   document.querySelector(".js-stopwatch-button").classList.add("hide");
@@ -193,17 +188,18 @@ function styleCountdown(seconds = 0) {
   document.getElementById("countdown-number").textContent = seconds;
 }
 
+function styleRunning() {
+  document.querySelector(".js-play-button").classList.add('press-start');
+}
+
 function styleStop() {
-  document.querySelector(".js-stop-button").style =
-    "background-color: rgba(255, 70, 70, 0.25)";
+  document.querySelector(".js-stop-button").classList.add('press-stop');
 }
 
 function stylePause() {
-  document.querySelector(".js-pause-button").style =
-    "background-color: rgba(255, 221, 70, 0.25)";
+  document.querySelector(".js-pause-button").classList.add('press-pause');
 }
 
 function styleEditing() {
-  document.querySelector(".js-edit-stopwatch").style =
-    "background-color: rgba(255, 255, 255, 0.25)";
+  document.querySelector(".js-edit-button").classList.add('press-edit');
 }
