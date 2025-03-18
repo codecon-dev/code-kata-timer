@@ -1,16 +1,16 @@
 {
-  "name": "timer",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "dev": "parcel index.html",
-    "build": "parcel build index.html"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "parcel": "^2.13.3"
-  }
+	"name": "timer",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"dev": "parcel --port 3000 index.html",
+		"build": "parcel build index.html"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"parcel": "^2.13.3"
+	}
 }

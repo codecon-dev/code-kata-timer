@@ -4,59 +4,59 @@ $background-color: #1e1e1e;
 $primary-color: #46ffbe;
 
 body {
-  background-color: $background-color;
-  font-family: "Orbitron", sans-serif;
-  font-optical-sizing: auto;
-  font-style: normal;
-  color: $primary-color;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+	background-color: $background-color;
+	font-family: "Orbitron", sans-serif;
+	font-optical-sizing: auto;
+	font-style: normal;
+	color: $primary-color;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
 }
 
 .input-stopwatch {
-  display: flex;
-  font-size: 112px;
+	display: flex;
+	font-size: 112px;
 
-  input {
-    font-family: "Orbitron", sans-serif;
-    font-size: 112px;
-    width: 180px;
-    background-color: transparent;
-    border: none;
-    color: $primary-color;
-  }
+	input {
+		font-family: "Orbitron", sans-serif;
+		font-size: 112px;
+		width: 180px;
+		background-color: transparent;
+		border: none;
+		color: $primary-color;
+	}
 }
 
 button {
-  background-color: transparent;
-  border: 1px solid white;
-  width: 32px;
-  height: 32px;
-  border-radius: 99px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+	background-color: transparent;
+	border: 1px solid white;
+	width: 32px;
+	height: 32px;
+	border-radius: 99px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .button-wrapper {
-  display: flex;
-  flex-direction: row;
-  gap: 32px;
+	display: flex;
+	flex-direction: row;
+	gap: 32px;
 }
 
 .hide {
-  display: none !important;
+	display: none !important;
 }
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+	-webkit-appearance: none;
+	margin: 0;
 }
 
 input[type="number"] {
-  -moz-appearance: textfield;
+	-moz-appearance: textfield;
 }

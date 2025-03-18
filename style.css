@@ -34,7 +34,6 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
 }
 
 .button-wrapper {
@@ -55,4 +54,6 @@ input::-webkit-inner-spin-button {
 
 input[type=number] {
   -moz-appearance: textfield;
-}/*# sourceMappingURL=style.css.map */
+}
+
+/*# sourceMappingURL=style.css.map */
