@@ -46,42 +46,43 @@ function run() {
 	}, DEFAULT_INTERVAL);
 }
 
+const toggleBtn = document.getElementById("toggleBtn");
+const toZeroBtn = document.getElementById("toZeroBtn");
+const toggleIcon = document.getElementById("toggleIcon");
+const PLAY_SVG = "/images/play.svg";
+const PAUSE_SVG = "/images/pause.svg";
+
+function play() {
+	if (!timerStarted) {
+		timerStarted = true;
+		if (intervalInstance) {
+			clearInterval(intervalInstance);
+		}
+		run();
+	}
+
+	toggleIcon.src = PAUSE_SVG;
+	toggleBtn.dataset.state = "pause";
+}
+
 function pause() {
 	timerStarted = false;
 	if (intervalInstance) {
 		clearInterval(intervalInstance);
 		intervalInstance = null;
 	}
+
+	toggleIcon.src = PLAY_SVG;
+	toggleBtn.dataset.state = "play";
 }
 
-const toggleBtn = document.getElementById("toggleBtn");
-const toZeroBtn = document.getElementById("toZeroBtn");
-
 toggleBtn.addEventListener("click", () => {
-	const img = document.getElementById("toggleIcon");
-	const PLAY_SVG = "/images/play.svg";
-	const PAUSE_SVG = "/images/pause.svg";
-
-	if (toggleBtn.dataset.state === "play") {
-		if (!timerStarted) {
-			timerStarted = true;
-			if (intervalInstance) {
-				clearInterval(intervalInstance);
-			}
-			run();
-		}
-
-		img.src = PAUSE_SVG;
-		toggleBtn.dataset.state = "pause";
-	} else {
-		pause();
-		img.src = PLAY_SVG;
-		toggleBtn.dataset.state = "play";
-	}
+	toggleBtn.dataset.state === "play" ? play() : pause();
 });
 
 toZeroBtn.addEventListener("click", function () {
 	pause();
+
 	inputs.setInputsValues(0, 0, 30);
 });
 
@@ -124,5 +125,3 @@ document.addEventListener("DOMContentLoaded", () => {
 		inputs.setInputsValues(hours, minutes, seconds);
 	});
 });
-
-/* btn bs */
