@@ -7,42 +7,71 @@
     <title>Cronometro</title>
   </head>
   <body>
-    <div class="input-stopwatch">
-      <div>
-        <input type="number" min="00" value="00" maxlength="2" readonly id="hour" />
+    <div class="container">
+      <div class="input-stopwatch">
+        <div>
+          <input
+            type="number"
+            min="00"
+            value="00"
+            maxlength="2"
+            maxValue="23"
+            readonly
+            id="hour"
+          />
+        </div>
+        <div>
+          <input
+            type="number"
+            min="00"
+            value="00"
+            maxlength="2"
+            maxValue="59"
+            readonly
+            id="min"
+          />
+        </div>
+        <div>
+          <input
+            type="number"
+            min="00"
+            value="30"
+            maxlength="2"
+            maxValue="59"
+            readonly
+            id="sec"
+          />
+        </div>
       </div>
-      <div>
-        <input type="number" min="00" value="00" maxlength="2" readonly id="min" />
+      <div class="button-wrapper js-stopwatch-button" id="controlPanelButtons">
+        <button class="js-active-fullscreen" id="fullScreenBtn">
+          <img src="/images/full-screen.svg" alt="Colocar em tela cheia" />
+        </button>
+        <button class="js-edit-stopwatch" id="editBtn">
+          <img src="/images/edit.svg" alt="Editar" />
+        </button>
+        <button class="js-stop-button" id="toZeroBtn">
+          <img src="/images/reset.svg" alt="Resetar" />
+        </button>
+        <button class="js-play-button" id="startBtn">
+          <img src="/images/play.svg" alt="Iniciar" />
+        </button>
+        <button class="js-pause-button" id="pauseBtn">
+          <img src="/images/pause.svg" alt="Pausar" />
+        </button>
       </div>
-      <div>
-        <input type="number" min="00" value="30" maxlength="2" readonly id="sec" />
+      <div
+        class="button-wrapper js-edit-container-stopwatch hide"
+        id="editPanelButtons"
+      >
+        <button class="js-cancel-button" id="cancelEditBtn">
+          <img src="/images/cancel.svg" alt="Cancelar" />
+        </button>
+        <button class="js-finish-edit-button" id="saveBtn">
+          <img src="/images/ok.svg" alt="Finalizar" />
+        </button>
       </div>
+      <script src="script.js"></script>
     </div>
-    <div class="button-wrapper js-stopwatch-button">
-      <button class="js-active-fullscreen" id="fullScreenBtn">
-        <img src="/images/full-screen.svg" alt="Colocar em tela cheia" />
-      </button>
-      <button class="js-edit-stopwatch" id="editBtn">
-        <img src="/images/edit.svg" alt="Editar" />
-      </button>
-      <button class="js-stop-button" id="toZeroBtn">
-        <img src="/images/reset.svg" alt="Resetar" />
-      </button>
-      <button class="js-play-button" id="startBtn">
-        <img src="/images/play.svg" alt="Iniciar" />
-      </button>
-      <button class="js-pause-button" id="pauseBtn">
-        <img src="/images/pause.svg" alt="Pausar" />
-      </button>
-    </div>
-    <div class="button-wrapper js-edit-container-stopwatch hide">
-      <button class="js-cancel-button">
-        <img src="/images/cancel.svg" alt="Cancelar" />
-      </button>
-      <button class="js-finish-edit-button">
-        <img src="/images/ok.svg" alt="Finalizar" />
-      </button>
-    </div>
-    <script src="script.js"></script>
   </body>
 </html>
