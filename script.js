@@ -1,132 +1,169 @@
-const DEFAULT_INTERVAL = 1000;
-let timerStarted = false;
-let seconds = 30;
-let minutes = 0;
-let hours = 0;
-let intervalInstance = null;
+const DEFAULT_INTERVAL = 30_000;
+let timerId = undefined;
+let lastDate = undefined;
+let remainingInterval = DEFAULT_INTERVAL;
+let isEditing = false;
+let beforeEditValue = undefined;
 
-document.getElementById("hour").value = hours;
-document.getElementById("min").value = minutes;
-document.getElementById("sec").value = seconds;
+const containerDiv = document.querySelector(".container");
+const editPanelButtons = document.getElementById("editPanelButtons");
+const controlPanelButtons = document.getElementById("controlPanelButtons");
+const hourInput = document.getElementById("hour");
+const minInput = document.getElementById("min");
+const secInput = document.getElementById("sec");
 
-document.getElementById("startBtn").addEventListener("click", function () {
-  if (!timerStarted) {
-    timerStarted = true;
-    if (intervalInstance) {
-      clearInterval(intervalInstance);
-    }
-    run();
+document.getElementById("startBtn").addEventListener("click", start);
+document.getElementById("pauseBtn").addEventListener("click", pause);
+document.getElementById("toZeroBtn").addEventListener("click", stop);
+document.getElementById("editBtn").addEventListener("click", toggleEdit);
+document.getElementById("saveBtn").addEventListener("click", saveEdit);
+document.getElementById("cancelEditBtn").addEventListener("click", cancelEdit);
+document.getElementById("fullScreenBtn").addEventListener("click", e => document.body.requestFullscreen());
+addInputListener(hourInput);
+addInputListener(minInput);
+addInputListener(secInput);
+
+function toogleInputState(input) {
+  if (isEditing) {
+    input.addEventListener("input", validateInputValue);
+    input.addEventListener("focus", selectInput);
+    input.removeAttribute("readonly");
+  } else {
+    input.removeEventListener("input", validateInputValue);
+    input.removeEventListener("focus", selectInput);
+    input.setAttribute("readonly", "readonly");
   }
-});
+}
 
-document.getElementById("pauseBtn").addEventListener("click", function () {
-  console.log("pause");
-  pause();
-});
+function selectInput(e) {
+  const input = e.target;
+  if (!timerId && !input.hasAttribute("readonly"))
+    input.select();
+}
 
-document.getElementById("toZeroBtn").addEventListener("click", function () {
-  pause();
-  hours = 0;
-  minutes = 0;
-  seconds = 30;
-
-  document.getElementById("hour").value = hours;
-  document.getElementById("min").value = minutes;
-  document.getElementById("sec").value = seconds;
-});
-
-function run() {
-  hours = Math.max(0, parseInt(document.getElementById("hour").value, 10) || 0);
-  minutes = Math.max(
-    0,
-    parseInt(document.getElementById("min").value, 10) || 0
-  );
-  seconds = Math.max(
-    0,
-    parseInt(document.getElementById("sec").value, 10) || 0
-  );
-
-  if (intervalInstance) {
-    clearInterval(intervalInstance);
+function toggleEdit() {
+  if (timerId) {
+    stop();
   }
 
-  intervalInstance = setInterval(function () {
-    if (!timerStarted) return;
+  isEditing = !isEditing;
 
-    if (seconds === 0) {
-      if (minutes > 0) {
-        minutes--;
-        seconds = 59;
-      } else if (hours > 0) {
-        hours--;
-        minutes = 59;
-        seconds = 59;
-      } else {
-        // Timer acabou
-        timerStarted = false;
-        clearInterval(intervalInstance);
-        intervalInstance = null;
-        return;
-      }
-    } else {
-      seconds--;
-    }
+  const inputs = [hourInput, minInput, secInput];
+  inputs.forEach(input => toogleInputState(input));
 
-    document.getElementById("sec").value = seconds;
-    document.getElementById("min").value = minutes;
-    document.getElementById("hour").value = hours;
-  }, DEFAULT_INTERVAL);
+  editPanelButtons.classList.toggle("hide");
+  controlPanelButtons.classList.toggle("hide");
+
+  if (isEditing) {
+    beforeEditValue = remainingInterval;
+    secInput.focus();
+  }
+}
+
+function validateInputValue(e) {
+  const input = e.target;
+  if (!input || !isEditing)
+    return;
+
+  const maxValue = parseInt(input.getAttribute("maxValue"), 10);
+  const value = parseInt(input.value, 10);
+
+  if (isNaN(value) || value > maxValue) {
+    input.value = "00";
+  } else {
+    var formatedNumber = formatNumber(value);
+    if (input.value !== formatedNumber)
+      input.value = formatedNumber;
+  }
+}
+
+function saveEdit() {
+  if (!isEditing)
+    return;
+
+  const hours = parseInt(hourInput.value, 10);
+  const minutes = parseInt(minInput.value, 10);
+  const seconds = parseInt(secInput.value, 10);
+  remainingInterval = (((hours || 0) * 60 * 60) + ((minutes || 0) * 60) + (seconds || 0)) * 1000;
+
+  toggleEdit();
+}
+
+function cancelEdit() {
+  toggleEdit();
+
+  remainingInterval = beforeEditValue;
+  updateInputValues();
+}
+
+function start() {
+  if (timerId) {
+    clearInterval(timerId);
+    updateTimerVisibility();
+  }
+
+  lastDate = Date.now();
+  timerId = setInterval(() => updateTimer(), 100);
 }
 
 function pause() {
-  timerStarted = false;
-  if (intervalInstance) {
-    clearInterval(intervalInstance);
-    intervalInstance = null;
+  if (timerId) {
+    clearInterval(timerId);
+    timerId = undefined;
   }
 }
 
 function stop() {
-  timerStarted = false;
+  if (timerId) {
+    clearInterval(timerId);
+    timerId = undefined;
+    lastDate = undefined;
+  }
+
+  remainingInterval = DEFAULT_INTERVAL;
+  updateInputValues();
 }
 
-// funcionalidade para o botão de tela cheia e editar
-document.addEventListener("DOMContentLoaded", () => {
-  const fullscreenButton = document.querySelector(".js-active-fullscreen");
-  const editButton = document.querySelector(".js-edit-stopwatch");
-  const editContainer = document.querySelector(".js-edit-container-stopwatch");
-  const stopwatchButtons = document.querySelector(".js-stopwatch-button");
+function updateTimer() {
+  const now = Date.now();
+  const diff = Math.floor(now - lastDate);
+  lastDate = now;
 
-  fullscreenButton.addEventListener("click", () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      }
-    }
-  });
+  remainingInterval -= diff;
+  if (remainingInterval <= 0) {
+    stop();
+  }
 
-  editButton.addEventListener("click", () => {
-    editContainer.classList.toggle("hide");
-    stopwatchButtons.classList.toggle("hide");
-  });
+  updateInputValues();
+}
 
-  const cancelButton = document.querySelector(".js-cancel-button");
-  cancelButton.addEventListener("click", () => {
-    editContainer.classList.add("hide");
-    stopwatchButtons.classList.remove("hide");
-  });
+function formatNumber(number) {
+  return Math.max(0, number).toFixed(0).padStart(2, '0');
+}
 
-  const finishEditButton = document.querySelector(".js-finish-edit-button");
-  finishEditButton.addEventListener("click", () => {
-    editContainer.classList.add("hide");
-    stopwatchButtons.classList.remove("hide");
-    hours = parseInt(document.getElementById("hour").value, 10);
-    minutes = parseInt(document.getElementById("min").value, 10);
-    seconds = parseInt(document.getElementById("sec").value, 10);
-    document.getElementById("hour").value = hours;
-    document.getElementById("min").value = minutes;
-    document.getElementById("sec").value = seconds;
-  });
-});
+function updateInputValues() {
+  const seconds = Math.round(Math.floor(remainingInterval / 1000));
+  const minutes = Math.round(Math.floor(seconds / 60));
+  const hours = Math.round(Math.floor(minutes / 60));
+
+
+  hourInput.value = formatNumber(hours);
+  minInput.value = formatNumber(minutes);
+  secInput.value = formatNumber(seconds);
+
+  updateTimerVisibility();
+}
+
+function updateTimerVisibility() {
+  if (remainingInterval <= 11_000 && timerId) {
+    hourInput.classList.add("hide");
+    minInput.classList.add("hide");
+    controlPanelButtons.classList.add("hide");
+    containerDiv.classList.add("blink");
+  } else {
+    hourInput.classList.remove("hide");
+    minInput.classList.remove("hide");
+    controlPanelButtons.classList.remove("hide");
+    containerDiv.classList.remove("blink");
+  }
+}
