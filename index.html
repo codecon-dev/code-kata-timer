@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css" />
     <title>Cronometro</title>
   </head>
-  
+
   <body>
     <div class="input-stopwatch">
       <input type="number" value="00" id="hour" disabled/>
@@ -16,8 +16,12 @@
       <input type="number" value="30" id="sec" disabled/>
     </div>
 
+    <div class="input-stopwatch-finals hide">
+      <input type="number" value="00" id="secFinals" disabled/>
+    </div>
+
     <div class="button-wrapper js-stopwatch-button">
-      <button class="js-active-fullscreen">
+      <button class="js-active-fullscreen" id="fullscreenBtn">
         <img src="/images/full-screen.svg" alt="Colocar em tela cheia" />
       </button>
       <button class="js-edit-stopwatch" id="editBtn">
