@@ -126,8 +126,16 @@ function parseToInt() {
   let hours = parseInt(document.getElementById("hour").value, 10);
   let minutes = parseInt(document.getElementById("min").value, 10);
   let seconds = parseInt(document.getElementById("sec").value, 10);
+  
+  minutes = checkMeasure(minutes);
+  seconds = checkMeasure(seconds);
 
   return {hours, minutes, seconds}
+}
+
+function checkMeasure(value) {
+  if(value > 60) return 60;
+  return value;
 }
 
 function parseStopwatch(hours, minutes, seconds) {
