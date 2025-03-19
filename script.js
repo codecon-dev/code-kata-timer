@@ -29,6 +29,29 @@ document.getElementById("hour").addEventListener("input", function () {
   validateInput(this, 99);
 });
 
+function verifyStopped() {
+  const pauseBtn = document.querySelector(".js-pause-button");
+  const playBtn = document.querySelector(".js-play-button");
+
+  if (!pauseBtn || !playBtn) return; // Se não encontrar os botões, sai da função
+
+  if (timerStarted) {
+    pauseBtn.classList.remove("hide");
+    pauseBtn.style.display = "block";
+
+    playBtn.classList.add("hide");
+    playBtn.style.display = "none";
+  } else {
+    pauseBtn.classList.add("hide");
+    pauseBtn.style.display = "none";
+
+    playBtn.classList.remove("hide");
+    playBtn.style.display = "block";
+  }
+}
+
+
+
 document.getElementById("min").addEventListener("input", function () {
   validateInput(this, 59);
 });
@@ -130,7 +153,9 @@ document.getElementById("restartBtn").addEventListener("click", function () {
   document.body.classList.remove("zero");
 });
 
+verifyStopped();
 function run() {
+  verifyStopped();
   hours = parseInt(document.getElementById("hour").value) || 0;
   minutes = parseInt(document.getElementById("min").value) || 0;
   seconds = parseInt(document.getElementById("sec").value) || 0;
@@ -142,7 +167,7 @@ function run() {
           if (hours === 0) {
             timerStarted = false;
             clearInterval(intervalInstance);
-
+            verifyStopped();
             document.getElementById("countdown").classList.remove("hide");
             document.getElementById("countdown-number").textContent = "0";
 
@@ -182,6 +207,7 @@ function run() {
 
 function pause() {
   timerStarted = false;
+  verifyStopped();
   if (intervalInstance) {
     clearInterval(intervalInstance);
     intervalInstance = null;
