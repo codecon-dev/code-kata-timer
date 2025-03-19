@@ -1,4 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap");
+
+* {
+  margin: 0;
+  /* Fiz isso só para tirar o scroll que tava ficando na página */
+}
+
 body {
   background-color: #1e1e1e;
   font-family: "Orbitron", sans-serif;
@@ -10,19 +16,26 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  transition: background-color 0.5s ease;
+}
+
+body.zero {
+  background-color: #46ffbe;
+  color: #1e1e1e;
 }
 
 .input-stopwatch {
   display: flex;
   font-size: 112px;
 }
+
 .input-stopwatch input {
   font-family: "Orbitron", sans-serif;
   font-size: 112px;
   width: 180px;
   background-color: transparent;
   border: none;
-  color: #46ffbe;
+  color: inherit;
 }
 
 .input-stopwatch-finals {
@@ -81,5 +94,6 @@ input::-webkit-inner-spin-button {
 }
 
 input[type=number] {
+  /* ta aparecendo um warning aqui pra mim, mas não sei arrumar, talvez eu seja burro */
   -moz-appearance: textfield;
 }/*# sourceMappingURL=style.css.map */
