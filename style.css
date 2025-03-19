@@ -1,8 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap");
-
 * {
   margin: 0;
-  /* Fiz isso só para tirar o scroll que tava ficando na página */
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
@@ -11,31 +11,50 @@ body {
   font-optical-sizing: auto;
   font-style: normal;
   color: #46ffbe;
+  overflow-x: hidden;
+}
+
+.container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  transition: background-color 0.5s ease;
-}
-
-body.zero {
-  background-color: #46ffbe;
-  color: #1e1e1e;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .input-stopwatch {
   display: flex;
-  font-size: 112px;
+  position: relative;
+  margin-bottom: 1.25rem;
 }
-
 .input-stopwatch input {
   font-family: "Orbitron", sans-serif;
-  font-size: 112px;
-  width: 180px;
+  text-align: center;
+  font-size: 3rem;
   background-color: transparent;
   border: none;
-  color: inherit;
+  color: #46ffbe;
+}
+@media screen and (min-width: 36em) {
+  .input-stopwatch input {
+    font-size: 5rem;
+  }
+}
+@media screen and (min-width: 48em) {
+  .input-stopwatch input {
+    font-size: clamp(7rem, 15vw, 10rem);
+  }
+}
+
+.button-wrapper {
+  transition: 150ms ease-in-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .button-wrapper {
+    transition: 0ms ease-in-out !important;
+  }
 }
 
 button {
@@ -48,11 +67,31 @@ button {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: inherit;
+  opacity: 1;
+  transition: 150ms ease-in-out;
+}
+button:hover {
+  background-color: rgba(117, 117, 117, 0.3568627451);
 }
 
-.js-restart-button {
-  border: 1px solid inherit;
+.colon::after {
+  content: ":";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0;
+  text-align: center;
+  font-size: 3rem;
+}
+@media screen and (min-width: 36em) {
+  .colon::after {
+    font-size: 3.5rem;
+  }
+}
+@media screen and (min-width: 48em) {
+  .colon::after {
+    font-size: clamp(6rem, 10vw, 5rem);
+  }
 }
 
 .button-wrapper {
@@ -62,7 +101,15 @@ button {
 }
 
 .hide {
-  display: none !important;
+  visibility: hidden;
+  height: 0%;
+  opacity: 0%;
+  transform: translateY(20px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hide {
+    transform: translateY(0) !important;
+  }
 }
 
 input::-webkit-outer-spin-button,
@@ -72,26 +119,7 @@ input::-webkit-inner-spin-button {
 }
 
 input[type=number] {
-  /* ta aparecendo um warning aqui pra mim, mas não sei arrumar, talvez eu seja burro */
   -moz-appearance: textfield;
 }
 
-#countdown {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  flex-direction: column;
-  font-size: 112px;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: inherit;
-  color: inherit;
-  z-index: 1000;
-}
-
-#countdown.hide {
-  display: none;
-}
+/*# sourceMappingURL=style.css.map */

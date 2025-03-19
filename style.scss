@@ -3,60 +3,124 @@
 $background-color: #1e1e1e;
 $primary-color: #46ffbe;
 
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
 body {
-  background-color: $background-color;
-  font-family: "Orbitron", sans-serif;
-  font-optical-sizing: auto;
-  font-style: normal;
-  color: $primary-color;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+	background-color: $background-color;
+	font-family: "Orbitron", sans-serif;
+	font-optical-sizing: auto;
+	font-style: normal;
+	color: $primary-color;
+	overflow-x: hidden;
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+
+	width: 100%;
+	margin: 0 auto;
 }
 
 .input-stopwatch {
-  display: flex;
-  font-size: 112px;
+	display: flex;
+	position: relative;
 
-  input {
-    font-family: "Orbitron", sans-serif;
-    font-size: 112px;
-    width: 180px;
-    background-color: transparent;
-    border: none;
-    color: $primary-color;
-  }
-}
+	margin-bottom: 1.25rem;
 
-button {
-  background-color: transparent;
-  border: 1px solid white;
-  width: 32px;
-  height: 32px;
-  border-radius: 99px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+	input {
+		font-family: "Orbitron", sans-serif;
+		text-align: center;
+
+		font-size: 3rem;
+		@media screen and (min-width: 36em) {
+			font-size: 5rem;
+		}
+		@media screen and (min-width: 48em) {
+			font-size: clamp(7rem, 15vw, 10rem);
+		}
+
+		background-color: transparent;
+		border: none;
+		color: $primary-color;
+	}
 }
 
 .button-wrapper {
-  display: flex;
-  flex-direction: row;
-  gap: 32px;
+	transition: 150ms ease-in-out;
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: 0ms ease-in-out !important;
+	}
+}
+
+button {
+	background-color: transparent;
+	border: 1px solid white;
+	width: 32px;
+	height: 32px;
+	border-radius: 99px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	opacity: 1;
+	transition: 150ms ease-in-out;
+
+	&:hover {
+		background-color: #7575755b;
+	}
+}
+
+.colon {
+	&::after {
+		content: ":";
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		padding: 0;
+		text-align: center;
+		font-size: 3rem;
+
+		@media screen and (min-width: 36em) {
+			font-size: 3.5rem;
+		}
+		@media screen and (min-width: 48em) {
+			font-size: clamp(6rem, 10vw, 5rem);
+		}
+	}
+}
+
+.button-wrapper {
+	display: flex;
+	flex-direction: row;
+	gap: 32px;
 }
 
 .hide {
-  display: none !important;
+	visibility: hidden;
+	height: 0%;
+	opacity: 0%;
+	transform: translateY(20px);
+
+	@media (prefers-reduced-motion: reduce) {
+		transform: translateY(0) !important;
+	}
 }
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+	-webkit-appearance: none;
+	margin: 0;
 }
 
 input[type="number"] {
-  -moz-appearance: textfield;
+	-moz-appearance: textfield;
 }
