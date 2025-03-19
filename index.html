@@ -1,44 +1,69 @@
 <!DOCTYPE html>
 <html lang="pt">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
-    <title>Cronometro</title>
-  </head>
-  <body>
-    <div class="input-stopwatch">
-      <input type="number" min="00" value="00" id="hour" />
-      :
-      <input type="number" min="00" value="00" id="min" />
-      :
-      <input type="number" min="00" value="30" id="sec" />
-    </div>
-    <div class="button-wrapper js-stopwatch-button">
-      <button class="js-active-fullscreen">
-        <img src="/images/full-screen.svg" alt="Colocar em tela cheia" />
-      </button>
-      <button class="js-edit-stopwatch">
-        <img src="/images/edit.svg" alt="Editar" />
-      </button>
-      <button class="js-stop-button" id="toZeroBtn">
-        <img src="/images/reset.svg" alt="Resetar" />
-      </button>
-      <button class="js-play-button" id="startBtn">
-        <img src="/images/play.svg" alt="Iniciar" />
-      </button>
-      <button class="js-pause-button" id="pauseBtn">
-        <img src="/images/pause.svg" alt="Pausar" />
-      </button>
-    </div>
-    <div class="button-wrapper js-edit-container-stopwatch hide">
-      <button class="js-cancel-button">
-        <img src="/images/cancel.svg" alt="Cancelar" />
-      </button>
-      <button class="js-finish-edit-button">
-        <img src="/images/ok.svg" alt="Finalizar" />
-      </button>
-    </div>
-    <script src="script.js"></script>
-  </body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="style.css" />
+		<title>Cronometro</title>
+	</head>
+	<body>
+		<div class="container">
+			<div class="input-stopwatch">
+				<div class="colon input-item">
+					<input
+						class="input"
+						type="number"
+						min="0"
+						max="24"
+						value="00"
+						id="hour"
+					/>
+				</div>
+				<div class="colon input-item">
+					<input
+						class="input"
+						type="number"
+						min="0"
+						max="59"
+						value="00"
+						id="min"
+					/>
+				</div>
+				<div class="input-item">
+					<input
+						class="input"
+						type="number"
+						min="0"
+						max="59"
+						value="30"
+						id="sec"
+					/>
+				</div>
+			</div>
+			<div class="button-wrapper js-stopwatch-button">
+				<button class="js-active-fullscreen">
+					<img src="/images/full-screen.svg" alt="Colocar em tela cheia" />
+				</button>
+				<button class="js-edit-stopwatch">
+					<img src="/images/edit.svg" alt="Editar" />
+				</button>
+				<button class="js-stop-button" id="toZeroBtn">
+					<img src="/images/reset.svg" alt="Resetar" />
+				</button>
+				<button class="js-play-button" data-state="play" id="toggleBtn">
+					<img src="/images/play.svg" alt="Iniciar" id="toggleIcon" />
+				</button>
+			</div>
+			<div class="button-wrapper js-edit-container-stopwatch hide">
+				<button class="js-cancel-button">
+					<img src="/images/cancel.svg" alt="Cancelar" />
+				</button>
+				<button class="js-finish-edit-button">
+					<img src="/images/ok.svg" alt="Finalizar" />
+				</button>
+			</div>
+		</div>
+
+		<script src="script.js" type="module"></script>
+	</body>
 </html>
