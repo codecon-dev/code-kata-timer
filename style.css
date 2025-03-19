@@ -2,7 +2,8 @@
 
 * {
   margin: 0;
-  /* Fiz isso só para tirar o scroll que tava ficando na página */
+  overflow-y: none;
+  overflow-y: none;
 }
 
 body {
@@ -40,16 +41,23 @@ body.zero {
 
 button {
   background-color: transparent;
-  border: 1px solid white;
+  border: 1px solid #444;
   width: 32px;
   height: 32px;
-  border-radius: 99px;
+  border-radius: 9999px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   color: inherit;
 }
+
+button img {
+  width: 90%;
+  height: 100%;
+  flex-shrink: 0;
+}
+
 
 .js-restart-button {
   border: 1px solid inherit;
@@ -62,27 +70,32 @@ button {
 }
 
 .hide {
-  display: none !important;
+  display: none;
 }
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+  outline: none;
+  border: none;
+  box-shadow: none;
 }
 
 input[type=number] {
   /* ta aparecendo um warning aqui pra mim, mas não sei arrumar, talvez eu seja burro */
   -moz-appearance: textfield;
+  outline: none;
+  border: none;
+  box-shadow: none;
 }
 
 #countdown {
   display: flex;
   justify-content: center;
-  align-items: center;
-  position: fixed;
   flex-direction: column;
-  font-size: 112px;
+  align-items: center;
+  font-size: 250px;
   top: 0;
   left: 0;
   width: 100%;
@@ -94,4 +107,73 @@ input[type=number] {
 
 #countdown.hide {
   display: none;
+}
+
+/* 🟠🔽 RESPONSIVIDADE 🔽🟠 */
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .input-stopwatch {
+    font-size: 80px;
+  }
+
+  .input-stopwatch input {
+    font-size: 80px;
+    width: 140px;
+  }
+
+  #countdown {
+    font-size: 180px;
+  }
+
+  button {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Smartphones grandes */
+@media (max-width: 768px) {
+  .input-stopwatch {
+    font-size: 64px;
+  }
+
+  .input-stopwatch input {
+    font-size: 64px;
+    width: 120px;
+  }
+
+  #countdown {
+    font-size: 140px;
+  }
+
+  button {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* Smartphones pequenos */
+@media (max-width: 480px) {
+  .input-stopwatch {
+    font-size: 48px;
+  }
+
+  .input-stopwatch input {
+    font-size: 48px;
+    width: 100px;
+  }
+
+  #countdown {
+    font-size: 100px;
+  }
+
+  button {
+    width: 32px;
+    height: 32px;
+  }
+
+  .button-wrapper {
+    gap: 8px;
+  }
 }
