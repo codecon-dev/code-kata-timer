@@ -35,6 +35,7 @@ function run() {
 				// Timer acabou
 				timerStarted = false;
 				clearInterval(intervalInstance);
+				pause();
 				intervalInstance = null;
 				return;
 			}
@@ -123,5 +124,30 @@ document.addEventListener("DOMContentLoaded", () => {
 		seconds = inputs.seconds;
 
 		inputs.setInputsValues(hours, minutes, seconds);
+	});
+});
+
+/* prevent more than two values on input */
+document.querySelectorAll(".input").forEach((input) => {
+	input.addEventListener("input", (e) => {
+		e.preventDefault();
+
+		const value = parseInt(e.data) || 0;
+
+		if (input.value[0] === "0") {
+			input.value = value.toString();
+			return;
+		}
+
+		if (value < 1) {
+			e.value = "0";
+		}
+
+		if (input.value.length > 2) {
+			let newValue = input.value.slice(0, 1);
+			newValue += e.data;
+
+			input.value = newValue;
+		}
 	});
 });
