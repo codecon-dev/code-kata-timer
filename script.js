@@ -1,189 +1,205 @@
 let timerStarted = false;
-let seconds = 30;
-let minutes = 0;
-let hours = 0;
+let seconds = 0;
+let sec = 0;
+let min = 0;
+let hour = 0;
 let intervalInstance;
 
-function formatTime(value) {
-  return value < 10 ? `0${value}` : value.toString();
-}
+// CAPITURANDO ELEMENTOS DA DOM (HTML)
+const divTimeInputs = document.querySelector('.input-stopwatch');
+const allTimeInputs = document.querySelectorAll('input');
+const secFinals = document.getElementById("secFinals");
+const hourInput = document.getElementById("hour");
+const minInput = document.getElementById("min");
+const secInput = document.getElementById("sec");
+const timeInputsFinals = document.querySelector('.input-stopwatch-finals');
 
-function validateInput(input, maxValue) {
-  let value = parseInt(input.value) || 0;
+const startBtn = document.getElementById("startBtn");
+const pauseBtn = document.getElementById("pauseBtn");
+const resetBtn = document.getElementById("resetBtn");
+const editBtn = document.getElementById("editBtn");
+const cancelEditBtn = document.getElementById("cancelEditBtn");
+const confirmEditBtn = document.getElementById("confirmEditBtn");
+const fullscreenBtn = document.getElementById("fullscreenBtn");
 
-  if (value < 0) value = 0;
-  if (value > maxValue) value = maxValue;
+const jsStopwatchButton = document.querySelector('.js-stopwatch-button');
+const jsEditContainerStopwatch = document.querySelector('.js-edit-container-stopwatch');
 
-  input.value = formatTime(value);
-}
-
-document.getElementById("hour").disabled = true;
-document.getElementById("min").disabled = true;
-document.getElementById("sec").disabled = true;
-
-document.getElementById("hour").value = formatTime(hours);
-document.getElementById("min").value = formatTime(minutes);
-document.getElementById("sec").value = formatTime(seconds);
-
-document.getElementById("hour").addEventListener("input", function () {
-  validateInput(this, 99);
-});
-
-document.getElementById("min").addEventListener("input", function () {
-  validateInput(this, 59);
-});
-
-document.getElementById("sec").addEventListener("input", function () {
-  validateInput(this, 59);
-});
-
-document.getElementById("startBtn").addEventListener("click", function () {
-  if (!timerStarted) {
+// EVENTOS DOS ELEMENTOS DA DOM
+startBtn.addEventListener("click", function () {
+  if( !timerStarted ){
     timerStarted = true;
     run();
   }
 });
 
-document.getElementById("pauseBtn").addEventListener("click", function () {
+pauseBtn.addEventListener("click", function () {
   pause();
 });
 
-document.getElementById("toZeroBtn").addEventListener("click", function () {
-  pause();
-  hours = 0;
-  minutes = 0;
-  seconds = 30;
-
-  document.getElementById("hour").value = formatTime(hours);
-  document.getElementById("min").value = formatTime(minutes);
-  document.getElementById("sec").value = formatTime(seconds);
+resetBtn.addEventListener("click", function () {
+  reset();
 });
 
-document
-  .querySelector(".js-edit-stopwatch")
-  .addEventListener("click", function () {
-    document.getElementById("hour").disabled = false;
-    document.getElementById("min").disabled = false;
-    document.getElementById("sec").disabled = false;
+editBtn.addEventListener("click", function () {
+  toggleElementVisibily( [jsStopwatchButton, jsEditContainerStopwatch] );
 
-    document.querySelector(".js-stopwatch-button").classList.add("hide");
-    document
-      .querySelector(".js-edit-container-stopwatch")
-      .classList.remove("hide");
-  });
+  allTimeInputs.forEach(input => input.disabled = false);
 
-document
-  .querySelector(".js-cancel-button")
-  .addEventListener("click", function () {
-    document.getElementById("hour").value = formatTime(hours);
-    document.getElementById("min").value = formatTime(minutes);
-    document.getElementById("sec").value = formatTime(seconds);
+  hour = Number(hourInput.value);
+  min = Number(minInput.value);
+  sec = Number(secInput.value);
+});
 
-    document.getElementById("hour").disabled = true;
-    document.getElementById("min").disabled = true;
-    document.getElementById("sec").disabled = true;
+allTimeInputs.forEach(input => {
+  input.addEventListener('input', function () {
+    let max = input.id === 'hour' ? 99 : 59;
+    let min = 0;
 
-    document.querySelector(".js-stopwatch-button").classList.remove("hide");
-    document
-      .querySelector(".js-edit-container-stopwatch")
-      .classList.add("hide");
-  });
+    const value = Number(input.value);
 
-document
-  .querySelector(".js-finish-edit-button")
-  .addEventListener("click", function () {
-    hours = parseInt(document.getElementById("hour").value) || 0;
-    minutes = parseInt(document.getElementById("min").value) || 0;
-    seconds = parseInt(document.getElementById("sec").value) || 0;
-
-    document.getElementById("hour").disabled = true;
-    document.getElementById("min").disabled = true;
-    document.getElementById("sec").disabled = true;
-
-    document.querySelector(".js-stopwatch-button").classList.remove("hide");
-    document
-      .querySelector(".js-edit-container-stopwatch")
-      .classList.add("hide");
-  });
-
-document
-  .querySelector(".js-active-fullscreen")
-  .addEventListener("click", function () {
-    if (document.documentElement.requestFullscreen) {
-      document.documentElement.requestFullscreen();
+    if( value >= 0 && value < 10 ){
+      input.value = '0' + value;
+    } else {
+      input.value = value;
     }
+
+    if( value < min )
+      input.value = '00';
+
+    if( value > max )
+      input.value = max;
   });
-
-document.getElementById("restartBtn").addEventListener("click", function () {
-  hours = 0;
-  minutes = 0;
-  seconds = 30;
-
-  document.getElementById("hour").value = formatTime(hours);
-  document.getElementById("min").value = formatTime(minutes);
-  document.getElementById("sec").value = formatTime(seconds);
-
-  document.querySelector(".input-stopwatch").classList.remove("hide");
-  document.querySelector(".js-stopwatch-button").classList.remove("hide");
-  document.getElementById("countdown").classList.add("hide");
-
-  document.body.classList.remove("zero");
 });
 
+cancelEditBtn.addEventListener("click", function () {
+  toggleElementVisibily( [jsStopwatchButton, jsEditContainerStopwatch] );
+
+  allTimeInputs.forEach(input => input.disabled = true);
+
+  hourInput.value = hour >= 0 && hour < 10 ? '0' + hour : hour;
+  minInput.value = min >= 0 && min < 10  ? '0' + min : min;
+  secInput.value = sec >= 0 && sec < 10 ? '0' + sec : sec;
+});
+
+confirmEditBtn.addEventListener("click", function () {
+  toggleElementVisibily( [jsStopwatchButton, jsEditContainerStopwatch] );
+
+  allTimeInputs.forEach(input => input.disabled = true);
+});
+
+fullscreenBtn.addEventListener("click", function () {
+  if( !document.fullscreenElement ){
+    document.documentElement.requestFullscreen().catch(e => {
+      console.error(`Não foi possível colocar em tela cheia: ${e.message}`)
+    });
+  } else {
+    document.exitFullscreen();
+  }
+});
+
+// FUNÇÕES JAVASCRIPT
 function run() {
-  hours = parseInt(document.getElementById("hour").value) || 0;
-  minutes = parseInt(document.getElementById("min").value) || 0;
-  seconds = parseInt(document.getElementById("sec").value) || 0;
+  if( timerStarted ) {
+    toggleElementVisibily( [startBtn, pauseBtn] );
+    editBtn.disabled = true;
 
-  intervalInstance = setInterval(function () {
-    if (timerStarted) {
-      if (seconds === 0) {
-        if (minutes === 0) {
-          if (hours === 0) {
-            timerStarted = false;
-            clearInterval(intervalInstance);
+    intervalInstance = setInterval(function () {
+      convertInputsToSeconds();
+      seconds--;
 
-            document.getElementById("countdown").classList.remove("hide");
-            document.getElementById("countdown-number").textContent = "0";
+      if( seconds >= 0 ){
+        convertSecondsToHour();
 
-            document.body.classList.add("zero");
+        if( (seconds >= 0 && seconds <= 10) && !(hourInput.value > 0 || minInput.value > 0) ){
+          divTimeInputs.classList.add('hide');
+          jsStopwatchButton.classList.add('hide');
+          timeInputsFinals.classList.remove('hide');
 
-            document.querySelector(".input-stopwatch").classList.add("hide");
-            document
-              .querySelector(".js-stopwatch-button")
-              .classList.add("hide");
-          } else {
-            hours--;
-            minutes = 59;
-            seconds = 59;
-          }
+          secFinals.value = sec >= 0 && sec < 10 ? '0' + sec : sec;
+          secInput.value = sec >= 0 && sec < 10 ? '0' + sec : sec;
         } else {
-          minutes--;
-          seconds = 59;
+          hourInput.value = hour >= 0 && hour < 10 ? '0' + hour : hour;
+          minInput.value = min >= 0 && min < 10  ? '0' + min : min;
+          secInput.value = sec >= 0 && sec < 10 ? '0' + sec : sec;
         }
       } else {
-        seconds--;
+        timerStarted = false;
+        clearInterval(intervalInstance);
+
+        let blinkCount = 0;
+        let blinkEffect = setInterval(() => {
+          document.body.classList.toggle('blink-background');
+          divTimeInputs.classList.toggle('blink-font');
+          secFinals.classList.toggle('blink-font');
+          blinkCount++;
+
+          if( blinkCount >= 8 ){
+            clearInterval(blinkEffect);
+
+            toggleElementVisibily( [startBtn, pauseBtn, divTimeInputs, jsStopwatchButton, timeInputsFinals] );
+            secInput.value = '00';
+            editBtn.disabled = false;
+          }
+        }, 500);
       }
+    }, 1000);
+  }
+}
 
-      if (hours === 0 && minutes === 0 && seconds <= 10) {
-        document.querySelector(".input-stopwatch").classList.add("hide");
-        document.querySelector(".js-stopwatch-button").classList.add("hide");
+const convertInputsToSeconds = () => {
+  hour = Number(hourInput.value);
+  min = Number(minInput.value);
+  sec = Number(secInput.value);
 
-        document.getElementById("countdown").classList.remove("hide");
-        document.getElementById("countdown-number").textContent = seconds;
-      }
+  seconds = sec;
 
-      document.getElementById("sec").value = formatTime(seconds);
-      document.getElementById("min").value = formatTime(minutes);
-      document.getElementById("hour").value = formatTime(hours);
-    }
-  }, 1000);
+  if( min > 0 )
+    seconds += min * 60;
+
+  if ( hour > 0 )
+    seconds += hour * 3600;
+}
+
+const convertSecondsToHour = () => {
+  hour = 0;
+  min = 0;
+  sec = 0;
+
+  if( seconds >= 3600 ){
+    hour = Math.floor(  seconds / 3600  );
+    seconds = seconds % 3600;
+  }
+
+  if( seconds >= 60 ){
+    min = Math.floor( seconds / 60);
+    sec = seconds % 60;
+  } else {
+    sec = seconds;
+  }
 }
 
 function pause() {
   timerStarted = false;
-  if (intervalInstance) {
-    clearInterval(intervalInstance);
-    intervalInstance = null;
+  clearInterval(intervalInstance);
+  startBtn.classList.remove('hide');
+  pauseBtn.classList.add('hide');
+  editBtn.disabled = false;
+}
+
+function reset() {
+  timerStarted = false;
+  clearInterval(intervalInstance);
+  hourInput.value = '00';
+  minInput.value = '00';
+  secInput.value = 30;
+  startBtn.classList.remove('hide');
+  pauseBtn.classList.add('hide');
+  editBtn.disabled = false;
+}
+
+function toggleElementVisibily( elements ) {
+  for( const element of elements ){
+    element.classList.toggle('hide');
   }
 }
