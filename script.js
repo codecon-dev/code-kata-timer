@@ -1,7 +1,7 @@
 const DEFAULT_INTERVAL = 1000;
 let timerStarted = false;
-let seconds = 30;
-let minutes = 0;
+let seconds = 1;
+let minutes = 2;
 let hours = 0;
 let intervalInstance = null;
 
@@ -20,15 +20,14 @@ document.getElementById("startBtn").addEventListener("click", function () {
 });
 
 document.getElementById("pauseBtn").addEventListener("click", function () {
-  console.log("pause");
   pause();
 });
 
 document.getElementById("toZeroBtn").addEventListener("click", function () {
   pause();
   hours = 0;
-  minutes = 0;
-  seconds = 30;
+  minutes = 1;
+  seconds = 2;
 
   document.getElementById("hour").value = hours;
   document.getElementById("min").value = minutes;
@@ -36,15 +35,11 @@ document.getElementById("toZeroBtn").addEventListener("click", function () {
 });
 
 function run() {
-  hours = Math.max(0, parseInt(document.getElementById("hour").value, 10) || 0);
-  minutes = Math.max(
-    0,
-    parseInt(document.getElementById("min").value, 10) || 0
-  );
-  seconds = Math.max(
-    0,
-    parseInt(document.getElementById("sec").value, 10) || 0
-  );
+  hours = parseInt(document.getElementById("hour").value) * 3600;
+  minutes = parseInt(document.getElementById("min").value) * 60;
+  seconds = parseInt(document.getElementById("sec").value);
+
+  let sumSeconds = hours + minutes + seconds
 
   if (intervalInstance) {
     clearInterval(intervalInstance);
@@ -52,29 +47,24 @@ function run() {
 
   intervalInstance = setInterval(function () {
     if (!timerStarted) return;
+    sumSeconds -= 1
 
-    if (seconds === 0) {
-      if (minutes > 0) {
-        minutes--;
-        seconds = 59;
-      } else if (hours > 0) {
-        hours--;
-        minutes = 59;
-        seconds = 59;
-      } else {
-        // Timer acabou
-        timerStarted = false;
-        clearInterval(intervalInstance);
-        intervalInstance = null;
-        return;
-      }
-    } else {
-      seconds--;
+    let updatedHours = hours > 0 ? sumSeconds / 3600 : 0
+    let updatedMinutes = minutes > 0 ? sumSeconds / 60 : 0
+    let updatedSeconds = seconds > 0 ? sumSeconds : 0
+
+    if(updatedHours > 0){
+      updatedHours = Math.trunc(updatedHours)
+      updatedSeconds -= updatedHours * 3600
+    }
+    if(updatedMinutes > 0){
+      updatedMinutes = Math.trunc(updatedMinutes)
+      updatedSeconds -= updatedMinutes * 60
     }
 
-    document.getElementById("sec").value = seconds;
-    document.getElementById("min").value = minutes;
-    document.getElementById("hour").value = hours;
+    document.getElementById("sec").value = updatedSeconds;
+    document.getElementById("min").value = updatedMinutes;
+    document.getElementById("hour").value = updatedHours;
   }, DEFAULT_INTERVAL);
 }
 
@@ -90,7 +80,6 @@ function stop() {
   timerStarted = false;
 }
 
-// funcionalidade para o botão de tela cheia e editar
 document.addEventListener("DOMContentLoaded", () => {
   const fullscreenButton = document.querySelector(".js-active-fullscreen");
   const editButton = document.querySelector(".js-edit-stopwatch");
