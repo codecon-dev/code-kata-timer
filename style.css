@@ -7,7 +7,7 @@
   --secondary-text-color: #444444;
 }
 
-* {
+*:not(#countdown-number) {
   font-family: "Orbitron", sans-serif;
   font-size: 112px;
 }
