@@ -57,6 +57,11 @@ button {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  color: inherit;
+}
+
+.js-restart-button {
+  border: 1px solid inherit;
 }
 
 button:hover {
@@ -79,13 +84,17 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
+input[type=number] {
+  /* ta aparecendo um warning aqui pra mim, mas não sei arrumar, talvez eu seja burro */
+  -moz-appearance: textfield;
+}
+
 #countdown {
   display: flex;
   justify-content: center;
   align-items: center;
   position: fixed;
   flex-direction: column;
-  font-size: 112px;
   top: 0;
   left: 0;
   width: 100%;
