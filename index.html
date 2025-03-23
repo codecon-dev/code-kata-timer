@@ -4,21 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
-    <title>Cronometro</title>
+    <title>Cronômetro</title>
   </head>
   <body>
     <div class="input-stopwatch">
-      <input type="number" min="00" value="00" id="hour" />
+      <input type="number" min="00" id="hour" disabled />
       :
-      <input type="number" min="00" value="00" id="min" />
+      <input type="number" min="00" id="min" disabled />
       :
-      <input type="number" min="00" value="30" id="sec" />
+      <input type="number" min="00" id="sec" disabled />
     </div>
     <div class="button-wrapper js-stopwatch-button">
       <button class="js-active-fullscreen">
         <img src="/images/full-screen.svg" alt="Colocar em tela cheia" />
       </button>
-      <button class="js-edit-stopwatch">
+      <button class="js-edit-button">
         <img src="/images/edit.svg" alt="Editar" />
       </button>
       <button class="js-stop-button" id="toZeroBtn">
@@ -40,7 +40,7 @@
       </button>
     </div>
     <div id="countdown" class="hide">
-      <span id="countdown-number">10</span>
+      <span id="countdown-number"></span>
       <button class="js-restart-button" id="restartBtn">
         <img src="/images/cancel.svg" alt="Reiniciar" />
       </button>
