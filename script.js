@@ -212,3 +212,47 @@ function stylePause() {
 function styleEditing() {
   document.querySelector(".js-edit-button").classList.add("press-edit");
 }
+
+
+// Função para alternar o tema
+function toggleTheme() {
+  const body = document.body;
+  const sunIcon = document.getElementById("sun-icon");
+  const moonIcon = document.getElementById("moon-icon");
+
+  if (body.getAttribute("data-theme") === "light") {
+    body.setAttribute("data-theme", "dark");
+    sunIcon.classList.remove("active");
+    moonIcon.classList.add("active");
+    localStorage.setItem("theme", "dark");
+  } else {
+    body.setAttribute("data-theme", "light");
+    moonIcon.classList.remove("active");
+    sunIcon.classList.add("active");
+    localStorage.setItem("theme", "light");
+  }
+}
+
+// Verificar o tema salvo no localStorage ao carregar a página
+function loadTheme() {
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  const body = document.body;
+  const sunIcon = document.getElementById("sun-icon");
+  const moonIcon = document.getElementById("moon-icon");
+
+  body.setAttribute("data-theme", savedTheme);
+
+  if (savedTheme === "light") {
+    sunIcon.classList.add("active");
+    moonIcon.classList.remove("active");
+  } else {
+    moonIcon.classList.add("active");
+    sunIcon.classList.remove("active");
+  }
+}
+
+// Adicionar evento de clique ao botão de alternância
+document.getElementById("theme-toggle").addEventListener("click", toggleTheme);
+
+// Carregar o tema ao iniciar a página
+window.onload = loadTheme;
