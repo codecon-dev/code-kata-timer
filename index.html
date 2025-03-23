@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt">
   <head>
     <meta charset="UTF-8" />
@@ -7,6 +7,21 @@
     <title>Cronômetro</title>
   </head>
   <body>
+    <nav class="navbar">
+  <div class="navbar-container">
+    <a href="#" class="navbar-logo">Cronômetro</a>
+    <ul class="navbar-menu">
+      <li><a href="https://github.com/codecon-dev/code-kata-timer">Github do projeto</a></li>
+      <li>
+        <button id="theme-toggle">
+          <img src="/images/sun.svg" alt="Modo Claro" class="theme-icon" id="sun-icon" />
+          <img src="/images/moon.svg" alt="Modo Escuro" class="theme-icon" id="moon-icon" />
+        </button>
+      </li>
+    </ul>
+  </div>
+</nav>
+
     <div class="input-stopwatch">
       <input type="number" min="00" id="hour" disabled />
       :
