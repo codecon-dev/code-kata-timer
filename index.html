@@ -7,6 +7,21 @@
     <title>Cronometro</title>
   </head>
   <body>
+    <div class="settings-container">
+      <button class="js-settings-button">
+        <img src="/images/settings.svg" alt="Configurações" />
+      </button>
+      <div class="settings-expand hide">
+        <input type="number" min="0" max="99" id="default-hour" value="0" placeholder="HH" />
+        :
+        <input type="number" min="0" max="59" id="default-min" value="0" placeholder="MM" />
+        :
+        <input type="number" min="0" max="59" id="default-sec" value="30" placeholder="SS" />
+        <button class="js-save-settings"><img src="/images/ok.svg" alt="Salvar" /></button>
+        <button class="js-close-settings"><img src="/images/cancel.svg" alt="Cancelar" /></button>
+      </div>
+    </div>
+
     <div class="input-stopwatch" style="margin-bottom: 52px;">
       <input type="number" min="00" value="00" id="hour" />
       :

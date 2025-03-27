@@ -3,7 +3,6 @@
 * {
   margin: 0;
   overflow-y: none;
-  overflow-y: none;
 }
 
 body {
@@ -58,7 +57,6 @@ button img {
   flex-shrink: 0;
 }
 
-
 .js-restart-button {
   border: 1px solid inherit;
 }
@@ -83,7 +81,6 @@ input::-webkit-inner-spin-button {
 }
 
 input[type=number] {
-  /* ta aparecendo um warning aqui pra mim, mas não sei arrumar, talvez eu seja burro */
   -moz-appearance: textfield;
   outline: none;
   border: none;
@@ -109,71 +106,114 @@ input[type=number] {
   display: none;
 }
 
-/* 🟠🔽 RESPONSIVIDADE 🔽🟠 */
+.settings-container {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
 
-/* Tablets */
+.js-settings-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.settings-expand {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background: #2e2e2e;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.3s ease;
+}
+
+.settings-expand:not(.hide) {
+  transform: scaleY(1);
+}
+
+.settings-expand input {
+  width: 40px;
+  height: 30px;
+  background: transparent;
+  border: 1px solid #46ffbe;
+  color: #46ffbe;
+  font-family: "Orbitron", sans-serif;
+  font-size: 16px;
+  text-align: center;
+}
+
+.settings-expand button {
+  width: 24px;
+  height: 24px;
+  border: none;
+}
+
+/* Responsividade */
 @media (max-width: 1024px) {
   .input-stopwatch {
     font-size: 80px;
   }
-
   .input-stopwatch input {
     font-size: 80px;
     width: 140px;
   }
-
   #countdown {
     font-size: 180px;
   }
-
   button {
     width: 40px;
     height: 40px;
   }
 }
 
-/* Smartphones grandes */
 @media (max-width: 768px) {
   .input-stopwatch {
     font-size: 64px;
   }
-
   .input-stopwatch input {
     font-size: 64px;
     width: 120px;
   }
-
   #countdown {
     font-size: 140px;
   }
-
   button {
     width: 36px;
     height: 36px;
   }
 }
 
-/* Smartphones pequenos */
 @media (max-width: 480px) {
   .input-stopwatch {
     font-size: 48px;
   }
-
   .input-stopwatch input {
     font-size: 48px;
     width: 100px;
   }
-
   #countdown {
     font-size: 100px;
   }
-
   button {
     width: 32px;
     height: 32px;
   }
-
   .button-wrapper {
     gap: 8px;
+  }
+  .settings-expand input {
+    width: 30px;
+    height: 25px;
+    font-size: 14px;
+  }
+  .settings-expand button {
+    width: 20px;
+    height: 20px;
   }
 }

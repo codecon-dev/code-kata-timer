@@ -4,16 +4,18 @@ let minutes = 0;
 let hours = 0;
 let intervalInstance;
 
+let defaultHours = 0;
+let defaultMinutes = 0;
+let defaultSeconds = 30;
+
 function formatTime(value) {
   return value < 10 ? `0${value}` : value.toString();
 }
 
 function validateInput(input, maxValue) {
   let value = parseInt(input.value) || 0;
-
   if (value < 0) value = 0;
   if (value > maxValue) value = maxValue;
-
   input.value = formatTime(value);
 }
 
@@ -33,24 +35,20 @@ function verifyStopped() {
   const pauseBtn = document.querySelector(".js-pause-button");
   const playBtn = document.querySelector(".js-play-button");
 
-  if (!pauseBtn || !playBtn) return; // Se não encontrar os botões, sai da função
+  if (!pauseBtn || !playBtn) return;
 
   if (timerStarted) {
     pauseBtn.classList.remove("hide");
     pauseBtn.style.display = "block";
-
     playBtn.classList.add("hide");
     playBtn.style.display = "none";
   } else {
     pauseBtn.classList.add("hide");
     pauseBtn.style.display = "none";
-
     playBtn.classList.remove("hide");
     playBtn.style.display = "block";
   }
 }
-
-
 
 document.getElementById("min").addEventListener("input", function () {
   validateInput(this, 59);
@@ -73,74 +71,88 @@ document.getElementById("pauseBtn").addEventListener("click", function () {
 
 document.getElementById("toZeroBtn").addEventListener("click", function () {
   pause();
-  hours = 0;
-  minutes = 0;
-  seconds = 30;
+  hours = defaultHours;
+  minutes = defaultMinutes;
+  seconds = defaultSeconds;
 
   document.getElementById("hour").value = formatTime(hours);
   document.getElementById("min").value = formatTime(minutes);
   document.getElementById("sec").value = formatTime(seconds);
 });
 
-document
-  .querySelector(".js-edit-stopwatch")
-  .addEventListener("click", function () {
-    document.getElementById("hour").disabled = false;
-    document.getElementById("min").disabled = false;
-    document.getElementById("sec").disabled = false;
+document.querySelector(".js-settings-button").addEventListener("click", function () {
+  const settingsExpand = document.querySelector(".settings-expand");
+  if (settingsExpand.classList.contains("hide")) {
+    settingsExpand.classList.remove("hide");
+    document.getElementById("default-hour").value = formatTime(defaultHours);
+    document.getElementById("default-min").value = formatTime(defaultMinutes);
+    document.getElementById("default-sec").value = formatTime(defaultSeconds);
+  } else {
+    settingsExpand.classList.add("hide");
+  }
+});
 
-    document.querySelector(".js-stopwatch-button").classList.add("hide");
-    document
-      .querySelector(".js-edit-container-stopwatch")
-      .classList.remove("hide");
-  });
+document.querySelector(".js-save-settings").addEventListener("click", function () {
+  defaultHours = parseInt(document.getElementById("default-hour").value) || 0;
+  defaultMinutes = parseInt(document.getElementById("default-min").value) || 0;
+  defaultSeconds = parseInt(document.getElementById("default-sec").value) || 0;
 
-document
-  .querySelector(".js-cancel-button")
-  .addEventListener("click", function () {
-    document.getElementById("hour").value = formatTime(hours);
-    document.getElementById("min").value = formatTime(minutes);
-    document.getElementById("sec").value = formatTime(seconds);
+  if (defaultHours > 99) defaultHours = 99;
+  if (defaultMinutes > 59) defaultMinutes = 59;
+  if (defaultSeconds > 59) defaultSeconds = 59;
 
-    document.getElementById("hour").disabled = true;
-    document.getElementById("min").disabled = true;
-    document.getElementById("sec").disabled = true;
+  document.querySelector(".settings-expand").classList.add("hide");
+});
 
-    document.querySelector(".js-stopwatch-button").classList.remove("hide");
-    document
-      .querySelector(".js-edit-container-stopwatch")
-      .classList.add("hide");
-  });
+document.querySelector(".js-close-settings").addEventListener("click", function () {
+  document.querySelector(".settings-expand").classList.add("hide");
+});
 
-document
-  .querySelector(".js-finish-edit-button")
-  .addEventListener("click", function () {
-    hours = parseInt(document.getElementById("hour").value) || 0;
-    minutes = parseInt(document.getElementById("min").value) || 0;
-    seconds = parseInt(document.getElementById("sec").value) || 0;
+document.querySelector(".js-edit-stopwatch").addEventListener("click", function () {
+  document.getElementById("hour").disabled = false;
+  document.getElementById("min").disabled = false;
+  document.getElementById("sec").disabled = false;
 
-    document.getElementById("hour").disabled = true;
-    document.getElementById("min").disabled = true;
-    document.getElementById("sec").disabled = true;
+  document.querySelector(".js-stopwatch-button").classList.add("hide");
+  document.querySelector(".js-edit-container-stopwatch").classList.remove("hide");
+});
 
-    document.querySelector(".js-stopwatch-button").classList.remove("hide");
-    document
-      .querySelector(".js-edit-container-stopwatch")
-      .classList.add("hide");
-  });
+document.querySelector(".js-cancel-button").addEventListener("click", function () {
+  document.getElementById("hour").value = formatTime(hours);
+  document.getElementById("min").value = formatTime(minutes);
+  document.getElementById("sec").value = formatTime(seconds);
 
-document
-  .querySelector(".js-active-fullscreen")
-  .addEventListener("click", function () {
-    if (document.documentElement.requestFullscreen) {
-      document.documentElement.requestFullscreen();
-    }
-  });
+  document.getElementById("hour").disabled = true;
+  document.getElementById("min").disabled = true;
+  document.getElementById("sec").disabled = true;
+
+  document.querySelector(".js-stopwatch-button").classList.remove("hide");
+  document.querySelector(".js-edit-container-stopwatch").classList.add("hide");
+});
+
+document.querySelector(".js-finish-edit-button").addEventListener("click", function () {
+  hours = parseInt(document.getElementById("hour").value) || 0;
+  minutes = parseInt(document.getElementById("min").value) || 0;
+  seconds = parseInt(document.getElementById("sec").value) || 0;
+
+  document.getElementById("hour").disabled = true;
+  document.getElementById("min").disabled = true;
+  document.getElementById("sec").disabled = true;
+
+  document.querySelector(".js-stopwatch-button").classList.remove("hide");
+  document.querySelector(".js-edit-container-stopwatch").classList.add("hide");
+});
+
+document.querySelector(".js-active-fullscreen").addEventListener("click", function () {
+  if (document.documentElement.requestFullscreen) {
+    document.documentElement.requestFullscreen();
+  }
+});
 
 document.getElementById("restartBtn").addEventListener("click", function () {
-  hours = 0;
-  minutes = 0;
-  seconds = 30;
+  hours = defaultHours;
+  minutes = defaultMinutes;
+  seconds = defaultSeconds;
 
   document.getElementById("hour").value = formatTime(hours);
   document.getElementById("min").value = formatTime(minutes);
@@ -154,6 +166,7 @@ document.getElementById("restartBtn").addEventListener("click", function () {
 });
 
 verifyStopped();
+
 function run() {
   verifyStopped();
   hours = parseInt(document.getElementById("hour").value) || 0;
@@ -174,9 +187,7 @@ function run() {
             document.body.classList.add("zero");
 
             document.querySelector(".input-stopwatch").classList.add("hide");
-            document
-              .querySelector(".js-stopwatch-button")
-              .classList.add("hide");
+            document.querySelector(".js-stopwatch-button").classList.add("hide");
           } else {
             hours--;
             minutes = 59;
