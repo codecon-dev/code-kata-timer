@@ -86,7 +86,13 @@ input::-webkit-inner-spin-button {
 
 input[type=number] {
   /* ta aparecendo um warning aqui pra mim, mas não sei arrumar, talvez eu seja burro */
-  -moz-appearance: textfield;
+  /*
+  Cara tu não é burro -moz-appearance é específica para Firefox 
+  Para melhorar compatibilidade adicionei duas duas propriedades
+  */
+  -moz-appearance: textfield; /* Para Firefox */
+  -webkit-appearance: none; /* Para Chrome, Safari, Edge */
+  appearance: none; /* Padrão - navegadores mais modernos */
 }
 
 #countdown {
