@@ -53,7 +53,7 @@ function timer() {
 
       if (seconds <= 10) {
         TIMER_STATUS = TimerStatus.COUNTDOWN;
-        styleCountdown(seconds);
+        styleBlinkCountdown(seconds);
       }
 
       setInputValues(seconds);
@@ -188,14 +188,27 @@ const styles = {
 function applyStyles() {
   resetStyles();
   styles[TIMER_STATUS]?.();
-}
+};
 
-function styleCountdown(seconds = 0) {
+function styleBlinkCountdown(seconds = 10) {
   document.querySelector(".input-stopwatch").classList.add("hide");
   document.querySelector(".js-stopwatch-button").classList.add("hide");
   document.getElementById("countdown").classList.remove("hide");
   document.getElementById("countdown-number").textContent = seconds;
-}
+
+  // Alterna a cor a cada segundo
+  if (seconds % 2 === 0) {
+    document.getElementById("countdown").style.backgroundColor = "#46ffbe";
+    document.getElementById("countdown-number").style.color = "#444444";
+  } else {
+    document.getElementById("countdown").style.backgroundColor = "#242424";
+    document.getElementById("countdown-number").style.color = "#46ffbe";
+  }
+};
+
+// function styleCountdown(seconds = 0) {
+  
+// }
 
 function styleRunning() {
   document.querySelector(".js-play-button").classList.add("press-start");
