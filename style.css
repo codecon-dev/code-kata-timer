@@ -45,6 +45,14 @@ input {
   background: none;
   outline: none;
   text-align: center;
+  /* Corrigir o problema do cursor de inserção */
+  caret-color: transparent;
+}
+
+input:disabled {
+  opacity: 1; /* Manter o texto visível quando desabilitado */
+  -webkit-text-fill-color: var(--primary-text-color); /* Manter a cor do texto no Chrome/Safari */
+  pointer-events: none; /* Desabilitar eventos de ponteiro */
 }
 
 button {
@@ -72,6 +80,7 @@ button:hover {
   display: flex;
   flex-direction: row;
   gap: 32px;
+  margin-top: 20px; /* Adicionar um pouco de espaço acima dos botões */
 }
 
 .hide {
@@ -85,11 +94,6 @@ input::-webkit-inner-spin-button {
 }
 
 input[type=number] {
-  /* ta aparecendo um warning aqui pra mim, mas não sei arrumar, talvez eu seja burro */
-  /*
-  Cara tu não é burro -moz-appearance é específica para Firefox 
-  Para melhorar compatibilidade adicionei duas duas propriedades
-  */
   -moz-appearance: textfield; /* Para Firefox */
   -webkit-appearance: none; /* Para Chrome, Safari, Edge */
   appearance: none; /* Padrão - navegadores mais modernos */
@@ -129,4 +133,11 @@ input[type=number] {
 
 .press-edit {
   background-color: rgba(255, 255, 255, 0.25);
+}
+
+#add30sPaused, #add30sStopped {
+  width: auto;
+  font-size: 14px;
+  padding: 0 10px;
+  border-radius: 16px;
 }

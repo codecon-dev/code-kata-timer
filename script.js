@@ -4,8 +4,10 @@ const TimerStatus = {
   COUNTDOWN: "COUNTDOWN",
   RUNNING: "RUNNING",
   EDITING: "EDITING",
-  isRunning: (status) => status === TimerStatus.RUNNING,
+  isRunning: (status) => status === TimerStatus.RUNNING || status === TimerStatus.COUNTDOWN,
   isCountdown: (status) => status === TimerStatus.COUNTDOWN,
+  isPaused: (status) => status === TimerStatus.PAUSED,
+  isStopped: (status) => status === TimerStatus.STOPPED,
 };
 
 const DEFAULT_INTERVAL = 1000;
@@ -18,18 +20,12 @@ document.getElementById("startBtn").addEventListener("click", start);
 document.getElementById("pauseBtn").addEventListener("click", pause);
 document.getElementById("toZeroBtn").addEventListener("click", stop);
 document.getElementById("restartBtn").addEventListener("click", stop);
-document
-  .querySelector(".js-edit-button")
-  .addEventListener("click", openEditInput);
-document
-  .querySelector(".js-finish-edit-button")
-  .addEventListener("click", closeEditInput);
-document
-  .querySelector(".js-cancel-button")
-  .addEventListener("click", cancelEditInput);
-document
-  .querySelector(".js-active-fullscreen")
-  .addEventListener("click", handleFullscreen);
+document.querySelector(".js-edit-button").addEventListener("click", openEditInput);
+document.querySelector(".js-finish-edit-button").addEventListener("click", closeEditInput);
+document.querySelector(".js-cancel-button").addEventListener("click", cancelEditInput);
+document.querySelector(".js-active-fullscreen").addEventListener("click", handleFullscreen);
+document.getElementById("add30sPaused").addEventListener("click", add30Seconds);
+document.getElementById("add30sStopped").addEventListener("click", add30Seconds);
 
 document.getElementById("hour").addEventListener("input", function () {
   validateInput(this, 99);
@@ -45,10 +41,7 @@ function timer() {
   let seconds = getInputSeconds();
 
   setTimeout(function () {
-    if (
-      TimerStatus.isRunning(TIMER_STATUS) ||
-      TimerStatus.isCountdown(TIMER_STATUS)
-    ) {
+    if (TimerStatus.isRunning(TIMER_STATUS)) {
       seconds--;
 
       if (seconds <= 10) {
@@ -107,28 +100,76 @@ function setInputValues(fromSeconds = 0) {
   document.getElementById(`hour`).value = formatInput(hours);
 }
 
+function updateButtonStates() {
+  const startBtn = document.querySelector(".js-play-button");
+  const editBtn = document.querySelector(".js-edit-button");
+  const add30sPaused = document.getElementById("add30sPaused");
+  const add30sStopped = document.getElementById("add30sStopped");
+
+  // Ocultar/mostrar botões com base no estado do timer
+  if (TimerStatus.isRunning(TIMER_STATUS)) {
+    // Quando o timer está em execução, ocultar os botões que não podem ser usados
+    startBtn.classList.add("hide");
+    editBtn.classList.add("hide");
+    add30sPaused.classList.add("hide");
+    add30sStopped.classList.add("hide");
+  } else if (TimerStatus.isPaused(TIMER_STATUS)) {
+    // Quando pausado, mostrar os botões relevantes
+    startBtn.classList.remove("hide");
+    editBtn.classList.remove("hide");
+    add30sPaused.classList.remove("hide");
+    add30sStopped.classList.add("hide");
+  } else if (TimerStatus.isStopped(TIMER_STATUS)) {
+    // Quando parado, mostrar os botões relevantes
+    startBtn.classList.remove("hide");
+    editBtn.classList.remove("hide");
+    add30sPaused.classList.add("hide");
+    add30sStopped.classList.remove("hide");
+  } else {
+    // Para outros estados (edição, etc.)
+    startBtn.classList.remove("hide");
+    editBtn.classList.remove("hide");
+    add30sPaused.classList.add("hide");
+    add30sStopped.classList.add("hide");
+  }
+}
+
 function start() {
+  if (TimerStatus.isRunning(TIMER_STATUS)) return;
+  
   TIMER_STATUS = TimerStatus.RUNNING;
   applyStyles();
+  updateButtonStates();
   timer();
 }
 
 function pause() {
-  TIMER_STATUS = TimerStatus.PAUSED;
-  applyStyles();
+  if (TimerStatus.isRunning(TIMER_STATUS)) {
+    TIMER_STATUS = TimerStatus.PAUSED;
+    applyStyles();
+    updateButtonStates();
+  }
 }
 
 function stop() {
   TIMER_STATUS = TimerStatus.STOPPED;
   applyStyles();
   setInputValues(DEFAULT_SECONDS);
+  updateButtonStates();
+  document.body.classList.remove("zero");
+}
+
+function add30Seconds() {
+  if (TimerStatus.isRunning(TIMER_STATUS)) return;
+  
+  const currentSeconds = getInputSeconds();
+  setInputValues(currentSeconds + 30);
 }
 
 function handleFullscreen() {
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen();
-    document.querySelector(".js-active-fullscreen").style =
-      "background-color: rgba(255, 255, 255, 0.25)";
+    document.querySelector(".js-active-fullscreen").style = "background-color: rgba(255, 255, 255, 0.25)";
   } else {
     document.exitFullscreen();
     document.querySelector(".js-active-fullscreen").style = "";
@@ -143,6 +184,9 @@ function cancelEditInput() {
 }
 
 function openEditInput() {
+  // Não permitir edição se o timer estiver rodando
+  if (TimerStatus.isRunning(TIMER_STATUS)) return;
+  
   TIMER_STATUS = TimerStatus.EDITING;
   PRE_EDIT_SECONDS = getInputSeconds();
   document.getElementById("hour").disabled = false;
@@ -150,9 +194,8 @@ function openEditInput() {
   document.getElementById("sec").disabled = false;
 
   document.querySelector(".js-stopwatch-button").classList.add("hide");
-  document
-    .querySelector(".js-edit-container-stopwatch")
-    .classList.remove("hide");
+  document.querySelector(".js-edit-container-stopwatch").classList.remove("hide");
+  updateButtonStates();
 }
 
 function closeEditInput() {
@@ -165,6 +208,7 @@ function closeEditInput() {
   document.querySelector(".js-edit-container-stopwatch").classList.add("hide");
 
   applyStyles();
+  updateButtonStates();
 }
 
 function resetStyles() {
@@ -181,14 +225,14 @@ function resetStyles() {
 const styles = {
   RUNNING: styleRunning,
   PAUSED: stylePause,
-  STOPED: styleStop,
+  STOPPED: styleStop,
   EDITING: styleEditing,
 };
 
 function applyStyles() {
   resetStyles();
   styles[TIMER_STATUS]?.();
-};
+}
 
 function styleBlinkCountdown(seconds = 10) {
   document.querySelector(".input-stopwatch").classList.add("hide");
@@ -204,11 +248,7 @@ function styleBlinkCountdown(seconds = 10) {
     document.getElementById("countdown").style.backgroundColor = "#242424";
     document.getElementById("countdown-number").style.color = "#46ffbe";
   }
-};
-
-// function styleCountdown(seconds = 0) {
-  
-// }
+}
 
 function styleRunning() {
   document.querySelector(".js-play-button").classList.add("press-start");
@@ -225,3 +265,6 @@ function stylePause() {
 function styleEditing() {
   document.querySelector(".js-edit-button").classList.add("press-edit");
 }
+
+// Inicializa os estados dos botões
+updateButtonStates();

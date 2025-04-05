@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="/images/clock-regular.svg" type="image/svg+xml">
     <title>Cronômetro</title>
   </head>
   <body>
@@ -15,33 +16,39 @@
       <input type="number" min="00" id="sec" disabled />
     </div>
     <div class="button-wrapper js-stopwatch-button">
-      <button class="js-active-fullscreen">
+      <button class="js-active-fullscreen" title="Alternar tela cheia">
         <img src="/images/full-screen.svg" alt="Colocar em tela cheia" />
       </button>
-      <button class="js-edit-button">
+      <button class="js-edit-button" title="Editar o tempo do cronômetro">
         <img src="/images/edit.svg" alt="Editar" />
       </button>
-      <button class="js-stop-button" id="toZeroBtn">
+      <button class="js-stop-button" id="toZeroBtn" title="Zerar o cronômetro">
         <img src="/images/reset.svg" alt="Resetar" />
       </button>
-      <button class="js-play-button" id="startBtn">
+      <button class="js-play-button" id="startBtn" title="Iniciar o cronômetro">
         <img src="/images/play.svg" alt="Iniciar" />
       </button>
-      <button class="js-pause-button" id="pauseBtn">
+      <button class="js-pause-button" id="pauseBtn" title="Pausar o cronômetro">
         <img src="/images/pause.svg" alt="Pausar" />
+      </button>
+      <button id="add30sPaused" title="Adicionar 30 segundos ao cronômetro" class="hide">
+        +30s
+      </button>
+      <button id="add30sStopped" title="Adicionar 30 segundos ao cronômetro" class="hide">
+        +30s
       </button>
     </div>
     <div class="button-wrapper js-edit-container-stopwatch hide">
-      <button class="js-cancel-button">
+      <button class="js-cancel-button" title="Cancelar edição">
         <img src="/images/cancel.svg" alt="Cancelar" />
       </button>
-      <button class="js-finish-edit-button">
+      <button class="js-finish-edit-button" title="Finalizar edição">
         <img src="/images/ok.svg" alt="Finalizar" />
       </button>
     </div>
     <div id="countdown" class="hide">
       <span id="countdown-number"></span>
-      <button class="js-restart-button" id="restartBtn">
+      <button class="js-restart-button" id="restartBtn" title="Reiniciar o cronômetro">
         <img src="/images/cancel.svg" alt="Reiniciar" />
       </button>
     </div>
