@@ -29,7 +29,7 @@ Este é um projeto de timer (cronômetro) desenvolvido com HTML, CSS e JavaScrip
 
 1. **Clone o Repositório:**
    ```bash
-   git clone https://github.com/codecon-dev/code-kata-timer.git
+   git clone https://github.com/imdouglasoliveira/code-kata-timer.git
    ```
 2. **Acesse a Pasta do Projeto:**
    ```bash
