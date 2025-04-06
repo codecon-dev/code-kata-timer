@@ -99,3 +99,7 @@ Distribuído sob a licença MIT. Consulte o arquivo `LICENSE` para mais detalhes
 
 - **Design no Figma:**  
   [Acessar Layout no Figma](https://www.figma.com/design/97maginjN0aHjiQPy3dCDS/%231---Timer?m=auto&t=B8ND36dunZtQcZQe-1)
+
+## Contributors
+
+[![Contributors](https://contrib.rocks/image?repo=codecon-dev/code-kata-timer)](https://github.com/codecon-dev/code-kata-timer/graphs/contributors)
