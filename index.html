@@ -61,30 +61,34 @@
     </button>
   </div>
 
-  <!-- Container para os contribuidores -->
-  <div id="contributors-container" class="contributors-container">
+  <section id="contributors">
     <h4>Contribuidores</h4>
     <div class="contributors-list">
       <a href="https://github.com/codecon-dev/code-kata-timer/graphs/contributors">
         <img src="https://contrib.rocks/image?repo=codecon-dev/code-kata-timer" alt="Contribuidores do projeto">
       </a>
     </div>
-  </div>
+  </section>
 
-  <!-- Popup de configurações -->
-  <div id="configPopup" class="config-popup hide">
-    <div class="config-popup-content">
-      <h3>Configurações</h3>
-      <div class="config-option">
-        <label for="showContributors">Exibir contribuidores</label>
-        <div class="switch-container">
-          <input type="checkbox" id="showContributors" checked>
-          <span class="switch-slider"></span>
-        </div>
+  <div id="configPopup" class="overlay hide">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Configurações</h2>
+        <!-- <button id="closeConfig" class="close-btn">&times;</button> -->
+        <button id="closeConfig" class="close-btn"><img src="/images/cancel.svg" alt="Fechar" /></button>
       </div>
-      <button id="closeConfig" class="close-config">
-        <img src="/images/cancel.svg" alt="Fechar">
-      </button>
+      <div class="toggle-container">
+        <span class="toggle-label">Exibir contribuidores do projeto</span>
+        <label class="switch">
+          <input type="checkbox" id="showContributors" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="avatars">
+        <div class="avatar"></div>
+        <div class="avatar"></div>
+        <div class="avatar"></div>
+      </div>
     </div>
   </div>
 

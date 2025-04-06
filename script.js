@@ -10,7 +10,6 @@ const TimerStatus = {
   isStopped: s => s === "STOPPED",
   isEditing: s => s === "EDITING"
 };
-
 const DEFAULT_INTERVAL = 1000;
 const DEFAULT_SECONDS = 30;
 let TIMER_STATUS = TimerStatus.STOPPED;
@@ -21,50 +20,45 @@ let tooltipTimeout = null;
 const Theme = { DARK: "dark", LIGHT: "light" };
 let currentTheme = Theme.DARK;
 let PRE_EDIT_SECONDS = DEFAULT_SECONDS;
-
-// Configurações
 const CONFIG_STORAGE_KEY = 'timer-config';
-let timerConfig = {
-  showContributors: true
-};
-
+let timerConfig = { showContributors: true };
 function focusAtEnd(el) {
   const val = el.value;
   requestAnimationFrame(() => {
     el.setSelectionRange(val.length, val.length);
   });
 }
-
-// Função para carregar configurações do localStorage
 function loadConfig() {
   const savedConfig = localStorage.getItem(CONFIG_STORAGE_KEY);
   if (savedConfig) {
     try {
       timerConfig = JSON.parse(savedConfig);
-      // Atualizar o estado do switch baseado na configuração salva
-      document.getElementById('showContributors').checked = timerConfig.showContributors;
+      const showContributorsCheckbox = document.getElementById('showContributors');
+      if (showContributorsCheckbox) {
+        showContributorsCheckbox.checked = timerConfig.showContributors;
+      }
       updateContributorsVisibility();
     } catch (e) {
       console.error('Erro ao carregar configurações:', e);
     }
   }
 }
-
-// Função para salvar configurações no localStorage
 function saveConfig() {
   localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(timerConfig));
 }
-
-// Função para atualizar a visibilidade dos contribuidores
 function updateContributorsVisibility() {
-  const contributorsContainer = document.getElementById('contributors-container');
+  const contributorsContainer = document.getElementById('contributors');
+  if (!contributorsContainer) return;
+  if (TimerStatus.isCountdown(TIMER_STATUS) || TimerStatus.isEditing(TIMER_STATUS)) {
+    contributorsContainer.classList.add('hide');
+    return;
+  }
   if (timerConfig.showContributors) {
     contributorsContainer.classList.remove('hide');
   } else {
     contributorsContainer.classList.add('hide');
   }
 }
-
 document.addEventListener("DOMContentLoaded", () => {
   const clickOverlay = document.createElement("div");
   clickOverlay.className = "click-overlay";
@@ -79,11 +73,8 @@ document.addEventListener("DOMContentLoaded", () => {
   applyTheme(currentTheme);
   setupEventListeners();
   updateButtonStates();
-  
-  // Carregar as configurações
   loadConfig();
 });
-
 function setupEventListeners() {
   document.getElementById("startBtn").addEventListener("click", start);
   document.getElementById("pauseBtn").addEventListener("click", pause);
@@ -114,37 +105,45 @@ function setupEventListeners() {
       document.activeElement.blur();
     }
   });
-  
-  // Adicionar novos event listeners para configurações
   const configToggle = document.getElementById('configToggle');
-  const configPopup = document.getElementById('configPopup');
+  if (configToggle) {
+    configToggle.addEventListener('click', toggleConfigPopup);
+  }
   const closeConfig = document.getElementById('closeConfig');
+  if (closeConfig) {
+    closeConfig.addEventListener('click', closeConfigPopup);
+  }
   const showContributorsSwitch = document.getElementById('showContributors');
-  
-  configToggle.addEventListener('click', () => {
-    configPopup.classList.toggle('hide');
-  });
-  
-  closeConfig.addEventListener('click', () => {
-    configPopup.classList.add('hide');
-  });
-  
-  showContributorsSwitch.addEventListener('change', (e) => {
-    timerConfig.showContributors = e.target.checked;
-    saveConfig();
-    updateContributorsVisibility();
-  });
-  
-  // Fechar o popup ao clicar fora dele
-  document.addEventListener('click', (e) => {
-    if (!configPopup.contains(e.target) && e.target !== configToggle && !configPopup.classList.contains('hide')) {
-      configPopup.classList.add('hide');
+  if (showContributorsSwitch) {
+    showContributorsSwitch.addEventListener('change', (e) => {
+      timerConfig.showContributors = e.target.checked;
+      saveConfig();
+      updateContributorsVisibility();
+    });
+  }
+  document.getElementById('configPopup').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('configPopup')) {
+      closeConfigPopup();
     }
   });
-  
   setupTooltips();
 }
-
+function toggleConfigPopup(e) {
+  e.stopPropagation();
+  const configPopup = document.getElementById('configPopup');
+  const configToggle = document.getElementById('configToggle');
+  configToggle.classList.add("button-feedback");
+  setTimeout(() => { configToggle.classList.remove("button-feedback"); }, 300);
+  if (configPopup) {
+    configPopup.classList.toggle('hide');
+  }
+}
+function closeConfigPopup() {
+  const configPopup = document.getElementById('configPopup');
+  if (configPopup) {
+    configPopup.classList.add('hide');
+  }
+}
 function setupTooltips() {
   document.querySelectorAll("[data-tooltip]").forEach(el => {
     el.removeEventListener("mouseenter", handleTooltipMouseEnter);
@@ -155,7 +154,6 @@ function setupTooltips() {
     el.addEventListener("mouseleave", handleTooltipMouseLeave);
   });
 }
-
 function handleTooltipMouseEnter() {
   const txt = this.getAttribute("data-tooltip");
   if (!txt) return;
@@ -163,7 +161,6 @@ function handleTooltipMouseEnter() {
   hideTooltip();
   showTooltip(this, txt);
 }
-
 function handleTooltipMouseLeave() {
   if (tooltipTimeout) clearTimeout(tooltipTimeout);
   tooltipTimeout = setTimeout(() => {
@@ -171,7 +168,6 @@ function handleTooltipMouseLeave() {
     tooltipTimeout = null;
   }, 100);
 }
-
 function showTooltip(el, text) {
   const c = document.getElementById("tooltip-container");
   if (!c) return;
@@ -182,7 +178,6 @@ function showTooltip(el, text) {
   positionTooltip(tip, el);
   currentTooltip = tip;
 }
-
 function positionTooltip(tip, el) {
   const r = el.getBoundingClientRect();
   tip.style.maxWidth = "250px";
@@ -198,7 +193,6 @@ function positionTooltip(tip, el) {
     tip.style.opacity = "1";
   }, 0);
 }
-
 function hideTooltip() {
   if (!currentTooltip) return;
   currentTooltip.style.opacity = "0";
@@ -207,7 +201,6 @@ function hideTooltip() {
     currentTooltip = null;
   }, 200);
 }
-
 function timer() {
   clearInterval(timerInterval);
   currentSeconds = getInputSeconds();
@@ -218,6 +211,7 @@ function timer() {
         TIMER_STATUS = TimerStatus.COUNTDOWN;
         styleBlinkCountdown(currentSeconds);
         updateButtonStates();
+        updateContributorsVisibility();
       }
       setInputValues(currentSeconds);
       if (currentSeconds <= 0) {
@@ -225,6 +219,7 @@ function timer() {
         document.body.classList.add("zero");
         TIMER_STATUS = TimerStatus.STOPPED;
         updateButtonStates();
+        updateContributorsVisibility();
         return;
       }
     } else {
@@ -232,25 +227,21 @@ function timer() {
     }
   }, DEFAULT_INTERVAL);
 }
-
 function validateInput(el, maxValue) {
   let v = parseInt(el.value) || 0;
   if (v < 0) v = 0;
   if (v > maxValue) v = maxValue;
   el.value = formatInput(v);
 }
-
 function formatInput(v = 0) {
   return v.toString().padStart(2,"0").slice(-2);
 }
-
 function getInputSeconds() {
   const h = parseInt(hour.value) || 0;
   const m = parseInt(min.value) || 0;
   const s = parseInt(sec.value) || 0;
   return (h * 3600) + (m * 60) + s;
 }
-
 function setInputValues(t=0) {
   const h = Math.floor(t/3600);
   const m = Math.floor((t%3600)/60);
@@ -259,7 +250,6 @@ function setInputValues(t=0) {
   min.value = formatInput(m);
   sec.value = formatInput(s);
 }
-
 function updateButtonStates() {
   const startBtn = document.querySelector(".js-play-button");
   const pauseBtn = document.querySelector(".js-pause-button");
@@ -325,9 +315,9 @@ function updateButtonStates() {
     inStop.classList.remove("editing-mode");
     lbl.classList.remove("visible");
   }
+  updateContributorsVisibility();
   setupTooltips();
 }
-
 function start() {
   if (TimerStatus.isRunning(TIMER_STATUS)) return;
   TIMER_STATUS = TimerStatus.RUNNING;
@@ -335,7 +325,6 @@ function start() {
   updateButtonStates();
   timer();
 }
-
 function pause() {
   if (TimerStatus.isRunning(TIMER_STATUS)) {
     TIMER_STATUS = TimerStatus.PAUSED;
@@ -343,7 +332,6 @@ function pause() {
     updateButtonStates();
   }
 }
-
 function stop() {
   clearInterval(timerInterval);
   TIMER_STATUS = TimerStatus.STOPPED;
@@ -353,7 +341,6 @@ function stop() {
   updateButtonStates();
   document.body.classList.remove("zero");
 }
-
 function add30Seconds() {
   if (TimerStatus.isRunning(TIMER_STATUS)) return;
   const ns = getInputSeconds() + 30;
@@ -363,7 +350,6 @@ function add30Seconds() {
   btn.classList.add("button-feedback");
   setTimeout(() => btn.classList.remove("button-feedback"), 300);
 }
-
 function add30SecondsRunning() {
   if (!TimerStatus.isRunning(TIMER_STATUS)) return;
   currentSeconds += 30;
@@ -378,13 +364,11 @@ function add30SecondsRunning() {
   add30sRunning.classList.add("button-feedback");
   setTimeout(() => add30sRunning.classList.remove("button-feedback"), 300);
 }
-
 function cancelEditInput() {
   setInputValues(PRE_EDIT_SECONDS);
   currentSeconds = PRE_EDIT_SECONDS;
   closeEditInput();
 }
-
 function openEditInput() {
   if (TimerStatus.isRunning(TIMER_STATUS)) return;
   TIMER_STATUS = TimerStatus.EDITING;
@@ -397,7 +381,6 @@ function openEditInput() {
   document.querySelector(".js-edit-container-stopwatch").classList.remove("hide");
   updateButtonStates();
 }
-
 function closeEditInput() {
   TIMER_STATUS = TimerStatus.PAUSED;
   hour.disabled = true; hour.setAttribute("tabindex","-1");
@@ -409,7 +392,6 @@ function closeEditInput() {
   applyStyles();
   updateButtonStates();
 }
-
 function resetStyles() {
   document.querySelector(".js-play-button").classList.remove("press-start");
   document.querySelector(".js-stop-button").classList.remove("press-stop");
@@ -421,19 +403,16 @@ function resetStyles() {
   document.getElementById("countdown").classList.add("hide");
   document.body.classList.remove("zero");
 }
-
 const styles = {
   RUNNING: styleRunning,
   PAUSED: stylePause,
   STOPPED: styleStop,
   EDITING: styleEditing
 };
-
 function applyStyles() {
   resetStyles();
   if (styles[TIMER_STATUS]) styles[TIMER_STATUS]();
 }
-
 function styleBlinkCountdown(s=10) {
   document.querySelector(".input-stopwatch").classList.add("hide");
   document.querySelector(".js-stopwatch-button").classList.add("hide");
@@ -447,23 +426,18 @@ function styleBlinkCountdown(s=10) {
     countdownNumber.style.color = "var(--primary-text-color)";
   }
 }
-
 function styleRunning() {
   document.querySelector(".js-play-button").classList.add("press-start");
 }
-
 function styleStop() {
   document.querySelector(".js-stop-button").classList.add("press-stop");
 }
-
 function stylePause() {
   document.querySelector(".js-pause-button").classList.add("press-pause");
 }
-
 function styleEditing() {
   document.querySelector(".js-edit-button").classList.add("press-edit");
 }
-
 function handleFullscreen() {
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen().catch(e => {});
@@ -473,14 +447,12 @@ function handleFullscreen() {
     document.querySelector(".js-active-fullscreen").classList.remove("press-start");
   }
 }
-
 function toggleTheme() {
   currentTheme = currentTheme === Theme.DARK ? Theme.LIGHT : Theme.DARK;
   applyTheme(currentTheme);
   themeToggle.classList.add("button-feedback");
   setTimeout(() => themeToggle.classList.remove("button-feedback"), 300);
 }
-
 function applyTheme(t) {
   const root = document.documentElement;
   const icon = themeIcon;
