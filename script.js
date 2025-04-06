@@ -20,31 +20,50 @@ let tooltipTimeout = null;
 const Theme = { DARK: "dark", LIGHT: "light" };
 let currentTheme = Theme.DARK;
 let PRE_EDIT_SECONDS = DEFAULT_SECONDS;
-const CONFIG_STORAGE_KEY = 'timer-config';
-let timerConfig = { showContributors: true };
+const SETTINGS_STORAGE_KEY = 'timerSettings';
+let timerSettings = {
+  showContributors: true,
+  currentSeconds: DEFAULT_SECONDS,
+  timerStatus: TimerStatus.STOPPED,
+  theme: Theme.DARK
+};
 function focusAtEnd(el) {
   const val = el.value;
   requestAnimationFrame(() => {
     el.setSelectionRange(val.length, val.length);
   });
 }
-function loadConfig() {
-  const savedConfig = localStorage.getItem(CONFIG_STORAGE_KEY);
-  if (savedConfig) {
+function loadSettings() {
+  const saved = localStorage.getItem(SETTINGS_STORAGE_KEY);
+  if (saved) {
     try {
-      timerConfig = JSON.parse(savedConfig);
-      const showContributorsCheckbox = document.getElementById('showContributors');
-      if (showContributorsCheckbox) {
-        showContributorsCheckbox.checked = timerConfig.showContributors;
+      timerSettings = JSON.parse(saved);
+      if (timerSettings.currentSeconds !== undefined) {
+        currentSeconds = timerSettings.currentSeconds;
+        setInputValues(currentSeconds);
       }
-      updateContributorsVisibility();
+      if (timerSettings.timerStatus !== undefined) {
+        TIMER_STATUS = timerSettings.timerStatus;
+      }
+      if (timerSettings.theme !== undefined) {
+        currentTheme = timerSettings.theme;
+        applyTheme(currentTheme);
+      }
     } catch (e) {
-      console.error('Erro ao carregar configurações:', e);
+      console.error(e);
     }
   }
+  const showContributorsCheckbox = document.getElementById('showContributors');
+  if (showContributorsCheckbox) {
+    showContributorsCheckbox.checked = timerSettings.showContributors;
+  }
+  updateContributorsVisibility();
 }
-function saveConfig() {
-  localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(timerConfig));
+function saveSettings() {
+  timerSettings.currentSeconds = currentSeconds;
+  timerSettings.timerStatus = TIMER_STATUS;
+  timerSettings.theme = currentTheme;
+  localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(timerSettings));
 }
 function updateContributorsVisibility() {
   const contributorsContainer = document.getElementById('contributors');
@@ -53,7 +72,7 @@ function updateContributorsVisibility() {
     contributorsContainer.classList.add('hide');
     return;
   }
-  if (timerConfig.showContributors) {
+  if (timerSettings.showContributors) {
     contributorsContainer.classList.remove('hide');
   } else {
     contributorsContainer.classList.add('hide');
@@ -73,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
   applyTheme(currentTheme);
   setupEventListeners();
   updateButtonStates();
-  loadConfig();
+  loadSettings();
 });
 function setupEventListeners() {
   document.getElementById("startBtn").addEventListener("click", start);
@@ -116,8 +135,8 @@ function setupEventListeners() {
   const showContributorsSwitch = document.getElementById('showContributors');
   if (showContributorsSwitch) {
     showContributorsSwitch.addEventListener('change', (e) => {
-      timerConfig.showContributors = e.target.checked;
-      saveConfig();
+      timerSettings.showContributors = e.target.checked;
+      saveSettings();
       updateContributorsVisibility();
     });
   }
@@ -214,12 +233,14 @@ function timer() {
         updateContributorsVisibility();
       }
       setInputValues(currentSeconds);
+      saveSettings();
       if (currentSeconds <= 0) {
         clearInterval(timerInterval);
         document.body.classList.add("zero");
         TIMER_STATUS = TimerStatus.STOPPED;
         updateButtonStates();
         updateContributorsVisibility();
+        saveSettings();
         return;
       }
     } else {
@@ -324,12 +345,14 @@ function start() {
   applyStyles();
   updateButtonStates();
   timer();
+  saveSettings();
 }
 function pause() {
   if (TimerStatus.isRunning(TIMER_STATUS)) {
     TIMER_STATUS = TimerStatus.PAUSED;
     applyStyles();
     updateButtonStates();
+    saveSettings();
   }
 }
 function stop() {
@@ -340,6 +363,7 @@ function stop() {
   currentSeconds = DEFAULT_SECONDS;
   updateButtonStates();
   document.body.classList.remove("zero");
+  saveSettings();
 }
 function add30Seconds() {
   if (TimerStatus.isRunning(TIMER_STATUS)) return;
@@ -349,6 +373,7 @@ function add30Seconds() {
   const btn = TimerStatus.isPaused(TIMER_STATUS) ? add30sPaused : add30sStopped;
   btn.classList.add("button-feedback");
   setTimeout(() => btn.classList.remove("button-feedback"), 300);
+  saveSettings();
 }
 function add30SecondsRunning() {
   if (!TimerStatus.isRunning(TIMER_STATUS)) return;
@@ -363,11 +388,13 @@ function add30SecondsRunning() {
   }
   add30sRunning.classList.add("button-feedback");
   setTimeout(() => add30sRunning.classList.remove("button-feedback"), 300);
+  saveSettings();
 }
 function cancelEditInput() {
   setInputValues(PRE_EDIT_SECONDS);
   currentSeconds = PRE_EDIT_SECONDS;
   closeEditInput();
+  saveSettings();
 }
 function openEditInput() {
   if (TimerStatus.isRunning(TIMER_STATUS)) return;
@@ -380,6 +407,7 @@ function openEditInput() {
   document.querySelector(".js-stopwatch-button").classList.add("hide");
   document.querySelector(".js-edit-container-stopwatch").classList.remove("hide");
   updateButtonStates();
+  saveSettings();
 }
 function closeEditInput() {
   TIMER_STATUS = TimerStatus.PAUSED;
@@ -391,6 +419,7 @@ function closeEditInput() {
   document.querySelector(".js-edit-container-stopwatch").classList.add("hide");
   applyStyles();
   updateButtonStates();
+  saveSettings();
 }
 function resetStyles() {
   document.querySelector(".js-play-button").classList.remove("press-start");
@@ -452,6 +481,7 @@ function toggleTheme() {
   applyTheme(currentTheme);
   themeToggle.classList.add("button-feedback");
   setTimeout(() => themeToggle.classList.remove("button-feedback"), 300);
+  saveSettings();
 }
 function applyTheme(t) {
   const root = document.documentElement;

@@ -94,6 +94,12 @@ body.zero {
   .editing-label {
     font-size: 28px;
   }
+  .modal {
+    width: 80% !important; 
+  }
+  #contributors h4 {
+    margin-bottom: 30px !important;
+  }
 }
 
 .editing-label {
@@ -432,9 +438,8 @@ input[type=number] {
 }
 
 .modal-header h2 {
-  font-size: 16px !important;
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 16px !important;
 }
 
 button#closeConfig {
@@ -551,7 +556,6 @@ button#closeConfig:hover {
 #contributors .contributors-list {
   display: flex;
   justify-content: center;
-  /*padding-top: 5px;*/
 }
 
 #contributors a img {
