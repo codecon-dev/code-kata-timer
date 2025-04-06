@@ -2,6 +2,10 @@
 
 Este é um projeto de timer (cronômetro) desenvolvido com HTML, CSS e JavaScript. Originalmente criado para os vídeos da Codecon, este timer foi aprimorado com diversas melhorias que otimizam a usabilidade e a experiência do usuário.
 
+O timer pode ser acessado em:
+
+[Github Pages](https://codecon-dev.github.io/code-kata-timer/) ou [Domínio da a8z](https://timer.a8z.com.br/ ).
+
 ## Funcionalidades
 
 - **Exibição de Tempo Personalizada:**  
