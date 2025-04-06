@@ -11,6 +11,9 @@
   <button id="themeToggle" data-tooltip="Mudar para tema claro">
     <img id="themeIcon" src="/images/sun-regular.svg" alt="Alternar tema" />
   </button>
+  <button id="configToggle" data-tooltip="Configurações">
+    <img src="/images/gear-solid.svg" alt="Configurações" />
+  </button>
   
   <div class="editing-label"></div>
 
@@ -58,12 +61,40 @@
     </button>
   </div>
 
+  <!-- Container para os contribuidores -->
+  <div id="contributors-container" class="contributors-container">
+    <h4>Contribuidores</h4>
+    <div class="contributors-list">
+      <a href="https://github.com/codecon-dev/code-kata-timer/graphs/contributors">
+        <img src="https://contrib.rocks/image?repo=codecon-dev/code-kata-timer" alt="Contribuidores do projeto">
+      </a>
+    </div>
+  </div>
+
+  <!-- Popup de configurações -->
+  <div id="configPopup" class="config-popup hide">
+    <div class="config-popup-content">
+      <h3>Configurações</h3>
+      <div class="config-option">
+        <label for="showContributors">Exibir contribuidores</label>
+        <div class="switch-container">
+          <input type="checkbox" id="showContributors" checked>
+          <span class="switch-slider"></span>
+        </div>
+      </div>
+      <button id="closeConfig" class="close-config">
+        <img src="/images/cancel.svg" alt="Fechar">
+      </button>
+    </div>
+  </div>
+
   <div id="countdown" class="hide">
     <span id="countdown-number"></span>
     <button class="js-restart-button" id="restartBtn" data-tooltip="Reiniciar o cronômetro">
       <img src="/images/cancel.svg" alt="Reiniciar" />
     </button>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>

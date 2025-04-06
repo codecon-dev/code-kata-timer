@@ -67,7 +67,6 @@ body {
   cursor: default;
 }
 
-
 body.zero {
   background-color: var(--secondary-bg-color);
   color: var(--secondary-text-color);
@@ -90,15 +89,6 @@ body.zero {
     font-size: 28px;
   }
 }
-
-/*.editing-label {
-  margin-top: 60px;
-  margin-bottom: 20px;
-  font-size: 48px;
-  transition: 0.3s;
-  opacity: 0;
-  pointer-events: none;
-}*/
 
 .editing-label {
   position: absolute;
@@ -144,12 +134,10 @@ body.zero {
 .editing-mode input:not(:disabled) {
   caret-color: var(--primary-text-color);
   border-bottom: 2px solid var(--primary-bg-color) !important;
-  /*animation: pulse 1.5s infinite;*/
   user-select: auto;
 }
 
 .input-stopwatch.editing-mode {
-  /*background-color: var(--edit-highlight-bg);*/
   background-color: var(--tooltip-bg-color);
   border: 3px solid var(--edit-highlight-border);
   box-shadow: 0 0 25px var(--edit-highlight-shadow);
@@ -191,8 +179,6 @@ input:disabled {
 
 .editing-mode input:not(:disabled) {
   caret-color: var(--tooltip-text-color);
-  /*border-bottom: 2px solid var(--primary-text-color);
-  animation: pulse 1.5s infinite;*/
   user-select: auto;
 }
 
@@ -380,4 +366,188 @@ input[type=number] {
 #themeToggle img {
   width: 20px;
   height: 20px;
+}
+
+/*Contribuidores + popup*/
+/* Estilo para o botão de configurações */
+#configToggle {
+  position: absolute;
+  top: 20px;
+  right: 70px; /* Deixa espaço para o botão de tema */
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid var(--button-border-color);
+  z-index: 100;
+  transition: 0.3s;
+}
+
+#configToggle:hover {
+  background-color: var(--button-hover-bg);
+  transform: scale(1.1);
+}
+
+#configToggle img {
+  width: 20px;
+  height: 20px;
+}
+
+/* Popup de configurações */
+.config-popup {
+  position: fixed;
+  top: 70px;
+  right: 20px;
+  background-color: var(--primary-bg-color);
+  border: 2px solid var(--primary-text-color);
+  border-radius: 10px;
+  padding: 15px;
+  z-index: 200;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  min-width: 250px;
+  opacity: 1;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.config-popup.hide {
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none;
+}
+
+.config-popup h3 {
+  font-size: 20px;
+  margin: 0 0 15px 0;
+  color: var(--primary-text-color);
+  text-align: center;
+}
+
+.config-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.config-option label {
+  font-size: 16px;
+  color: var(--primary-text-color);
+  font-weight: bold;
+}
+
+/* Switch para configurações */
+.switch-container {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.switch-container input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .switch-slider {
+  background-color: var(--primary-text-color);
+}
+
+input:focus + .switch-slider {
+  box-shadow: 0 0 1px var(--primary-text-color);
+}
+
+input:checked + .switch-slider:before {
+  transform: translateX(26px);
+}
+
+/* Botão de fechar config */
+.close-config {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.close-config img {
+  width: 100%;
+  height: 100%;
+}
+
+/* Container de contribuidores */
+div .contributors-list a {
+  font-size: 32px !important;
+}
+
+.contributors-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: transparent;
+  text-align: center;
+  padding: 0;
+  margin-bottom: 20px;
+  transition: 0.3s;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.contributors-container h4 {
+  font-size: 18px !important;
+  color: whitesmoke;
+  letter-spacing: 1px;
+}
+
+.contributors-list {
+  display: flex;
+  justify-content: center;
+  padding-top: 5px;
+}
+
+.contributors-container a img {
+  max-width: 280px;
+  height: auto;
+  border-radius: 5px;
+}
+
+.contributors-container.hide {
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
 }
