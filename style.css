@@ -7,9 +7,9 @@
   --secondary-text-color: #444444;
   --tooltip-bg-color: rgba(70, 255, 190, 0.9);
   --tooltip-text-color: #242424;
-  --edit-highlight-bg: rgba(70, 255, 190, 0.15);
-  --edit-highlight-border: rgba(70, 255, 190, 0.4);
-  --edit-highlight-shadow: rgba(70, 255, 190, 0.5);
+  --edit-highlight-bg: rgba(70, 255, 190, 0.08);
+  --edit-highlight-border: rgba(70, 255, 190, 0.5);
+  --edit-highlight-shadow: rgba(70, 255, 190, 0.7);
   --button-border-color: rgba(255, 255, 255, 0.7);
   --button-hover-bg: rgba(70, 255, 190, 0.15);
   --button-active-bg: rgba(70, 255, 190, 0.25);
@@ -22,9 +22,9 @@
   --secondary-text-color: #f5f5f5;
   --tooltip-bg-color: #242424;
   --tooltip-text-color: #46FFBE;
-  --edit-highlight-bg: rgba(15, 139, 99, 0.15);
-  --edit-highlight-border: rgba(15, 139, 99, 0.4);
-  --edit-highlight-shadow: rgba(15, 139, 99, 0.5);
+  --edit-highlight-bg: rgba(15, 139, 99, 0.08);
+  --edit-highlight-border: rgba(15, 139, 99, 0.5);
+  --edit-highlight-shadow: rgba(15, 139, 99, 0.7);
   --button-border-color: rgba(15, 139, 99, 0.7);
   --button-hover-bg: rgba(15, 139, 99, 0.15);
   --button-active-bg: rgba(15, 139, 99, 0.25);
@@ -37,9 +37,9 @@
   --secondary-text-color: #444444;
   --tooltip-bg-color: rgba(70, 255, 190, 0.9);
   --tooltip-text-color: #242424;
-  --edit-highlight-bg: rgba(70, 255, 190, 0.15);
-  --edit-highlight-border: rgba(70, 255, 190, 0.4);
-  --edit-highlight-shadow: rgba(70, 255, 190, 0.5);
+  --edit-highlight-bg: rgba(70, 255, 190, 0.08);
+  --edit-highlight-border: rgba(70, 255, 190, 0.5);
+  --edit-highlight-shadow: rgba(70, 255, 190, 0.7);
   --button-border-color: rgba(255, 255, 255, 0.7);
   --button-hover-bg: rgba(70, 255, 190, 0.15);
   --button-active-bg: rgba(70, 255, 190, 0.25);
@@ -55,7 +55,6 @@ body {
   color: var(--primary-text-color);
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   margin: 0;
   height: 100dvh;
@@ -77,7 +76,7 @@ body.zero {
     font-size: 72px;
   }
   .editing-label {
-    font-size: 20px;
+    font-size: 40px;
   }
 }
 
@@ -86,48 +85,41 @@ body.zero {
     font-size: 48px;
   }
   .editing-label {
-    font-size: 16px;
+    font-size: 28px;
   }
 }
 
-.input-stopwatch {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
+.editing-label {
+  margin-top: 60px;
+  margin-bottom: 20px;
+  font-size: 48px;
   transition: 0.3s;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.editing-label.visible {
+  opacity: 1;
+}
+
+.input-stopwatch {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   padding: 20px;
   border-radius: 16px;
+  transition: 0.3s;
   position: relative;
   z-index: 100;
 }
 
 .input-stopwatch.editing-mode {
   background-color: var(--edit-highlight-bg);
-  border: 2px solid var(--edit-highlight-border);
+  border: 3px solid var(--edit-highlight-border);
   box-shadow: 0 0 25px var(--edit-highlight-shadow);
-  transform: scale(1.05);
-  padding: 25px 20px;
-  max-width: 80%;
-  margin: 0 auto;
-}
-
-.editing-label {
-  display: none;
-  font-size: 24px;
-  color: var(--primary-text-color);
-  pointer-events: none;
-  opacity: 0;
-  transition: 0.3s;
-  white-space: nowrap;
-  font-family: Arial, sans-serif;
-}
-
-.editing-label.visible {
-  display: block;
-  opacity: 1;
+  padding: 40px;
 }
 
 .click-overlay {
@@ -145,9 +137,8 @@ body.zero {
 }
 
 input {
-  min-width: 1px;
   width: auto;
-  max-width: 2ch;
+  max-width: 2.5ch;
   color: var(--primary-text-color);
   border: none;
   background: none;
@@ -167,7 +158,6 @@ input:disabled {
 .editing-mode input:not(:disabled) {
   caret-color: var(--primary-text-color);
   border-bottom: 2px solid var(--primary-text-color);
-  padding-bottom: 5px;
   animation: pulse 1.5s infinite;
   user-select: auto;
 }
@@ -184,6 +174,14 @@ input:focus {
   0% { opacity: 1; }
   50% { opacity: 0.6; }
   100% { opacity: 1; }
+}
+
+.button-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  margin-top: 40px;
+  z-index: 100;
 }
 
 button {
@@ -219,14 +217,6 @@ button img {
 
 [data-theme="light"] button img {
   filter: brightness(0.7);
-}
-
-.button-wrapper {
-  display: flex;
-  flex-direction: row;
-  gap: 32px;
-  margin-top: 40px;
-  z-index: 100;
 }
 
 .hide {

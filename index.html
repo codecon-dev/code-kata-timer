@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/images/clock-regular.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="style.css" />
-  <link rel="icon" href="/images/clock-regular.svg" type="image/svg+xml">
   <title>Cronômetro</title>
 </head>
 <body>
@@ -12,9 +12,9 @@
     <img id="themeIcon" src="/images/sun-regular.svg" alt="Alternar tema" />
   </button>
   
+  <div class="editing-label"></div>
+
   <div class="input-stopwatch">
-    <!--<div class="editing-label">Editando...</div>-->
-    <div class="editing-label"></div>
     <input type="number" min="00" id="hour" disabled tabindex="-1" />
     :
     <input type="number" min="00" id="min" disabled tabindex="-1" />
@@ -64,14 +64,6 @@
       <img src="/images/cancel.svg" alt="Reiniciar" />
     </button>
   </div>
-
-  <section id="contributors">
-    <h5>Contribuidores</h5>
-    <a href="https://github.com/codecon-dev/code-kata-timer/graphs/contributors">
-      <img src="https://contrib.rocks/image?repo=codecon-dev/code-kata-timer" alt="Contribuidores do projeto">
-    </a>
-  </section>  
-
   <script src="script.js"></script>
 </body>
 </html>
