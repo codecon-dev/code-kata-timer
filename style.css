@@ -100,6 +100,7 @@ body.zero {
 
 .editing-label.visible {
   opacity: 1;
+  padding-bottom: 64px;
 }
 
 .input-stopwatch {
@@ -115,8 +116,26 @@ body.zero {
   z-index: 100;
 }
 
+/*Edição timer*/
+.editing-label.visible {
+  font-size: 56px;
+  font-family: "Orbitron", sans-serif;
+  font-weight: regular;
+}
+.input-stopwatch.editing-mode, input#hour, input#min, input#sec {
+  color: var(--primary-bg-color);
+}
+
+.editing-mode input:not(:disabled) {
+  caret-color: var(--primary-text-color);
+  border-bottom: 2px solid var(--primary-bg-color) !important;
+  /*animation: pulse 1.5s infinite;*/
+  user-select: auto;
+}
+
 .input-stopwatch.editing-mode {
-  background-color: var(--edit-highlight-bg);
+  /*background-color: var(--edit-highlight-bg);*/
+  background-color: var(--tooltip-bg-color);
   border: 3px solid var(--edit-highlight-border);
   box-shadow: 0 0 25px var(--edit-highlight-shadow);
   padding: 40px;
@@ -156,9 +175,9 @@ input:disabled {
 }
 
 .editing-mode input:not(:disabled) {
-  caret-color: var(--primary-text-color);
-  border-bottom: 2px solid var(--primary-text-color);
-  animation: pulse 1.5s infinite;
+  caret-color: var(--tooltip-text-color);
+  /*border-bottom: 2px solid var(--primary-text-color);
+  animation: pulse 1.5s infinite;*/
   user-select: auto;
 }
 
@@ -167,7 +186,7 @@ input:focus {
 }
 
 .editing-mode input:focus {
-  caret-color: var(--primary-text-color) !important;
+  caret-color: var(--tooltip-text-color) !important;
 }
 
 @keyframes pulse {
