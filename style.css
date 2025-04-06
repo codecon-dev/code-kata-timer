@@ -1,6 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap");
 
-/* Definições de tema */
 :root[data-theme="dark"] {
   --primary-bg-color: #242424;
   --primary-text-color: #46ffbe;
@@ -21,7 +20,6 @@
   --primary-text-color: #0f8b63;
   --secondary-bg-color: #0f8b63;
   --secondary-text-color: #f5f5f5;
-  /* Corrigido: no tema claro, o background do tooltip tem que ser #242424 e a cor da fonte #46FFBE */
   --tooltip-bg-color: #242424;
   --tooltip-text-color: #46FFBE;
   --edit-highlight-bg: rgba(15, 139, 99, 0.15);
@@ -32,7 +30,6 @@
   --button-active-bg: rgba(15, 139, 99, 0.25);
 }
 
-/* Definição padrão para iniciar no tema escuro */
 :root {
   --primary-bg-color: #242424;
   --primary-text-color: #46ffbe;
@@ -60,12 +57,14 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 0px;
+  margin: 0;
   height: 100dvh;
   width: 100dvw;
   transition: background-color 0.5s ease, color 0.5s ease;
-  overflow: hidden; /* Prevenir barras de rolagem */
-  position: relative; /* Para posicionamento de tooltips */
+  overflow: hidden;
+  position: relative;
+  user-select: none;
+  cursor: default;
 }
 
 body.zero {
@@ -73,7 +72,64 @@ body.zero {
   color: var(--secondary-text-color);
 }
 
-/* Overlay para capturar cliques fora da área de edição */
+@media (max-width: 1000px) {
+  *:not(#countdown-number) {
+    font-size: 72px;
+  }
+  .editing-label {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  *:not(#countdown-number) {
+    font-size: 48px;
+  }
+  .editing-label {
+    font-size: 16px;
+  }
+}
+
+.input-stopwatch {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  transition: 0.3s;
+  padding: 20px;
+  border-radius: 16px;
+  position: relative;
+  z-index: 100;
+}
+
+.input-stopwatch.editing-mode {
+  background-color: var(--edit-highlight-bg);
+  border: 2px solid var(--edit-highlight-border);
+  box-shadow: 0 0 25px var(--edit-highlight-shadow);
+  transform: scale(1.05);
+  padding: 25px 20px;
+  max-width: 80%;
+  margin: 0 auto;
+}
+
+.editing-label {
+  display: none;
+  font-size: 24px;
+  color: var(--primary-text-color);
+  pointer-events: none;
+  opacity: 0;
+  transition: 0.3s;
+  white-space: nowrap;
+  font-family: Arial, sans-serif;
+}
+
+.editing-label.visible {
+  display: block;
+  opacity: 1;
+}
+
 .click-overlay {
   position: fixed;
   top: 0;
@@ -88,66 +144,6 @@ body.zero {
   display: block;
 }
 
-.input-stopwatch {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  transition: all 0.3s ease;
-  padding: 20px;
-  border-radius: 16px;
-  position: relative;
-  z-index: 100; /* Para estar acima do overlay */
-}
-
-/* Estilo para modo de edição */
-.input-stopwatch.editing-mode {
-  background-color: var(--edit-highlight-bg);
-  border: 2px solid var(--edit-highlight-border);
-  box-shadow: 0 0 25px var(--edit-highlight-shadow);
-  transform: scale(1.05);
-  padding: 25px 20px;
-  max-width: 80%; /* Limitar a largura */
-  margin: 0 auto;
-}
-
-/* Container para o rótulo "Editando..." - Corrigido para não cortar o título */
-.editing-title-container {
-  position: absolute;
-  top: -70px; /* Aumentado para 70px para evitar cortes */
-  left: 0;
-  width: 100%;
-  height: 70px; /* Aumentado para corresponder ao top */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: visible;
-  pointer-events: none; /* Impedir interação com o título */
-  z-index: 101; /* Acima do overlay */
-}
-
-/* Elemento para o rótulo "Editando..." */
-.editing-label {
-  font-size: 24px;
-  color: var(--primary-text-color);
-  background-color: var(--edit-highlight-bg);
-  padding: 8px 20px; /* Aumentado para garantir espaço suficiente */
-  border-radius: 8px;
-  border: 1px solid var(--edit-highlight-border);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  white-space: nowrap;
-  font-family: Arial, sans-serif;
-  min-width: 150px; /* Garante largura mínima para caber o texto */
-  height: auto; /* Altura automática em vez de fixa */
-  line-height: 1.5; /* Melhor espaçamento de linha */
-  text-align: center;
-  pointer-events: none;
-}
-
-.editing-label.visible {
-  opacity: 1;
-}
-
 input {
   min-width: 1px;
   width: auto;
@@ -157,34 +153,31 @@ input {
   background: none;
   outline: none;
   text-align: center;
-  /* Corrigir o problema do cursor de inserção */
   caret-color: transparent;
-  user-select: none; /* Impedir seleção de texto */
-  transition: color 0.5s ease;
+  user-select: none;
+  transition: 0.5s;
 }
 
 input:disabled {
-  opacity: 1; /* Manter o texto visível quando desabilitado */
-  -webkit-text-fill-color: var(--primary-text-color); /* Manter a cor do texto no Chrome/Safari */
-  pointer-events: none; /* Desabilitar eventos de ponteiro */
+  opacity: 1;
+  -webkit-text-fill-color: var(--primary-text-color);
+  pointer-events: none;
 }
 
-/* Estilos para os inputs quando estiverem em modo de edição */
 .editing-mode input:not(:disabled) {
-  caret-color: var(--primary-text-color); /* Mostrar cursor apenas no modo de edição */
+  caret-color: var(--primary-text-color);
   border-bottom: 2px solid var(--primary-text-color);
   padding-bottom: 5px;
   animation: pulse 1.5s infinite;
-  user-select: auto; /* Permitir seleção no modo de edição */
+  user-select: auto;
 }
 
-/* Remover o cursor de texto vertical (|) */
 input:focus {
-  caret-color: transparent;
+  caret-color: transparent !important;
 }
 
 .editing-mode input:focus {
-  caret-color: var(--primary-text-color);
+  caret-color: var(--primary-text-color) !important;
 }
 
 @keyframes pulse {
@@ -204,9 +197,9 @@ button {
   justify-content: center;
   cursor: pointer;
   color: inherit;
-  transition: all 0.2s ease-in-out;
-  position: relative; /* Para posicionamento de tooltips */
-  z-index: 100; /* Para estar acima do overlay */
+  transition: 0.2s;
+  position: relative;
+  z-index: 100;
 }
 
 .js-restart-button {
@@ -221,19 +214,19 @@ button:hover {
 button img {
   width: 16px;
   height: 16px;
-  transition: filter 0.3s ease;
+  transition: filter 0.3s;
 }
 
 [data-theme="light"] button img {
-  filter: brightness(0.7); /* Escurecer os ícones no tema claro */
+  filter: brightness(0.7);
 }
 
 .button-wrapper {
   display: flex;
   flex-direction: row;
   gap: 32px;
-  margin-top: 40px; /* Aumentar espaço acima dos botões */
-  z-index: 100; /* Para estar acima do overlay */
+  margin-top: 40px;
+  z-index: 100;
 }
 
 .hide {
@@ -245,11 +238,10 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
 input[type=number] {
-  -moz-appearance: textfield; /* Para Firefox */
-  -webkit-appearance: none; /* Para Chrome, Safari, Edge */
-  appearance: none; /* Padrão - navegadores mais modernos */
+  -moz-appearance: textfield;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 #countdown {
@@ -266,7 +258,7 @@ input[type=number] {
   color: var(--primary-text-color);
   z-index: 1000;
   font-size: 202px;
-  transition: background-color 0.5s ease, color 0.5s ease;
+  transition: 0.5s;
 }
 
 #countdown.hide {
@@ -289,16 +281,16 @@ input[type=number] {
   background-color: var(--button-active-bg);
 }
 
-/* Estilizando os botões +30s */
-#add30sPaused, #add30sStopped, #add30sRunning {
+#add30sPaused,
+#add30sStopped,
+#add30sRunning {
   width: auto;
   font-size: 14px;
   padding: 0 10px;
   border-radius: 16px;
-  transition: all 0.3s ease;
+  transition: 0.3s;
 }
 
-/* Animação de feedback quando adiciona tempo no modo execução */
 @keyframes buttonPulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.2); background-color: var(--button-active-bg); }
@@ -306,10 +298,9 @@ input[type=number] {
 }
 
 .button-feedback {
-  animation: buttonPulse 0.3s ease-in-out;
+  animation: buttonPulse 0.3s;
 }
 
-/* Sistema de tooltip */
 #tooltip-container {
   position: fixed;
   z-index: 9999;
@@ -330,18 +321,17 @@ input[type=number] {
   font-size: 12px !important;
   font-family: Arial, sans-serif;
   font-weight: bold;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
   max-width: 250px;
   text-align: center;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: 0.2s;
   line-height: 1.4;
   pointer-events: none;
-  white-space: normal; /* Permitir quebra de linha */
-  word-wrap: break-word; /* Garantir quebras de palavras longas */
+  white-space: normal;
+  word-wrap: break-word;
 }
 
-/* Botão de alternância de tema */
 #themeToggle {
   position: absolute;
   top: 20px;
@@ -355,7 +345,7 @@ input[type=number] {
   cursor: pointer;
   border: 1px solid var(--button-border-color);
   z-index: 100;
-  transition: all 0.3s ease;
+  transition: 0.3s;
 }
 
 #themeToggle:hover {
