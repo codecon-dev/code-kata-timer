@@ -88,11 +88,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const tooltipContainer = document.createElement("div");
   tooltipContainer.id = "tooltip-container";
   document.body.appendChild(tooltipContainer);
-  setInputValues(DEFAULT_SECONDS);
+  loadSettings();
+  setInputValues(currentSeconds);
   applyTheme(currentTheme);
   setupEventListeners();
   updateButtonStates();
-  loadSettings();
 });
 function setupEventListeners() {
   document.getElementById("startBtn").addEventListener("click", start);
