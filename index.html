@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,6 +8,11 @@
     <title>Cronômetro</title>
   </head>
   <body>
+    <!-- Botão de alternância de tema -->
+    <button id="themeToggle" data-tooltip="Mudar para tema claro">
+      <img id="themeIcon" src="/images/sun-regular.svg" alt="Alternar tema" />
+    </button>
+    
     <div class="input-stopwatch">
       <input type="number" min="00" id="hour" disabled />
       :
@@ -16,39 +21,42 @@
       <input type="number" min="00" id="sec" disabled />
     </div>
     <div class="button-wrapper js-stopwatch-button">
-      <button class="js-active-fullscreen" title="Alternar tela cheia">
+      <button class="js-active-fullscreen" data-tooltip="Alternar tela cheia">
         <img src="/images/full-screen.svg" alt="Colocar em tela cheia" />
       </button>
-      <button class="js-edit-button" title="Editar o tempo do cronômetro">
+      <button class="js-edit-button" data-tooltip="Editar o tempo do cronômetro">
         <img src="/images/edit.svg" alt="Editar" />
       </button>
-      <button class="js-stop-button" id="toZeroBtn" title="Zerar o cronômetro">
+      <button class="js-stop-button" id="toZeroBtn" data-tooltip="Zerar o cronômetro">
         <img src="/images/reset.svg" alt="Resetar" />
       </button>
-      <button class="js-play-button" id="startBtn" title="Iniciar o cronômetro">
+      <button class="js-play-button" id="startBtn" data-tooltip="Iniciar o cronômetro">
         <img src="/images/play.svg" alt="Iniciar" />
       </button>
-      <button class="js-pause-button" id="pauseBtn" title="Pausar o cronômetro">
+      <button class="js-pause-button hide" id="pauseBtn" data-tooltip="Pausar o cronômetro">
         <img src="/images/pause.svg" alt="Pausar" />
       </button>
-      <button id="add30sPaused" title="Adicionar 30 segundos ao cronômetro" class="hide">
+      <button id="add30sPaused" data-tooltip="Adicionar 30 segundos ao cronômetro" class="hide">
         +30s
       </button>
-      <button id="add30sStopped" title="Adicionar 30 segundos ao cronômetro" class="hide">
+      <button id="add30sStopped" data-tooltip="Adicionar 30 segundos ao cronômetro" class="hide">
+        +30s
+      </button>
+      <button id="add30sRunning" data-tooltip="Adicionar 30 segundos ao timer em execução" class="hide">
         +30s
       </button>
     </div>
     <div class="button-wrapper js-edit-container-stopwatch hide">
-      <button class="js-cancel-button" title="Cancelar edição">
+      <button class="js-cancel-button" data-tooltip="Cancelar edição">
         <img src="/images/cancel.svg" alt="Cancelar" />
       </button>
-      <button class="js-finish-edit-button" title="Finalizar edição">
+      <button class="js-finish-edit-button" data-tooltip="Finalizar edição">
         <img src="/images/ok.svg" alt="Finalizar" />
       </button>
     </div>
     <div id="countdown" class="hide">
       <span id="countdown-number"></span>
-      <button class="js-restart-button" id="restartBtn" title="Reiniciar o cronômetro">
+      <button class="js-restart-button" id="restartBtn" data-tooltip="Reiniciar o cronômetro">
         <img src="/images/cancel.svg" alt="Reiniciar" />
       </button>
     </div>

@@ -8,54 +8,259 @@ const TimerStatus = {
   isCountdown: (status) => status === TimerStatus.COUNTDOWN,
   isPaused: (status) => status === TimerStatus.PAUSED,
   isStopped: (status) => status === TimerStatus.STOPPED,
+  isEditing: (status) => status === TimerStatus.EDITING,
 };
 
 const DEFAULT_INTERVAL = 1000;
 const DEFAULT_SECONDS = 30;
 let TIMER_STATUS = TimerStatus.STOPPED;
 
-setInputValues(DEFAULT_SECONDS);
+// Variável para armazenar o intervalo do timer
+let timerInterval = null;
+// Variável para armazenar o segundo atual
+let currentSeconds = DEFAULT_SECONDS;
+// Variável para armazenar o tooltip atual
+let currentTooltip = null;
+// Variável para rastrear evento de hover
+let tooltipTimeout = null;
 
-document.getElementById("startBtn").addEventListener("click", start);
-document.getElementById("pauseBtn").addEventListener("click", pause);
-document.getElementById("toZeroBtn").addEventListener("click", stop);
-document.getElementById("restartBtn").addEventListener("click", stop);
-document.querySelector(".js-edit-button").addEventListener("click", openEditInput);
-document.querySelector(".js-finish-edit-button").addEventListener("click", closeEditInput);
-document.querySelector(".js-cancel-button").addEventListener("click", cancelEditInput);
-document.querySelector(".js-active-fullscreen").addEventListener("click", handleFullscreen);
-document.getElementById("add30sPaused").addEventListener("click", add30Seconds);
-document.getElementById("add30sStopped").addEventListener("click", add30Seconds);
+// Configuração do tema
+const Theme = {
+  DARK: "dark",
+  LIGHT: "light"
+};
 
-document.getElementById("hour").addEventListener("input", function () {
-  validateInput(this, 99);
+// Tema padrão
+let currentTheme = Theme.DARK;
+
+// Inicialização
+document.addEventListener("DOMContentLoaded", function() {
+  // Criar o overlay para capturar cliques fora da área de edição
+  const clickOverlay = document.createElement("div");
+  clickOverlay.className = "click-overlay";
+  document.body.appendChild(clickOverlay);
+  
+  // Click no overlay fecha o modo de edição
+  clickOverlay.addEventListener("click", function() {
+    if (TimerStatus.isEditing(TIMER_STATUS)) {
+      closeEditInput();
+    }
+  });
+  
+  // Criar o container de tooltip
+  const tooltipContainer = document.createElement("div");
+  tooltipContainer.id = "tooltip-container";
+  document.body.appendChild(tooltipContainer);
+  
+  // Criar o container para o rótulo "Editando"
+  const editingTitleContainer = document.createElement("div");
+  editingTitleContainer.className = "editing-title-container";
+  document.body.appendChild(editingTitleContainer);
+  
+  // Criar o elemento para o rótulo "Editando"
+  const editingLabel = document.createElement("div");
+  editingLabel.className = "editing-label";
+  editingLabel.textContent = "Editando...";
+  editingTitleContainer.appendChild(editingLabel);
+  
+  setInputValues(DEFAULT_SECONDS);
+  applyTheme(currentTheme);
+  setupEventListeners();
+  
+  // Mostrar o botão +30s inicial apropriado com base no estado inicial
+  updateButtonStates();
 });
-document.getElementById("min").addEventListener("input", function () {
-  validateInput(this, 59);
-});
-document.getElementById("sec").addEventListener("input", function () {
-  validateInput(this, 59);
-});
+
+function setupEventListeners() {
+  // Event listeners para os botões de controle
+  document.getElementById("startBtn").addEventListener("click", start);
+  document.getElementById("pauseBtn").addEventListener("click", pause);
+  document.getElementById("toZeroBtn").addEventListener("click", stop);
+  document.getElementById("restartBtn").addEventListener("click", stop);
+  document.querySelector(".js-edit-button").addEventListener("click", openEditInput);
+  document.querySelector(".js-finish-edit-button").addEventListener("click", closeEditInput);
+  document.querySelector(".js-cancel-button").addEventListener("click", cancelEditInput);
+  document.querySelector(".js-active-fullscreen").addEventListener("click", handleFullscreen);
+  document.getElementById("add30sPaused").addEventListener("click", add30Seconds);
+  document.getElementById("add30sStopped").addEventListener("click", add30Seconds);
+  document.getElementById("add30sRunning").addEventListener("click", add30SecondsRunning);
+  document.getElementById("themeToggle").addEventListener("click", toggleTheme);
+
+  // Event listeners para validação de entrada
+  document.getElementById("hour").addEventListener("input", function () {
+    validateInput(this, 99);
+  });
+  document.getElementById("min").addEventListener("input", function () {
+    validateInput(this, 59);
+  });
+  document.getElementById("sec").addEventListener("input", function () {
+    validateInput(this, 59);
+  });
+
+  // Prevenir interação com inputs quando não estão em modo de edição
+  document.getElementById("hour").addEventListener("click", function(e) {
+    if (TIMER_STATUS !== TimerStatus.EDITING) {
+      e.preventDefault();
+    }
+  });
+  document.getElementById("min").addEventListener("click", function(e) {
+    if (TIMER_STATUS !== TimerStatus.EDITING) {
+      e.preventDefault();
+    }
+  });
+  document.getElementById("sec").addEventListener("click", function(e) {
+    if (TIMER_STATUS !== TimerStatus.EDITING) {
+      e.preventDefault();
+    }
+  });
+
+  // Corrigir problema do cursor (|) sendo exibido ao clicar na página
+  document.addEventListener("click", function(e) {
+    if (TIMER_STATUS !== TimerStatus.EDITING) {
+      // Remover foco de qualquer elemento ativo quando não estiver no modo de edição
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
+    }
+  });
+
+  // Setup tooltips
+  setupTooltips();
+}
+
+function setupTooltips() {
+  // Limpar eventos anteriores
+  document.querySelectorAll("[data-tooltip]").forEach(element => {
+    element.removeEventListener("mouseenter", handleTooltipMouseEnter);
+    element.removeEventListener("mouseleave", handleTooltipMouseLeave);
+  });
+  
+  // Adicionar novos listeners
+  document.querySelectorAll("[data-tooltip]").forEach(element => {
+    element.addEventListener("mouseenter", handleTooltipMouseEnter);
+    element.addEventListener("mouseleave", handleTooltipMouseLeave);
+  });
+}
+
+function handleTooltipMouseEnter(e) {
+  const tooltipText = this.getAttribute("data-tooltip");
+  if (!tooltipText) return;
+  
+  // Limpar qualquer tooltip anterior e timeout
+  if (tooltipTimeout) {
+    clearTimeout(tooltipTimeout);
+    tooltipTimeout = null;
+  }
+  
+  hideTooltip();
+  
+  // Mostrar o tooltip
+  showTooltip(this, tooltipText);
+}
+
+function handleTooltipMouseLeave() {
+  // Usar timeout para evitar piscar em movimentos rápidos do mouse
+  if (tooltipTimeout) {
+    clearTimeout(tooltipTimeout);
+  }
+  
+  tooltipTimeout = setTimeout(() => {
+    hideTooltip();
+    tooltipTimeout = null;
+  }, 100);
+}
+
+function showTooltip(element, text) {
+  const container = document.getElementById("tooltip-container");
+  if (!container) return;
+  
+  // Criar o tooltip
+  const tooltip = document.createElement("div");
+  tooltip.className = "tooltip";
+  tooltip.textContent = text;
+  container.appendChild(tooltip);
+  
+  // Posicionar o tooltip
+  positionTooltip(tooltip, element);
+  
+  currentTooltip = tooltip;
+}
+
+function positionTooltip(tooltip, element) {
+  const rect = element.getBoundingClientRect();
+  
+  // Definir largura máxima para evitar cortes
+  tooltip.style.maxWidth = "250px";
+  
+  // Esperar um tick para garantir que o CSS seja aplicado e as dimensões calculadas
+  setTimeout(() => {
+    const tooltipRect = tooltip.getBoundingClientRect();
+    
+    // Posição inicial (centro inferior do elemento)
+    let top = rect.bottom + 10;
+    let left = rect.left + rect.width / 2 - tooltipRect.width / 2;
+    
+    // Ajustar para evitar sair da tela
+    if (left < 10) left = 10;
+    if (left + tooltipRect.width > window.innerWidth - 10) {
+      left = window.innerWidth - tooltipRect.width - 10;
+    }
+    
+    // Verificar se está abaixo da tela
+    if (top + tooltipRect.height > window.innerHeight - 10) {
+      top = rect.top - tooltipRect.height - 10; // Colocar acima
+    }
+    
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${top}px`;
+    
+    // Tornar visível após posicionamento
+    tooltip.style.opacity = "1";
+  }, 0);
+}
+
+function hideTooltip() {
+  if (currentTooltip) {
+    currentTooltip.style.opacity = "0";
+    setTimeout(() => {
+      if (currentTooltip && currentTooltip.parentNode) {
+        currentTooltip.parentNode.removeChild(currentTooltip);
+      }
+      currentTooltip = null;
+    }, 200);
+  }
+}
 
 function timer() {
-  let seconds = getInputSeconds();
-
-  setTimeout(function () {
+  // Limpa qualquer intervalo existente
+  clearInterval(timerInterval);
+  
+  // Obtém os segundos atuais
+  currentSeconds = getInputSeconds();
+  
+  // Cria um novo intervalo
+  timerInterval = setInterval(function() {
     if (TimerStatus.isRunning(TIMER_STATUS)) {
-      seconds--;
+      currentSeconds--;
 
-      if (seconds <= 10) {
+      if (currentSeconds <= 10) {
         TIMER_STATUS = TimerStatus.COUNTDOWN;
-        styleBlinkCountdown(seconds);
+        styleBlinkCountdown(currentSeconds);
+        updateButtonStates(); // Atualizar botões também no modo countdown
       }
 
-      setInputValues(seconds);
-      if (seconds == 0) {
+      setInputValues(currentSeconds);
+      
+      if (currentSeconds <= 0) {
+        clearInterval(timerInterval);
         document.body.classList.add("zero");
+        TIMER_STATUS = TimerStatus.STOPPED;
+        updateButtonStates();
         return;
-      } else {
-        timer();
       }
+    } else {
+      // Se o timer não está rodando, limpa o intervalo
+      clearInterval(timerInterval);
     }
   }, DEFAULT_INTERVAL);
 }
@@ -102,36 +307,75 @@ function setInputValues(fromSeconds = 0) {
 
 function updateButtonStates() {
   const startBtn = document.querySelector(".js-play-button");
+  const pauseBtn = document.querySelector(".js-pause-button");
   const editBtn = document.querySelector(".js-edit-button");
   const add30sPaused = document.getElementById("add30sPaused");
   const add30sStopped = document.getElementById("add30sStopped");
+  const add30sRunning = document.getElementById("add30sRunning");
+  const overlay = document.querySelector(".click-overlay");
+
+  // Primeiro, esconder o botão de pausar em todos os casos
+  pauseBtn.classList.add("hide");
 
   // Ocultar/mostrar botões com base no estado do timer
-  if (TimerStatus.isRunning(TIMER_STATUS)) {
-    // Quando o timer está em execução, ocultar os botões que não podem ser usados
+  if (TimerStatus.isRunning(TIMER_STATUS) && !TimerStatus.isCountdown(TIMER_STATUS)) {
+    // Quando o timer está em execução normal
     startBtn.classList.add("hide");
+    pauseBtn.classList.remove("hide"); // Mostrar o botão pausar apenas quando estiver rodando
     editBtn.classList.add("hide");
     add30sPaused.classList.add("hide");
     add30sStopped.classList.add("hide");
+    add30sRunning.classList.remove("hide");
+    overlay.classList.remove("active");
+  } else if (TimerStatus.isCountdown(TIMER_STATUS)) {
+    // Durante a contagem regressiva final, ocultar todos os botões adicionais
+    startBtn.classList.add("hide");
+    pauseBtn.classList.remove("hide"); // Mostrar o botão pausar também durante countdown
+    editBtn.classList.add("hide");
+    add30sPaused.classList.add("hide");
+    add30sStopped.classList.add("hide");
+    add30sRunning.classList.add("hide");
+    overlay.classList.remove("active");
   } else if (TimerStatus.isPaused(TIMER_STATUS)) {
     // Quando pausado, mostrar os botões relevantes
     startBtn.classList.remove("hide");
     editBtn.classList.remove("hide");
     add30sPaused.classList.remove("hide");
     add30sStopped.classList.add("hide");
+    add30sRunning.classList.add("hide");
+    overlay.classList.remove("active");
   } else if (TimerStatus.isStopped(TIMER_STATUS)) {
     // Quando parado, mostrar os botões relevantes
     startBtn.classList.remove("hide");
     editBtn.classList.remove("hide");
     add30sPaused.classList.add("hide");
     add30sStopped.classList.remove("hide");
-  } else {
-    // Para outros estados (edição, etc.)
+    add30sRunning.classList.add("hide");
+    overlay.classList.remove("active");
+  } else if (TimerStatus.isEditing(TIMER_STATUS)) {
+    // No modo de edição
     startBtn.classList.remove("hide");
     editBtn.classList.remove("hide");
     add30sPaused.classList.add("hide");
     add30sStopped.classList.add("hide");
+    add30sRunning.classList.add("hide");
+    overlay.classList.add("active"); // Ativar overlay no modo de edição
   }
+
+  // Atualizar a classe para indicação visual de modo de edição
+  const timerContainer = document.querySelector(".input-stopwatch");
+  const editingLabel = document.querySelector(".editing-label");
+  
+  if (TimerStatus.isEditing(TIMER_STATUS)) {
+    timerContainer.classList.add("editing-mode");
+    editingLabel.classList.add("visible");
+  } else {
+    timerContainer.classList.remove("editing-mode");
+    editingLabel.classList.remove("visible");
+  }
+  
+  // Reconfigurar tooltips após alterações no DOM
+  setupTooltips();
 }
 
 function start() {
@@ -152,9 +396,11 @@ function pause() {
 }
 
 function stop() {
+  clearInterval(timerInterval);
   TIMER_STATUS = TimerStatus.STOPPED;
   applyStyles();
   setInputValues(DEFAULT_SECONDS);
+  currentSeconds = DEFAULT_SECONDS;
   updateButtonStates();
   document.body.classList.remove("zero");
 }
@@ -162,17 +408,88 @@ function stop() {
 function add30Seconds() {
   if (TimerStatus.isRunning(TIMER_STATUS)) return;
   
-  const currentSeconds = getInputSeconds();
-  setInputValues(currentSeconds + 30);
+  const newSeconds = getInputSeconds() + 30;
+  setInputValues(newSeconds);
+  currentSeconds = newSeconds;
+  
+  // Mostrar feedback visual temporário
+  const addBtn = TimerStatus.isPaused(TIMER_STATUS) 
+    ? document.getElementById("add30sPaused") 
+    : document.getElementById("add30sStopped");
+    
+  addBtn.classList.add("button-feedback");
+  
+  setTimeout(() => {
+    addBtn.classList.remove("button-feedback");
+  }, 300);
+}
+
+function add30SecondsRunning() {
+  if (!TimerStatus.isRunning(TIMER_STATUS)) return;
+
+  // Adicionar 30 segundos ao tempo atual  
+  currentSeconds += 30;
+  setInputValues(currentSeconds);
+  
+  // Se estava em modo countdown e agora tem mais de 10 segundos, voltar para modo normal
+  if (TimerStatus.isCountdown(TIMER_STATUS) && currentSeconds > 10) {
+    TIMER_STATUS = TimerStatus.RUNNING;
+    // Restaurar a visualização normal
+    document.querySelector(".input-stopwatch").classList.remove("hide");
+    document.querySelector(".js-stopwatch-button").classList.remove("hide");
+    document.getElementById("countdown").classList.add("hide");
+    updateButtonStates();
+  }
+  
+  // Mostrar feedback visual temporário
+  const add30sBtn = document.getElementById("add30sRunning");
+  add30sBtn.classList.add("button-feedback");
+  
+  setTimeout(() => {
+    add30sBtn.classList.remove("button-feedback");
+  }, 300);
 }
 
 function handleFullscreen() {
   if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen();
-    document.querySelector(".js-active-fullscreen").style = "background-color: rgba(255, 255, 255, 0.25)";
+    document.documentElement.requestFullscreen().catch(err => {
+      console.error(`Erro ao tentar entrar em tela cheia: ${err.message}`);
+    });
+    document.querySelector(".js-active-fullscreen").classList.add("press-start");
   } else {
-    document.exitFullscreen();
-    document.querySelector(".js-active-fullscreen").style = "";
+    document.exitFullscreen().catch(err => {
+      console.error(`Erro ao tentar sair da tela cheia: ${err.message}`);
+    });
+    document.querySelector(".js-active-fullscreen").classList.remove("press-start");
+  }
+}
+
+function toggleTheme() {
+  currentTheme = currentTheme === Theme.DARK ? Theme.LIGHT : Theme.DARK;
+  applyTheme(currentTheme);
+  
+  // Mostrar feedback visual temporário
+  const themeBtn = document.getElementById("themeToggle");
+  themeBtn.classList.add("button-feedback");
+  
+  setTimeout(() => {
+    themeBtn.classList.remove("button-feedback");
+  }, 300);
+}
+
+function applyTheme(theme) {
+  const themeBtn = document.getElementById("themeToggle");
+  const root = document.documentElement;
+  const themeIcon = document.getElementById("themeIcon");
+  
+  if (theme === Theme.DARK) {
+    root.setAttribute("data-theme", "dark");
+    themeIcon.src = "/images/sun-regular.svg"; // Ícone de sol para mudar para modo claro
+    themeBtn.setAttribute("data-tooltip", "Mudar para tema claro");
+  } else {
+    root.setAttribute("data-theme", "light");
+    themeIcon.src = "/images/moon-regular.svg"; // Ícone de lua para mudar para modo escuro
+    themeBtn.setAttribute("data-tooltip", "Mudar para tema escuro");
   }
 }
 
@@ -180,6 +497,7 @@ let PRE_EDIT_SECONDS = DEFAULT_SECONDS;
 
 function cancelEditInput() {
   setInputValues(PRE_EDIT_SECONDS);
+  currentSeconds = PRE_EDIT_SECONDS;
   closeEditInput();
 }
 
@@ -189,6 +507,8 @@ function openEditInput() {
   
   TIMER_STATUS = TimerStatus.EDITING;
   PRE_EDIT_SECONDS = getInputSeconds();
+  currentSeconds = PRE_EDIT_SECONDS;
+  
   document.getElementById("hour").disabled = false;
   document.getElementById("min").disabled = false;
   document.getElementById("sec").disabled = false;
@@ -203,6 +523,8 @@ function closeEditInput() {
   document.getElementById("hour").disabled = true;
   document.getElementById("min").disabled = true;
   document.getElementById("sec").disabled = true;
+  
+  currentSeconds = getInputSeconds();
 
   document.querySelector(".js-stopwatch-button").classList.remove("hide");
   document.querySelector(".js-edit-container-stopwatch").classList.add("hide");
@@ -216,6 +538,7 @@ function resetStyles() {
   document.querySelector(".js-stop-button").classList.remove("press-stop");
   document.querySelector(".js-pause-button").classList.remove("press-pause");
   document.querySelector(".js-edit-button").classList.remove("press-edit");
+  document.querySelector(".js-active-fullscreen").classList.remove("press-start");
   document.querySelector(".input-stopwatch").classList.remove("hide");
   document.querySelector(".js-stopwatch-button").classList.remove("hide");
   document.getElementById("countdown").classList.add("hide");
@@ -242,11 +565,11 @@ function styleBlinkCountdown(seconds = 10) {
 
   // Alterna a cor a cada segundo
   if (seconds % 2 === 0) {
-    document.getElementById("countdown").style.backgroundColor = "#46ffbe";
-    document.getElementById("countdown-number").style.color = "#444444";
+    document.getElementById("countdown").style.backgroundColor = "var(--secondary-bg-color)";
+    document.getElementById("countdown-number").style.color = "var(--secondary-text-color)";
   } else {
-    document.getElementById("countdown").style.backgroundColor = "#242424";
-    document.getElementById("countdown-number").style.color = "#46ffbe";
+    document.getElementById("countdown").style.backgroundColor = "var(--primary-bg-color)";
+    document.getElementById("countdown-number").style.color = "var(--primary-text-color)";
   }
 }
 
@@ -265,6 +588,3 @@ function stylePause() {
 function styleEditing() {
   document.querySelector(".js-edit-button").classList.add("press-edit");
 }
-
-// Inicializa os estados dos botões
-updateButtonStates();
