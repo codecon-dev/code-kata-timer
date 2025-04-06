@@ -225,12 +225,17 @@ function timer() {
   currentSeconds = getInputSeconds();
   timerInterval = setInterval(() => {
     if (TimerStatus.isRunning(TIMER_STATUS)) {
-      currentSeconds--;
+      if (currentSeconds > 0) {
+        currentSeconds--;
+      }
       if (currentSeconds <= 10) {
         TIMER_STATUS = TimerStatus.COUNTDOWN;
         styleBlinkCountdown(currentSeconds);
         updateButtonStates();
         updateContributorsVisibility();
+      }
+      if (currentSeconds < 0) {
+        currentSeconds = 0;
       }
       setInputValues(currentSeconds);
       saveSettings();

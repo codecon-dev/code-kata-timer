@@ -76,6 +76,13 @@ body {
 body.zero {
   background-color: var(--secondary-bg-color);
   color: var(--secondary-text-color);
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0% { background-color: var(--secondary-bg-color); }
+  50% { background-color: var(--primary-bg-color); }
+  100% { background-color: var(--secondary-bg-color); }
 }
 
 @media (max-width: 1000px) {
