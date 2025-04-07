@@ -102,10 +102,16 @@ body.zero {
     font-size: 28px;
   }
   .modal {
-    width: 80% !important; 
+    width: 80% !important;
   }
   #contributors h4 {
     margin-bottom: 30px !important;
+  }
+  .input-stopwatch.editing-mode {
+    width: 74% !important;
+  }
+  .editing-label.visible {
+    padding-top: 30%;
   }
 }
 
@@ -145,7 +151,11 @@ body.zero {
   font-family: "Orbitron", sans-serif;
   font-weight: regular;
 }
-.input-stopwatch.editing-mode, input#hour, input#min, input#sec {
+
+.input-stopwatch.editing-mode,
+input#hour,
+input#min,
+input#sec {
   color: var(--primary-bg-color);
 }
 
@@ -266,6 +276,7 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
 input[type=number] {
   -moz-appearance: textfield;
   -webkit-appearance: none;

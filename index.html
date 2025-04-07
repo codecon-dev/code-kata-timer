@@ -1,60 +1,55 @@
 <!DOCTYPE html>
 <html lang="pt" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" href="/images/clock-regular.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="/images/clock-regular.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
   <title>Cronômetro</title>
 </head>
 <body>
   <button id="themeToggle" data-tooltip="Mudar para tema claro">
-    <img id="themeIcon" src="/images/sun-regular.svg" alt="Alternar tema" />
+    <img id="themeIcon" src="/images/sun-regular.svg" alt="Alternar tema">
   </button>
   <button id="configToggle" data-tooltip="Configurações">
-    <img src="/images/gear-solid.svg" alt="Configurações" />
+    <img src="/images/gear-solid.svg" alt="Configurações">
   </button>
-  
   <div class="editing-label"></div>
-
   <div class="input-stopwatch">
-    <input type="number" min="00" id="hour" disabled tabindex="-1" />
+    <input type="number" min="00" id="hour" disabled tabindex="-1">
     :
-    <input type="number" min="00" id="min" disabled tabindex="-1" />
+    <input type="number" min="00" id="min" disabled tabindex="-1">
     :
-    <input type="number" min="00" id="sec" disabled tabindex="-1" />
+    <input type="number" min="00" id="sec" disabled tabindex="-1">
   </div>
-
   <div class="button-wrapper js-stopwatch-button">
     <button class="js-active-fullscreen" data-tooltip="Alternar tela cheia">
-      <img src="/images/full-screen.svg" alt="Fullscreen" />
+      <img src="/images/full-screen.svg" alt="Fullscreen">
     </button>
     <button class="js-edit-button" data-tooltip="Editar o tempo do cronômetro">
-      <img src="/images/edit.svg" alt="Editar" />
+      <img src="/images/edit.svg" alt="Editar">
     </button>
     <button class="js-stop-button" id="toZeroBtn" data-tooltip="Zerar o cronômetro">
-      <img src="/images/reset.svg" alt="Resetar" />
+      <img src="/images/reset.svg" alt="Resetar">
     </button>
     <button class="js-play-button" id="startBtn" data-tooltip="Iniciar o cronômetro">
-      <img src="/images/play.svg" alt="Iniciar" />
+      <img src="/images/play.svg" alt="Iniciar">
     </button>
     <button class="js-pause-button hide" id="pauseBtn" data-tooltip="Pausar o cronômetro">
-      <img src="/images/pause.svg" alt="Pausar" />
+      <img src="/images/pause.svg" alt="Pausar">
     </button>
     <button id="add30sPaused" data-tooltip="Adicionar 30 segundos ao cronômetro" class="hide">+30s</button>
     <button id="add30sStopped" data-tooltip="Adicionar 30 segundos ao cronômetro" class="hide">+30s</button>
     <button id="add30sRunning" data-tooltip="Adicionar 30 segundos ao timer em execução" class="hide">+30s</button>
   </div>
-
   <div class="button-wrapper js-edit-container-stopwatch hide">
     <button class="js-cancel-button" data-tooltip="Cancelar edição">
-      <img src="/images/cancel.svg" alt="Cancelar" />
+      <img src="/images/cancel.svg" alt="Cancelar">
     </button>
     <button class="js-finish-edit-button" data-tooltip="Finalizar edição">
-      <img src="/images/ok.svg" alt="Finalizar" />
+      <img src="/images/ok.svg" alt="Finalizar">
     </button>
   </div>
-
   <section id="contributors">
     <h4>Contribuidores</h4>
     <div class="contributors-list">
@@ -63,12 +58,13 @@
       </a>
     </div>
   </section>
-
   <div id="configPopup" class="overlay hide">
     <div class="modal">
       <div class="modal-header">
         <h2>Configurações</h2>
-        <button id="closeConfig" class="close-btn"><img src="/images/cancel.svg" alt="Fechar" /></button>
+        <button id="closeConfig" class="close-btn">
+          <img src="/images/cancel.svg" alt="Fechar">
+        </button>
       </div>
       <div class="toggle-container">
         <span class="toggle-label">Exibir contribuidores do projeto</span>
@@ -84,14 +80,12 @@
       </div>
     </div>
   </div>
-
   <div id="countdown" class="hide">
     <span id="countdown-number"></span>
     <button class="js-restart-button" id="restartBtn" data-tooltip="Reiniciar o cronômetro">
-      <img src="/images/cancel.svg" alt="Reiniciar" />
+      <img src="/images/cancel.svg" alt="Reiniciar">
     </button>
   </div>
-
   <script src="script.js"></script>
 </body>
 </html>
