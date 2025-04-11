@@ -83,6 +83,7 @@ function TimerController(reference) {
             if (event.key === 'Enter') {
                 event.preventDefault();
                 event.stopPropagation();
+                finishEditInput();
                 startButton.focus();
             }
         });
