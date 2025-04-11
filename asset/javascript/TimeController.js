@@ -25,7 +25,9 @@ function TimerController(reference) {
     const cancelEditButton = editActionButtonsContainer.querySelector('.js-cancel-edit-button');
     const finishEditButton = editActionButtonsContainer.querySelector('.js-finish-edit-button');
 
-    const closeCountdownButton = reference.querySelector('.js-close-countdown-button');
+    const countdownContainerReference = reference.querySelector('.js-countdown-container');
+    const countdownNumber = countdownContainerReference.querySelector('.js-countdown-number');
+    const closeCountdownButton = countdownContainerReference.querySelector('.js-close-countdown-button');
 
     const DEFAULT_INTERVAL = 1000;
     const DEFAULT_SECONDS = 30;
@@ -47,14 +49,38 @@ function TimerController(reference) {
             validateInput(hourInput, maxHours);
         });
 
+        hourInput.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                event.stopPropagation();
+                minuteInput.focus();
+            }
+        });
+
         minuteInput.addEventListener('input', function () {
             let maxMinutes = 59;
             validateInput(minuteInput, maxMinutes);
         });
 
+        minuteInput.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                event.stopPropagation();
+                secondInput.focus();
+            }
+        });
+
         secondInput.addEventListener('input', function () {
             let maxSeconds = 59;
             validateInput(secondInput, maxSeconds);
+        });
+
+        secondInput.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                event.stopPropagation();
+                startButton.focus();
+            }
         });
     };
 
@@ -129,9 +155,8 @@ function TimerController(reference) {
     }
 
     function executeCountdown(seconds) {
-        let countdownContainerReference = reference.querySelector('.js-countdown-container');
         countdownContainerReference.showElement();
-        countdownContainerReference.querySelector('.js-countdown-number').textContent = seconds;
+        countdownNumber.textContent = seconds;
 
         if (seconds % 2 === 0) {
             countdownContainerReference.classList.add('even');
@@ -191,10 +216,9 @@ function TimerController(reference) {
 
     function closeCountdownContainer() {
         preventOpenCountdown = true;
-        let countdownContainerReference = reference.querySelector('.js-countdown-container');
         countdownContainerReference.hideElement();
         countdownContainerReference.classList.remove('even', 'odd');
-        countdownContainerReference.querySelector('.js-countdown-number').textContent = '';
+        countdownNumber.textContent = '';
     }
 
     function toggleButtonsContainer(isEditing) {
