@@ -115,6 +115,10 @@ function TimerController(reference) {
 
         toggleDisableInputs(false);
         toggleButtonsContainer(true);
+
+        setTimeout(() => {
+            hourInput.focus();
+        }, 10);
     }
 
     function cancelEditInput() {
