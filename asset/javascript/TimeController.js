@@ -15,7 +15,8 @@ function TimerController(reference) {
     const secondInput = reference.querySelector('.js-seconds-input');
 
     const actionButtonsContainer = reference.querySelector('.js-stopwatch-action-buttons');
-    const fullscreenButton = actionButtonsContainer.querySelector('.js-fullscreen-button');
+    const enterFullscreenButton = actionButtonsContainer.querySelector('.js-enter-fullscreen-button');
+    const exitFullscreenButton = actionButtonsContainer.querySelector('.js-exit-fullscreen-button');
     const startButton = actionButtonsContainer.querySelector('.js-start-button');
     const stopButton = actionButtonsContainer.querySelector('.js-stop-button');
     const pauseButton = actionButtonsContainer.querySelector('.js-pause-button');
@@ -105,7 +106,8 @@ function TimerController(reference) {
         stopButton.addEventListener('click', stop);
         pauseButton.addEventListener('click', pause);
 
-        fullscreenButton.addEventListener('click', handleFullscreen);
+        enterFullscreenButton.addEventListener('click', handleFullscreen);
+        exitFullscreenButton.addEventListener('click', handleFullscreen);
         closeCountdownButton.addEventListener('click', closeCountdownContainer);
     }
 
@@ -130,11 +132,11 @@ function TimerController(reference) {
         lastTimerStatus = TimerStatus.PAUSED;
         toggleDisableInputs(true);
         toggleButtonsContainer(false);
+        window.getSelection().removeAllRanges();
     }
 
     function start() {
-        const canStart =
-            TimerStatus.isStopped(lastTimerStatus) || TimerStatus.isPaused(lastTimerStatus);
+        const canStart = TimerStatus.isStopped(lastTimerStatus) || TimerStatus.isPaused(lastTimerStatus);
 
         if (!canStart) return;
 
@@ -169,12 +171,10 @@ function TimerController(reference) {
 
                 if (seconds == 0) {
                     preventOpenCountdown = false;
-
                     lastTimerStatus = TimerStatus.STOPPED;
-                    setInputValues(DEFAULT_SECONDS);
+
                     showDefaultButtons();
                     playStopSound();
-
                     clearInterval(timerIntervalId);
                 }
             } else {
@@ -205,9 +205,11 @@ function TimerController(reference) {
                     stopSound.pause();
                     stopSound.currentTime = 0;
                     clearInterval(fade);
+                    setInputValues(DEFAULT_SECONDS);
+                    preventOpenCountdown = false;
                 }
-            }, 200); 
-        }, 3000); 
+            }, 200);
+        }, 3000);
     }
 
     function executeCountdown(seconds) {
@@ -244,9 +246,15 @@ function TimerController(reference) {
 
     function handleFullscreen() {
         if (!document.fullscreenElement) {
+            exitFullscreenButton.showElement();
+            enterFullscreenButton.hideElement();
+
             document.documentElement.requestFullscreen();
             return;
         }
+
+        enterFullscreenButton.showElement();
+        exitFullscreenButton.hideElement();
 
         document.exitFullscreen();
     }
