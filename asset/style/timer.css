@@ -89,9 +89,9 @@ html::selection {
   margin: 0;
 }
 .input-stopwatch-container input[type=number] {
-  -moz-appearance: textfield;
-  -webkit-appearance: none;
   appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
 }
 
 .action-button-container {
