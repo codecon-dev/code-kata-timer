@@ -97,16 +97,35 @@ function TimerController(reference) {
     }
 
     function bindButtons() {
-        startButton.addEventListener('click', start);
-        stopButton.addEventListener('click', stop);
-        pauseButton.addEventListener('click', pause);
-
         editButton.addEventListener('click', openEditInput);
         cancelEditButton.addEventListener('click', cancelEditInput);
         finishEditButton.addEventListener('click', finishEditInput);
 
+        startButton.addEventListener('click', start);
+        stopButton.addEventListener('click', stop);
+        pauseButton.addEventListener('click', pause);
+
         fullscreenButton.addEventListener('click', handleFullscreen);
         closeCountdownButton.addEventListener('click', closeCountdownContainer);
+    }
+
+    function openEditInput() {
+        lastTimerStatus = TimerStatus.EDITING;
+        previousTimerValue = getInputSeconds();
+
+        toggleDisableInputs(false);
+        toggleButtonsContainer(true);
+    }
+
+    function cancelEditInput() {
+        setInputValues(previousTimerValue);
+        finishEditInput();
+    }
+
+    function finishEditInput() {
+        lastTimerStatus = TimerStatus.PAUSED;
+        toggleDisableInputs(true);
+        toggleButtonsContainer(false);
     }
 
     function start() {
@@ -217,25 +236,6 @@ function TimerController(reference) {
             pauseButton.hideElement();
             clearInterval(timerIntervalId);
         }
-    }
-
-    function openEditInput() {
-        lastTimerStatus = TimerStatus.EDITING;
-        previousTimerValue = getInputSeconds();
-
-        toggleDisableInputs(false);
-        toggleButtonsContainer(true);
-    }
-
-    function cancelEditInput() {
-        setInputValues(previousTimerValue);
-        finishEditInput();
-    }
-
-    function finishEditInput() {
-        lastTimerStatus = TimerStatus.PAUSED;
-        toggleDisableInputs(true);
-        toggleButtonsContainer(false);
     }
 
     function handleFullscreen() {
