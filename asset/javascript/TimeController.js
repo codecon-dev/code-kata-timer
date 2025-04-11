@@ -136,7 +136,7 @@ function TimerController(reference) {
         window.getSelection().removeAllRanges();
 
         let seconds = getInputSeconds();
-        
+
         if (seconds <= 0) {
             setInputValues(DEFAULT_SECONDS);
         }
@@ -236,6 +236,7 @@ function TimerController(reference) {
     function stop() {
         if (TimerStatus.isStopped(lastTimerStatus)) return;
 
+        preventOpenCountdown = false;
         lastTimerStatus = TimerStatus.STOPPED;
         showDefaultButtons();
         setInputValues(DEFAULT_SECONDS);
