@@ -32,6 +32,9 @@ function TimerController(reference) {
     const DEFAULT_INTERVAL = 1000;
     const DEFAULT_SECONDS = 30;
 
+    const tickTackSound = new Audio('./asset/sound/tick-tack.wav');
+    const stopSound = new Audio('./asset/sound/stop.mp3');
+
     let lastTimerStatus = TimerStatus.STOPPED;
     let previousTimerValue = DEFAULT_SECONDS;
     let timerIntervalId = null;
@@ -132,9 +135,11 @@ function TimerController(reference) {
                 let seconds = getInputSeconds();
                 seconds--;
 
-                if (seconds <= 10 && !preventOpenCountdown) {
+                if (seconds <= 10) {
                     lastTimerStatus = TimerStatus.COUNTDOWN;
-                    executeCountdown(seconds);
+                    playCountdownSound();
+
+                    if (!preventOpenCountdown) executeCountdown(seconds);
                 }
 
                 setInputValues(seconds);
@@ -145,6 +150,7 @@ function TimerController(reference) {
                     lastTimerStatus = TimerStatus.STOPPED;
                     setInputValues(DEFAULT_SECONDS);
                     showDefaultButtons();
+                    playStopSound();
 
                     clearInterval(timerIntervalId);
                 }
@@ -152,6 +158,33 @@ function TimerController(reference) {
                 clearInterval(timerIntervalId);
             }
         }, DEFAULT_INTERVAL);
+    }
+
+    function playCountdownSound() {
+        tickTackSound.volume = 0.5;
+        tickTackSound.loop = false;
+        tickTackSound.currentTime = 0;
+        tickTackSound.play();
+    }
+
+    function playStopSound() {
+        stopSound.volume = 0.5;
+        stopSound.loop = false;
+        stopSound.currentTime = 0;
+        stopSound.play();
+
+        setTimeout(() => {
+            const fade = setInterval(() => {
+                if (stopSound.volume > 0.05) {
+                    stopSound.volume -= 0.05;
+                } else {
+                    stopSound.volume = 0;
+                    stopSound.pause();
+                    stopSound.currentTime = 0;
+                    clearInterval(fade);
+                }
+            }, 200); 
+        }, 3000); 
     }
 
     function executeCountdown(seconds) {
