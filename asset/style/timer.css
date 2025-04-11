@@ -24,6 +24,15 @@ html {
   height: 100dvh;
   width: 100dvw;
 }
+body::-moz-selection, html::-moz-selection {
+  background: var(--secondary-bg-color);
+  color: var(--secondary-text-color);
+}
+body::selection,
+html::selection {
+  background: var(--secondary-bg-color);
+  color: var(--secondary-text-color);
+}
 
 .countdown-container {
   width: 100%;
@@ -101,6 +110,7 @@ html {
   border-radius: 99px;
   color: inherit;
   cursor: pointer;
+  transition: all 0.5s ease;
 }
 .action-button-container button img {
   max-width: 100%;
@@ -109,6 +119,11 @@ html {
 }
 .action-button-container button:hover {
   background-color: rgba(255, 255, 255, 0.15);
+}
+.action-button-container button:active, .action-button-container button:focus, .action-button-container button:focus-visible, .action-button-container button:focus-within {
+  box-shadow: 0 0 10px var(--secondary-bg-color);
+  background-color: rgba(255, 255, 255, 0.15);
+  outline: none;
 }
 
 .hide {

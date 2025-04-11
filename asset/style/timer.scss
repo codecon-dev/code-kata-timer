@@ -24,6 +24,12 @@ html {
     margin: 0;
     height: 100dvh;
     width: 100dvw;
+
+    &::selection {
+        background: var(--secondary-bg-color);
+        color: var(--secondary-text-color);
+      }
+
 }
 
 .countdown-container {
@@ -108,6 +114,7 @@ html {
         border-radius: 99px;
         color: inherit;
         cursor: pointer;
+        transition: all 0.5s ease;
 
         img {
             max-width: 100%;
@@ -117,6 +124,15 @@ html {
 
         &:hover {
             background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        &:active,
+        &:focus,
+        &:focus-visible,
+        &:focus-within {
+            box-shadow: 0 0 10px var(--secondary-bg-color);
+            background-color: rgba(255, 255, 255, 0.15);
+            outline: none;
         }
     }
 }
