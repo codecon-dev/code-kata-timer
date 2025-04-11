@@ -29,6 +29,11 @@ html {
         background: var(--secondary-bg-color);
         color: var(--secondary-text-color);
     }
+
+    ::-moz-selection {
+        background: var(--secondary-bg-color);
+        color: var(--secondary-text-color);
+    }
 }
 
 .countdown-container {

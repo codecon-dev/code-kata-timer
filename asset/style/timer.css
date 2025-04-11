@@ -33,6 +33,11 @@ html::selection {
   background: var(--secondary-bg-color);
   color: var(--secondary-text-color);
 }
+body ::-moz-selection,
+html ::-moz-selection {
+  background: var(--secondary-bg-color);
+  color: var(--secondary-text-color);
+}
 
 .countdown-container {
   width: 100%;
