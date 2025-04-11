@@ -12,7 +12,7 @@
     box-sizing: border-box;
 }
 
-body, 
+body,
 html {
     background-color: var(--primary-bg-color);
     color: var(--primary-text-color);
@@ -28,8 +28,7 @@ html {
     &::selection {
         background: var(--secondary-bg-color);
         color: var(--secondary-text-color);
-      }
-
+    }
 }
 
 .countdown-container {
@@ -65,7 +64,7 @@ html {
     justify-content: center;
     transition: all 0.5s ease;
     font-size: 112px;
-    
+
     @media screen and (max-width: 768px) {
         font-size: 56px;
     }
@@ -82,6 +81,7 @@ html {
         outline: none;
         text-align: center;
         font-size: inherit;
+        border-radius: 5px;
 
         &::-webkit-outer-spin-button,
         &::-webkit-inner-spin-button {

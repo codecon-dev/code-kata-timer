@@ -82,6 +82,7 @@ html::selection {
   outline: none;
   text-align: center;
   font-size: inherit;
+  border-radius: 5px;
 }
 .input-stopwatch-container input::-webkit-outer-spin-button, .input-stopwatch-container input::-webkit-inner-spin-button {
   -webkit-appearance: none;
