@@ -134,6 +134,12 @@ function TimerController(reference) {
         toggleDisableInputs(true);
         toggleButtonsContainer(false);
         window.getSelection().removeAllRanges();
+
+        let seconds = getInputSeconds();
+        
+        if (seconds <= 0) {
+            setInputValues(DEFAULT_SECONDS);
+        }
     }
 
     function start() {
