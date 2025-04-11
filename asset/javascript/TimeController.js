@@ -114,7 +114,7 @@ function TimerController(reference) {
 
     function openEditInput() {
         lastTimerStatus = TimerStatus.EDITING;
-        previousTimerValue = getInputSeconds();
+        previousTimerValue = getInputsValueAsSeconds();
 
         toggleDisableInputs(false);
         toggleButtonsContainer(true);
@@ -135,7 +135,7 @@ function TimerController(reference) {
         toggleButtonsContainer(false);
         window.getSelection().removeAllRanges();
 
-        let seconds = getInputSeconds();
+        let seconds = getInputsValueAsSeconds();
 
         if (seconds <= 0) {
             setInputValues(DEFAULT_SECONDS);
@@ -164,7 +164,7 @@ function TimerController(reference) {
                 TimerStatus.isPaused(lastTimerStatus);
 
             if (canStart) {
-                let seconds = getInputSeconds();
+                let seconds = getInputsValueAsSeconds();
                 seconds--;
 
                 if (seconds <= 10) {
@@ -300,7 +300,7 @@ function TimerController(reference) {
         editButton.showElement();
     }
 
-    function getInputSeconds() {
+    function getInputsValueAsSeconds() {
         const { seconds, minutes, hours } = getInputValues();
 
         const minutesAsSeconds = minuteToSeconds(minutes);
