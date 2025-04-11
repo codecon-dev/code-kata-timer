@@ -4,13 +4,15 @@
   "description": "",
   "scripts": {
     "dev": "parcel index.html",
-    "build": "parcel build index.html --public-url ./"
+    "build": "parcel build index.html --public-url ./",
+    "format": "prettier --write \"**/*.js\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "parcel": "^2.13.3",
+    "prettier": "^3.5.3",
     "svgo": "^3.3.2"
   }
 }
