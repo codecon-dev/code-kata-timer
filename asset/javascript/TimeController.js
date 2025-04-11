@@ -252,6 +252,9 @@ function TimerController(reference) {
         countdownContainerReference.hideElement();
         countdownContainerReference.classList.remove('even', 'odd');
         countdownNumber.textContent = '';
+        stopSound.pause();
+        stopSound.currentTime = 0;
+        stopSound.volume = 0;
     }
 
     function toggleButtonsContainer(isEditing) {
