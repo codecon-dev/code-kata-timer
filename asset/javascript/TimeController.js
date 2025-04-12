@@ -244,7 +244,7 @@ function TimerController(reference) {
     }
 
     function pause() {
-        if (lastTimerStatus === TimerStatus.RUNNING) {
+        if (lastTimerStatus === TimerStatus.RUNNING || lastTimerStatus === TimerStatus.COUNTDOWN) {
             lastTimerStatus = TimerStatus.PAUSED;
             startButton.showElement();
             pauseButton.hideElement();
