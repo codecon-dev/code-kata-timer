@@ -1,50 +1,62 @@
 <!DOCTYPE html>
 <html lang="pt">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
-    <title>Cronômetro</title>
-  </head>
-  <body>
-    <div class="input-stopwatch">
-      <input type="number" min="00" id="hour" disabled />
-      :
-      <input type="number" min="00" id="min" disabled />
-      :
-      <input type="number" min="00" id="sec" disabled />
+    <link rel="stylesheet" href="./asset/style/timer.css" />
+    <link rel="shortcut icon" href="./asset/images/favicon.ico" type="image/x-icon">
+    <title>Timer <Codecon></title>
+</head>
+
+<body class="js-body">
+    <div class="input-stopwatch-container">
+        <input type="number" min="00" disabled class="js-hour-input" />
+        :
+        <input type="number" min="00" disabled class="js-minute-input" />
+        :
+        <input type="number" min="00" disabled class="js-seconds-input" />
     </div>
-    <div class="button-wrapper js-stopwatch-button">
-      <button class="js-active-fullscreen">
-        <img src="/images/full-screen.svg" alt="Colocar em tela cheia" />
-      </button>
-      <button class="js-edit-button">
-        <img src="/images/edit.svg" alt="Editar" />
-      </button>
-      <button class="js-stop-button" id="toZeroBtn">
-        <img src="/images/reset.svg" alt="Resetar" />
-      </button>
-      <button class="js-play-button" id="startBtn">
-        <img src="/images/play.svg" alt="Iniciar" />
-      </button>
-      <button class="js-pause-button" id="pauseBtn">
-        <img src="/images/pause.svg" alt="Pausar" />
-      </button>
+
+    <div class="action-button-container js-stopwatch-action-buttons">
+        <button class="js-enter-fullscreen-button">
+            <img src="./asset/images/full-screen.svg" alt="Colocar em tela cheia" />
+        </button>
+        <button class="js-exit-fullscreen-button hide">
+            <img src="./asset/images/exit-full-screen.svg" alt="Colocar em tela cheia" />
+        </button>
+        <button class="js-edit-button">
+            <img src="./asset/images/edit.svg" alt="Editar" />
+        </button>
+        <button class="js-stop-button hide">
+            <img src="./asset/images/reset.svg" alt="Resetar" />
+        </button>
+        <button class="js-start-button">
+            <img src="./asset/images/play.svg" alt="Iniciar" />
+        </button>
+        <button class="js-pause-button hide">
+            <img src="./asset/images/pause.svg" alt="Pausar" />
+        </button>
     </div>
-    <div class="button-wrapper js-edit-container-stopwatch hide">
-      <button class="js-cancel-button">
-        <img src="/images/cancel.svg" alt="Cancelar" />
-      </button>
-      <button class="js-finish-edit-button">
-        <img src="/images/ok.svg" alt="Finalizar" />
-      </button>
+
+    <div class="action-button-container js-edit-container-stopwatch hide">
+        <button class="js-cancel-edit-button">
+            <img src="./asset/images/cancel.svg" alt="Cancelar" />
+        </button>
+        <button class="js-finish-edit-button">
+            <img src="./asset/images/ok.svg" alt="Finalizar" />
+        </button>
     </div>
-    <div id="countdown" class="hide">
-      <span id="countdown-number"></span>
-      <button class="js-restart-button" id="restartBtn">
-        <img src="/images/cancel.svg" alt="Reiniciar" />
-      </button>
+
+    <div class="js-countdown-container countdown-container hide">
+        <span class="js-countdown-number countdown-number"></span>
+        <div class="action-button-container">
+            <button class="js-close-countdown-button">
+                <img src="./asset/images/cancel.svg" alt="Reiniciar" />
+            </button>
+        </div>
     </div>
-    <script src="script.js"></script>
-  </body>
+    <script type="module" src="./asset/javascript/TimeController.js"></script>
+</body>
+
 </html>
