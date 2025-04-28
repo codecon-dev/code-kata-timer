@@ -1,3 +1,5 @@
+import tickTackSoundUrl from '../sound/tick-tack.wav';
+import stopSoundUrl from '../sound/stop.mp3';
 import './helper.js';
 import { TimerStatus } from './TimerStatus.js';
 import {
@@ -33,8 +35,15 @@ function TimerController(reference) {
     const DEFAULT_INTERVAL = 1000;
     const DEFAULT_SECONDS = 30;
 
-    const tickTackSound = new Audio('./asset/sound/tick-tack.wav');
-    const stopSound = new Audio('./asset/sound/stop.mp3');
+    const tickTackSound = new Audio(tickTackSoundUrl);
+    const stopSound = new Audio(stopSoundUrl);
+    tickTackSound.addEventListener('error', e => {
+        console.error('Erro ao carregar tick-tack.wav:', e);
+    });
+
+    stopSound.addEventListener('error', e => {
+        console.error('Erro ao carregar stop.mp3:', e);
+    });
 
     let lastTimerStatus = TimerStatus.STOPPED;
     let previousTimerValue = DEFAULT_SECONDS;
@@ -166,7 +175,6 @@ function TimerController(reference) {
             if (canStart) {
                 let seconds = getInputsValueAsSeconds();
                 seconds--;
-
                 if (seconds <= 10) {
                     lastTimerStatus = TimerStatus.COUNTDOWN;
                     playCountdownSound();
