@@ -53,6 +53,7 @@ function TimerController(reference) {
     function init() {
         bindInputs();
         bindButtons();
+        bindFullscreenEvents();
         setInputValues(DEFAULT_SECONDS);
     }
 
@@ -97,6 +98,10 @@ function TimerController(reference) {
             }
         });
     };
+
+    function bindFullscreenEvents() {
+        document.addEventListener('fullscreenchange', handleButtonFullscreenChange);
+    }
 
     function validateInput(input, maxValue) {
         let value = parseInt(input.value) || 0;
@@ -260,17 +265,26 @@ function TimerController(reference) {
         }
     }
 
-    function handleFullscreen() {
-        if (!document.fullscreenElement) {
+    function isInFullscreen() {
+        return !!document.fullscreenElement
+    }
+    
+    function handleButtonFullscreenChange() {
+        if (isInFullscreen()) {
             exitFullscreenButton.showElement();
             enterFullscreenButton.hideElement();
-
-            document.documentElement.requestFullscreen();
             return;
         }
 
         enterFullscreenButton.showElement();
         exitFullscreenButton.hideElement();
+    }
+
+    function handleFullscreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+            return;
+        }
 
         document.exitFullscreen();
     }
