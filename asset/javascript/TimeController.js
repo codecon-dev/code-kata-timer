@@ -357,3 +357,5 @@ document.addEventListener('DOMContentLoaded', function () {
     const timerController = new TimerController(reference);
     window.timerController = timerController;
 });
+
+export default TimerController;
