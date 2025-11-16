@@ -101,6 +101,13 @@ function TimerController(reference) {
 
     function bindFullscreenEvents() {
         document.addEventListener('fullscreenchange', handleButtonFullscreenChange);
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+    }
+
+    function handleVisibilityChange() {
+        if (document.hidden) return;
+
+        updatePageTitle();
     }
 
     function validateInput(input, maxValue) {
@@ -177,7 +184,7 @@ function TimerController(reference) {
                 TimerStatus.isCountdown(lastTimerStatus) ||
                 TimerStatus.isPaused(lastTimerStatus);
 
-            if(!canStart) {
+            if (!canStart) {
                 clearInterval(timerIntervalId);
                 return;
             }
@@ -265,7 +272,7 @@ function TimerController(reference) {
     }
 
     function isInFullscreen() {
-        return !!document.fullscreenElement
+        return !!document.fullscreenElement;
     }
 
     function handleButtonFullscreenChange() {
@@ -346,6 +353,13 @@ function TimerController(reference) {
         hourInput.value = formatTimeUnit(hours);
         minuteInput.value = formatTimeUnit(minutes);
         secondInput.value = formatTimeUnit(seconds);
+
+        updatePageTitle();
+    }
+
+    function updatePageTitle() {
+        const { seconds, minutes, hours } = getInputValues();
+        document.title = `${formatTimeUnit(hours)}:${formatTimeUnit(minutes)}:${formatTimeUnit(seconds)} - Timer <Codecon>`;
     }
 
     init();
