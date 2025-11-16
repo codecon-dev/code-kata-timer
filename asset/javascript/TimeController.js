@@ -168,6 +168,8 @@ function TimerController(reference) {
 
         if (!canStart) return;
 
+        reference.classList.remove('inverted');
+        countdownContainerReference.classList.remove('inverted');
         startButton.hideElement();
         pauseButton.showElement();
         stopButton.showElement();
@@ -204,6 +206,8 @@ function TimerController(reference) {
                 preventOpenCountdown = false;
                 lastTimerStatus = TimerStatus.STOPPED;
 
+                reference.classList.add('inverted');
+                countdownContainerReference.classList.add('inverted');
                 showDefaultButtons();
                 playStopSound();
                 clearInterval(timerIntervalId);
@@ -254,6 +258,8 @@ function TimerController(reference) {
 
         preventOpenCountdown = false;
         lastTimerStatus = TimerStatus.STOPPED;
+        reference.classList.remove('inverted');
+        countdownContainerReference.classList.remove('inverted');
         showDefaultButtons();
         setInputValues(DEFAULT_SECONDS);
         clearInterval(timerIntervalId);
@@ -297,6 +303,8 @@ function TimerController(reference) {
 
     function closeCountdownContainer() {
         preventOpenCountdown = true;
+        reference.classList.remove('inverted');
+        countdownContainerReference.classList.remove('inverted');
         countdownContainerReference.hideElement();
         countdownContainerReference.classList.remove('even', 'odd');
         countdownNumber.textContent = '';
