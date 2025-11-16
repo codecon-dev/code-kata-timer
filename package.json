@@ -22,9 +22,21 @@
   },
   "jest": {
     "testEnvironment": "jsdom",
+    "transform": {
+      "^.+\\.js$": [
+        "babel-jest",
+        {
+          "presets": [
+            "@babel/preset-env"
+          ]
+        }
+      ]
+    },
     "moduleNameMapper": {
       "^.+\\.(wav|mp3)$": "<rootDir>/asset/javascript/__mocks__/fileMock.js"
     },
-    "setupFiles": ["<rootDir>/asset/javascript/__mocks__/audioMock.js"]
+    "setupFiles": [
+      "<rootDir>/asset/javascript/__mocks__/audioMock.js"
+    ]
   }
 }

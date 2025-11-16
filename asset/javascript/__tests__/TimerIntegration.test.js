@@ -8,6 +8,12 @@ describe('TimerController Integration', () => {
 
     beforeEach(() => {
         mockReference = {
+            classList: {
+                add: jest.fn(),
+                remove: jest.fn(),
+                contains: jest.fn(),
+                toggle: jest.fn(),
+            },
             querySelector: jest.fn(selector => {
                 if (selector === '.js-stopwatch-action-buttons') {
                     return mockElement();
@@ -25,21 +31,25 @@ describe('TimerController Integration', () => {
 
     it('deve iniciar, pausar e parar o timer corretamente', () => {
         const timerController = new TimerController(mockReference);
-    
-        const startButton = mockReference.querySelector('.js-stopwatch-action-buttons').querySelector('.js-start-button');
+
+        const startButton = mockReference
+            .querySelector('.js-stopwatch-action-buttons')
+            .querySelector('.js-start-button');
         expect(startButton.addEventListener).toHaveBeenCalledWith('click', expect.any(Function));
-    
+
         const startHandler = startButton.addEventListener.mock.calls[0][1];
         startHandler();
-    
+
         expect(startButton.hideElement).toHaveBeenCalled();
-    
-        const pauseButton = mockReference.querySelector('.js-stopwatch-action-buttons').querySelector('.js-pause-button');
+
+        const pauseButton = mockReference
+            .querySelector('.js-stopwatch-action-buttons')
+            .querySelector('.js-pause-button');
         expect(pauseButton.addEventListener).toHaveBeenCalledWith('click', expect.any(Function));
-    
+
         const pauseHandler = pauseButton.addEventListener.mock.calls[0][1];
         pauseHandler();
-    
+
         expect(pauseButton.hideElement).toHaveBeenCalled();
     });
 });
