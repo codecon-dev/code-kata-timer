@@ -177,27 +177,28 @@ function TimerController(reference) {
                 TimerStatus.isCountdown(lastTimerStatus) ||
                 TimerStatus.isPaused(lastTimerStatus);
 
-            if (canStart) {
-                let seconds = getInputsValueAsSeconds();
-                seconds--;
-                if (seconds <= 10) {
-                    lastTimerStatus = TimerStatus.COUNTDOWN;
-                    playCountdownSound();
+            if(!canStart) {
+                clearInterval(timerIntervalId);
+                return;
+            }
 
-                    if (!preventOpenCountdown) executeCountdown(seconds);
-                }
+            let seconds = getInputsValueAsSeconds();
+            seconds--;
+            if (seconds <= 10) {
+                lastTimerStatus = TimerStatus.COUNTDOWN;
+                playCountdownSound();
 
-                setInputValues(seconds);
+                if (!preventOpenCountdown) executeCountdown(seconds);
+            }
 
-                if (seconds == 0) {
-                    preventOpenCountdown = false;
-                    lastTimerStatus = TimerStatus.STOPPED;
+            setInputValues(seconds);
 
-                    showDefaultButtons();
-                    playStopSound();
-                    clearInterval(timerIntervalId);
-                }
-            } else {
+            if (seconds == 0) {
+                preventOpenCountdown = false;
+                lastTimerStatus = TimerStatus.STOPPED;
+
+                showDefaultButtons();
+                playStopSound();
                 clearInterval(timerIntervalId);
             }
         }, DEFAULT_INTERVAL);
@@ -220,14 +221,15 @@ function TimerController(reference) {
             const fade = setInterval(() => {
                 if (stopSound.volume > 0.05) {
                     stopSound.volume -= 0.05;
-                } else {
-                    stopSound.volume = 0;
-                    stopSound.pause();
-                    stopSound.currentTime = 0;
-                    clearInterval(fade);
-                    setInputValues(DEFAULT_SECONDS);
-                    preventOpenCountdown = false;
+                    return;
                 }
+
+                stopSound.volume = 0;
+                stopSound.pause();
+                stopSound.currentTime = 0;
+                clearInterval(fade);
+                setInputValues(DEFAULT_SECONDS);
+                preventOpenCountdown = false;
             }, 200);
         }, 3000);
     }
@@ -236,14 +238,8 @@ function TimerController(reference) {
         countdownContainerReference.showElement();
         countdownNumber.textContent = seconds;
 
-        if (seconds % 2 === 0) {
-            countdownContainerReference.classList.add('even');
-            countdownContainerReference.classList.remove('odd');
-            return;
-        }
-
-        countdownContainerReference.classList.add('odd');
-        countdownContainerReference.classList.remove('even');
+        countdownContainerReference.classList.toggle('even');
+        countdownContainerReference.classList.toggle('odd');
     }
 
     function stop() {
@@ -257,18 +253,21 @@ function TimerController(reference) {
     }
 
     function pause() {
-        if (lastTimerStatus === TimerStatus.RUNNING || lastTimerStatus === TimerStatus.COUNTDOWN) {
-            lastTimerStatus = TimerStatus.PAUSED;
-            startButton.showElement();
-            pauseButton.hideElement();
-            clearInterval(timerIntervalId);
-        }
+        const shouldNotPause = lastTimerStatus !== TimerStatus.RUNNING && lastTimerStatus !== TimerStatus.COUNTDOWN;
+        if (shouldNotPause) return;
+
+        lastTimerStatus = TimerStatus.PAUSED;
+
+        startButton.showElement();
+        pauseButton.hideElement();
+
+        clearInterval(timerIntervalId);
     }
 
     function isInFullscreen() {
         return !!document.fullscreenElement
     }
-    
+
     function handleButtonFullscreenChange() {
         if (isInFullscreen()) {
             exitFullscreenButton.showElement();
