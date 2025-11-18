@@ -101,6 +101,13 @@ function TimerController(reference) {
 
     function bindFullscreenEvents() {
         document.addEventListener('fullscreenchange', handleButtonFullscreenChange);
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+    }
+
+    function handleVisibilityChange() {
+        if (document.hidden) return;
+
+        updatePageTitle();
     }
 
     function validateInput(input, maxValue) {
@@ -161,6 +168,8 @@ function TimerController(reference) {
 
         if (!canStart) return;
 
+        reference.classList.remove('inverted');
+        countdownContainerReference.classList.remove('inverted');
         startButton.hideElement();
         pauseButton.showElement();
         stopButton.showElement();
@@ -177,27 +186,28 @@ function TimerController(reference) {
                 TimerStatus.isCountdown(lastTimerStatus) ||
                 TimerStatus.isPaused(lastTimerStatus);
 
-            if (canStart) {
-                let seconds = getInputsValueAsSeconds();
-                seconds--;
-                if (seconds <= 10) {
-                    lastTimerStatus = TimerStatus.COUNTDOWN;
-                    playCountdownSound();
+            if (!canStart) {
+                clearInterval(timerIntervalId);
+                return;
+            }
 
-                    if (!preventOpenCountdown) executeCountdown(seconds);
-                }
+            let seconds = getInputsValueAsSeconds();
+            seconds--;
+            if (seconds <= 10) {
+                lastTimerStatus = TimerStatus.COUNTDOWN;
+                playCountdownSound();
 
-                setInputValues(seconds);
+                if (!preventOpenCountdown) executeCountdown(seconds);
+            }
 
-                if (seconds == 0) {
-                    preventOpenCountdown = false;
-                    lastTimerStatus = TimerStatus.STOPPED;
+            setInputValues(seconds);
 
-                    showDefaultButtons();
-                    playStopSound();
-                    clearInterval(timerIntervalId);
-                }
-            } else {
+            if (seconds == 0) {
+                preventOpenCountdown = false;
+                lastTimerStatus = TimerStatus.STOPPED;
+
+                showDefaultButtons();
+                playStopSound();
                 clearInterval(timerIntervalId);
             }
         }, DEFAULT_INTERVAL);
@@ -220,14 +230,15 @@ function TimerController(reference) {
             const fade = setInterval(() => {
                 if (stopSound.volume > 0.05) {
                     stopSound.volume -= 0.05;
-                } else {
-                    stopSound.volume = 0;
-                    stopSound.pause();
-                    stopSound.currentTime = 0;
-                    clearInterval(fade);
-                    setInputValues(DEFAULT_SECONDS);
-                    preventOpenCountdown = false;
+                    return;
                 }
+
+                stopSound.volume = 0;
+                stopSound.pause();
+                stopSound.currentTime = 0;
+                clearInterval(fade);
+                setInputValues(DEFAULT_SECONDS);
+                preventOpenCountdown = false;
             }, 200);
         }, 3000);
     }
@@ -236,14 +247,18 @@ function TimerController(reference) {
         countdownContainerReference.showElement();
         countdownNumber.textContent = seconds;
 
+        countdownContainerReference.classList.toggle('even');
+        countdownContainerReference.classList.toggle('odd');
+
         if (seconds % 2 === 0) {
-            countdownContainerReference.classList.add('even');
-            countdownContainerReference.classList.remove('odd');
+            reference.classList.add('inverted');
+            countdownContainerReference.classList.add('inverted');
+
             return;
         }
 
-        countdownContainerReference.classList.add('odd');
-        countdownContainerReference.classList.remove('even');
+        reference.classList.remove('inverted');
+        countdownContainerReference.classList.remove('inverted');
     }
 
     function stop() {
@@ -251,24 +266,29 @@ function TimerController(reference) {
 
         preventOpenCountdown = false;
         lastTimerStatus = TimerStatus.STOPPED;
+        reference.classList.remove('inverted');
+        countdownContainerReference.classList.remove('inverted');
         showDefaultButtons();
         setInputValues(DEFAULT_SECONDS);
         clearInterval(timerIntervalId);
     }
 
     function pause() {
-        if (lastTimerStatus === TimerStatus.RUNNING || lastTimerStatus === TimerStatus.COUNTDOWN) {
-            lastTimerStatus = TimerStatus.PAUSED;
-            startButton.showElement();
-            pauseButton.hideElement();
-            clearInterval(timerIntervalId);
-        }
+        const shouldNotPause = lastTimerStatus !== TimerStatus.RUNNING && lastTimerStatus !== TimerStatus.COUNTDOWN;
+        if (shouldNotPause) return;
+
+        lastTimerStatus = TimerStatus.PAUSED;
+
+        startButton.showElement();
+        pauseButton.hideElement();
+
+        clearInterval(timerIntervalId);
     }
 
     function isInFullscreen() {
-        return !!document.fullscreenElement
+        return !!document.fullscreenElement;
     }
-    
+
     function handleButtonFullscreenChange() {
         if (isInFullscreen()) {
             exitFullscreenButton.showElement();
@@ -291,6 +311,8 @@ function TimerController(reference) {
 
     function closeCountdownContainer() {
         preventOpenCountdown = true;
+        reference.classList.remove('inverted');
+        countdownContainerReference.classList.remove('inverted');
         countdownContainerReference.hideElement();
         countdownContainerReference.classList.remove('even', 'odd');
         countdownNumber.textContent = '';
@@ -347,6 +369,13 @@ function TimerController(reference) {
         hourInput.value = formatTimeUnit(hours);
         minuteInput.value = formatTimeUnit(minutes);
         secondInput.value = formatTimeUnit(seconds);
+
+        updatePageTitle();
+    }
+
+    function updatePageTitle() {
+        const { seconds, minutes, hours } = getInputValues();
+        document.title = `${formatTimeUnit(hours)}:${formatTimeUnit(minutes)}:${formatTimeUnit(seconds)} - Timer <Codecon>`;
     }
 
     init();
