@@ -5,7 +5,21 @@
     --primary-text-color: #46ffbe;
     --secondary-bg-color: #46ffbe;
     --secondary-text-color: #444444;
+    --button-background-color: #242424;
+    --button-icon-filter: inherit;
+    --button-border: 1px solid #fff;
 }
+
+.versus-theme {
+    --primary-bg-color: #ED5026;
+    --primary-text-color: #FFFFFF;
+    --secondary-bg-color: #000000;
+    --secondary-text-color: #444444;
+    --button-background-color: #FFFFFF;
+    --button-icon-filter: brightness(0);
+    --button-border: none;
+}
+
 
 * {
     font-family: 'Orbitron', sans-serif;
@@ -20,7 +34,7 @@ html {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 48px;
+    gap: 24px;
     margin: 0;
     height: 100dvh;
     width: 100dvw;
@@ -85,6 +99,7 @@ html {
     width: 100%;
     display: flex;
     justify-content: center;
+    align-items: center;
     transition: all 0.5s ease;
     font-size: 112px;
 
@@ -123,30 +138,32 @@ html {
 .action-button-container {
     display: flex;
     flex-direction: row;
-    gap: 32px;
+    gap: 18px;
 
     button {
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 0;
-        height: 32px;
-        width: 32px;
-        background-color: transparent;
-        border: 1px solid white;
+        height: 48px;
+        width: 48px;
+        background-color: var(--button-background-color);
+        border: var(--button-border);
         border-radius: 99px;
         color: inherit;
         cursor: pointer;
         transition: all 0.5s ease;
 
         img {
-            max-width: 100%;
-            max-height: 100%;
+            max-width: 20px;
+            max-height: 1020px;
             display: block;
+
+            filter: var(--button-icon-filter);
         }
 
         &:hover {
-            background-color: rgba(255, 255, 255, 0.15);
+            transform: scale(1.05);
         }
 
         &:active,
@@ -162,4 +179,14 @@ html {
 
 .hide {
     display: none !important;
+}
+
+.timer-logo {
+    display: none;
+}
+
+.versus-theme .timer-logo {
+    display: block;
+    width: 380px;
+    margin-bottom: 20px;
 }
