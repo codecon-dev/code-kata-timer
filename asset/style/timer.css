@@ -7,6 +7,7 @@
   --button-background-color: #242424;
   --button-icon-filter: inherit;
   --button-border: 1px solid #fff;
+  --primary-dark-color: #1ea97a;
 }
 
 .versus-theme {
@@ -14,9 +15,9 @@
   --primary-text-color: #FFFFFF;
   --secondary-bg-color: #000000;
   --secondary-text-color: #444444;
-  --button-background-color: #FFFFFF;
-  --button-icon-filter: brightness(0);
-  --button-border: none;
+  --button-background-color: transparent;
+  --button-icon-filter: brightness(100);
+  --button-border: 1px solid #fff;
 }
 
 * {
@@ -146,7 +147,7 @@ html.inverted .input-stopwatch-container input {
 }
 .action-button-container button img {
   max-width: 20px;
-  max-height: 1020px;
+  max-height: 20px;
   display: block;
   filter: var(--button-icon-filter);
 }
@@ -171,6 +172,84 @@ html.inverted .input-stopwatch-container input {
   display: block;
   width: 380px;
   margin-bottom: 20px;
+}
+
+.theme-menu-container {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 10;
+}
+
+.theme-menu-button {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 99px;
+  border: var(--button-border);
+  cursor: pointer;
+  font-size: 28px;
+  line-height: 1;
+  background: transparent;
+  color: var(--primary-text-color);
+  transition: all 0.3s ease;
+}
+.theme-menu-button:hover {
+  transform: scale(1.05);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.theme-menu-button:focus, .theme-menu-button:focus-visible {
+  outline: none;
+}
+
+.theme-dropdown {
+  position: absolute;
+  bottom: 60px;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  min-width: 180px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+.theme-dropdown button {
+  border: none;
+  background: transparent;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: white;
+  font-size: 14px;
+  text-align: left;
+  transition: all 0.3s ease;
+}
+.theme-dropdown button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.versus-theme .countdown-container .action-button-container button {
+  background: #ED5026;
+  border: 1px solid white;
+}
+
+.versus-theme .countdown-container .action-button-container button img {
+  filter: brightness(100);
+}
+
+.versus-theme.inverted .theme-menu-button {
+  color: #ED5026;
+  border: 1px solid #ED5026;
+}
+
+body.inverted .theme-menu-button {
+  color: #242424;
+  border: 1px solid #242424;
 }
 
 /*# sourceMappingURL=timer.css.map */

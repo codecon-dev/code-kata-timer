@@ -23,6 +23,22 @@
         <input type="number" min="00" disabled class="js-seconds-input" />
     </div>
 
+    <div class="theme-menu-container">
+        <button class="theme-menu-button js-theme-menu-button">
+        ⋮
+        </button>
+
+        <div class="theme-dropdown js-theme-dropdown hide">
+            <button class="js-default-theme-button">
+                Standard Theme
+            </button>
+
+            <button class="js-versus-theme-button">
+                Versus Theme
+            </button>
+        </div>
+    </div>
+
     <div class="action-button-container js-stopwatch-action-buttons">
         <button class="js-enter-fullscreen-button">
             <img src="./asset/images/full-screen.svg" alt="Colocar em tela cheia" />
@@ -62,6 +78,7 @@
         </div>
     </div>
     <script type="module" src="./asset/javascript/TimeController.js"></script>
+    <script type="module" src="./asset/javascript/ThemeController.js"></script>
 </body>
 
 </html>
