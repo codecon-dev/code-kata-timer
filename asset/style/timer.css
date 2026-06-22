@@ -4,7 +4,7 @@
   --primary-text-color: #46ffbe;
   --secondary-bg-color: #46ffbe;
   --secondary-text-color: #444444;
-  --button-background-color: #242424;
+  --button-background-color: transparent;
   --button-icon-filter: inherit;
   --button-border: 1px solid #fff;
   --primary-dark-color: #1ea97a;
@@ -18,6 +18,10 @@
   --button-background-color: transparent;
   --button-icon-filter: brightness(100);
   --button-border: 1px solid #fff;
+}
+.versus-theme .timer-logo {
+  display: block;
+  width: 380px;
 }
 
 * {
@@ -33,7 +37,7 @@ html {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 24px;
+  gap: 48px;
   margin: 0;
   height: 100dvh;
   width: 100dvw;
@@ -50,7 +54,7 @@ html ::-moz-selection {
 }
 body.inverted,
 html.inverted {
-  background-color: var(--primary-text-color);
+  background-color: var(--secondary-bg-color);
   color: var(--primary-bg-color);
 }
 body.inverted .input-stopwatch-container input,
@@ -82,7 +86,7 @@ html.inverted .input-stopwatch-container input {
   color: var(--primary-text-color);
 }
 .countdown-container.inverted {
-  background: var(--primary-text-color);
+  background: var(--secondary-bg-color);
   color: var(--primary-bg-color);
 }
 .countdown-container.inverted .action-button-container button {
@@ -129,32 +133,34 @@ html.inverted .input-stopwatch-container input {
 .action-button-container {
   display: flex;
   flex-direction: row;
-  gap: 18px;
+  gap: 32px;
 }
-.action-button-container button {
+
+button.as-icon {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  height: 48px;
-  width: 48px;
+  height: 32px;
+  width: 32px;
   background-color: var(--button-background-color);
   border: var(--button-border);
   border-radius: 99px;
   color: inherit;
   cursor: pointer;
   transition: all 0.5s ease;
+  font-size: 20px;
 }
-.action-button-container button img {
+button.as-icon img {
   max-width: 20px;
   max-height: 20px;
   display: block;
   filter: var(--button-icon-filter);
 }
-.action-button-container button:hover {
+button.as-icon:hover {
   transform: scale(1.05);
 }
-.action-button-container button:active, .action-button-container button:focus, .action-button-container button:focus-visible, .action-button-container button:focus-within {
+button.as-icon:active, button.as-icon:focus, button.as-icon:focus-visible, button.as-icon:focus-within {
   box-shadow: 0 0 10px var(--secondary-bg-color);
   background-color: rgba(255, 255, 255, 0.15);
   outline: none;
@@ -168,40 +174,11 @@ html.inverted .input-stopwatch-container input {
   display: none;
 }
 
-.versus-theme .timer-logo {
-  display: block;
-  width: 380px;
-  margin-bottom: 20px;
-}
-
 .theme-menu-container {
   position: fixed;
   bottom: 32px;
   right: 32px;
   z-index: 10;
-}
-
-.theme-menu-button {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 99px;
-  border: var(--button-border);
-  cursor: pointer;
-  font-size: 28px;
-  line-height: 1;
-  background: transparent;
-  color: var(--primary-text-color);
-  transition: all 0.3s ease;
-}
-.theme-menu-button:hover {
-  transform: scale(1.05);
-  background-color: rgba(255, 255, 255, 0.1);
-}
-.theme-menu-button:focus, .theme-menu-button:focus-visible {
-  outline: none;
 }
 
 .theme-dropdown {
@@ -231,25 +208,6 @@ html.inverted .input-stopwatch-container input {
 }
 .theme-dropdown button:hover {
   background: rgba(255, 255, 255, 0.1);
-}
-
-.versus-theme .countdown-container .action-button-container button {
-  background: #ED5026;
-  border: 1px solid white;
-}
-
-.versus-theme .countdown-container .action-button-container button img {
-  filter: brightness(100);
-}
-
-.versus-theme.inverted .theme-menu-button {
-  color: #ED5026;
-  border: 1px solid #ED5026;
-}
-
-body.inverted .theme-menu-button {
-  color: #242424;
-  border: 1px solid #242424;
 }
 
 /*# sourceMappingURL=timer.css.map */
