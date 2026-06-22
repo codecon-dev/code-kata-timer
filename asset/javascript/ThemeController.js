@@ -1,4 +1,4 @@
-function ThemeController(reference) {
+export function ThemeController(reference) {
     const body = reference;
 
     const themeMenuButton = body.querySelector('.js-theme-menu-button');
@@ -8,6 +8,10 @@ function ThemeController(reference) {
     const versusThemeButton = body.querySelector('.js-versus-theme-button');
 
     function init() {
+        if (!themeMenuButton || !themeDropdown || !defaultThemeButton || !versusThemeButton) {
+            return;
+        }
+
         bindButtons();
     }
 
@@ -22,15 +26,15 @@ function ThemeController(reference) {
     }
 
     function setDefaultTheme() {
-    body.classList.remove('versus-theme');
-    body.classList.remove('inverted');
-    closeThemeMenu();
+        body.classList.remove('versus-theme');
+        body.classList.remove('inverted');
+        closeThemeMenu();
     }
 
     function setVersusTheme() {
-    body.classList.add('versus-theme');
-    body.classList.remove('inverted');
-    closeThemeMenu();
+        body.classList.add('versus-theme');
+        body.classList.remove('inverted');
+        closeThemeMenu();
     }
 
     function closeThemeMenu() {
@@ -39,11 +43,3 @@ function ThemeController(reference) {
 
     init();
 }
-
-document.addEventListener('DOMContentLoaded', function () {
-    const reference = document.querySelector('.js-body');
-    const themeController = new ThemeController(reference);
-    window.themeController = themeController;
-});
-
-export default ThemeController;
