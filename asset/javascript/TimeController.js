@@ -10,11 +10,13 @@ import {
     secondsToHour,
     secondsToMinute,
 } from './TimeUtils.js';
+import { ThemeController } from './ThemeController.js';
 
 function TimerController(reference) {
     const hourInput = reference.querySelector('.js-hour-input');
     const minuteInput = reference.querySelector('.js-minute-input');
     const secondInput = reference.querySelector('.js-seconds-input');
+    const themeButton = reference.querySelector('.js-theme-menu-container');
 
     const actionButtonsContainer = reference.querySelector('.js-stopwatch-action-buttons');
     const enterFullscreenButton = actionButtonsContainer.querySelector('.js-enter-fullscreen-button');
@@ -55,6 +57,7 @@ function TimerController(reference) {
         bindButtons();
         bindFullscreenEvents();
         setInputValues(DEFAULT_SECONDS);
+        new ThemeController(reference);
     }
 
     var bindInputs = function () {
@@ -197,7 +200,10 @@ function TimerController(reference) {
                 lastTimerStatus = TimerStatus.COUNTDOWN;
                 playCountdownSound();
 
-                if (!preventOpenCountdown) executeCountdown(seconds);
+                if (!preventOpenCountdown) {
+                    themeButton.hideElement();
+                    executeCountdown(seconds);
+                }
             }
 
             setInputValues(seconds);
@@ -319,6 +325,7 @@ function TimerController(reference) {
         stopSound.pause();
         stopSound.currentTime = 0;
         stopSound.volume = 0;
+        themeButton.showElement();
     }
 
     function toggleButtonsContainer(isEditing) {

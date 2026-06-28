@@ -5,6 +5,25 @@
     --primary-text-color: #46ffbe;
     --secondary-bg-color: #46ffbe;
     --secondary-text-color: #444444;
+    --button-background-color: transparent;
+    --button-icon-filter: inherit;
+    --button-border: 1px solid #fff;
+    --primary-dark-color: #1ea97a;
+}
+
+.versus-theme {
+    --primary-bg-color: #ED5026;
+    --primary-text-color: #FFFFFF;
+    --secondary-bg-color: #000000;
+    --secondary-text-color: #444444;
+    --button-background-color: transparent;
+    --button-icon-filter: brightness(100);
+    --button-border: 1px solid #fff;
+
+    .timer-logo {
+        display: block;
+        width: 380px;
+    }
 }
 
 * {
@@ -36,7 +55,7 @@ html {
     }
 
     &.inverted {
-        background-color: var(--primary-text-color);
+        background-color: var(--secondary-bg-color);
         color: var(--primary-bg-color);
 
         .input-stopwatch-container input {
@@ -72,7 +91,7 @@ html {
     }
 
     &.inverted {
-        background: var(--primary-text-color);
+        background: var(--secondary-bg-color);
         color: var(--primary-bg-color);
 
         .action-button-container button {
@@ -85,6 +104,7 @@ html {
     width: 100%;
     display: flex;
     justify-content: center;
+    align-items: center;
     transition: all 0.5s ease;
     font-size: 112px;
 
@@ -124,42 +144,95 @@ html {
     display: flex;
     flex-direction: row;
     gap: 32px;
+}
 
-    button {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-        height: 32px;
-        width: 32px;
-        background-color: transparent;
-        border: 1px solid white;
-        border-radius: 99px;
-        color: inherit;
-        cursor: pointer;
-        transition: all 0.5s ease;
+button.as-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    height: 32px;
+    width: 32px;
+    background-color: var(--button-background-color);
+    border: var(--button-border);
+    border-radius: 99px;
+    color: inherit;
+    cursor: pointer;
+    transition: all 0.5s ease;
+    font-size: 20px;
 
-        img {
-            max-width: 100%;
-            max-height: 100%;
-            display: block;
-        }
+    img {
+        max-width: 20px;
+        max-height: 20px;
+        display: block;
+        filter: var(--button-icon-filter);
+    }
 
-        &:hover {
-            background-color: rgba(255, 255, 255, 0.15);
-        }
+    &:hover {
+        transform: scale(1.05);
+    }
 
-        &:active,
-        &:focus,
-        &:focus-visible,
-        &:focus-within {
-            box-shadow: 0 0 10px var(--secondary-bg-color);
-            background-color: rgba(255, 255, 255, 0.15);
-            outline: none;
-        }
+    &:active,
+    &:focus,
+    &:focus-visible,
+    &:focus-within {
+        box-shadow: 0 0 10px var(--secondary-bg-color);
+        background-color: rgba(255, 255, 255, 0.15);
+        outline: none;
     }
 }
 
 .hide {
     display: none !important;
+}
+
+.timer-logo {
+    display: none;
+}
+
+.theme-menu-container {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    z-index: 10;
+}
+
+.theme-dropdown {
+    position: absolute;
+    bottom: 60px;
+    right: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    padding: 12px;
+
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+
+    min-width: 180px;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+
+    button {
+        border: none;
+        background: transparent;
+
+        padding: 12px;
+        border-radius: 8px;
+
+        cursor: pointer;
+
+        color: white;
+        font-size: 14px;
+        text-align: left;
+
+        transition: all 0.3s ease;
+
+        &:hover {
+            background: rgba(255,255,255,0.1);
+        }
+    }
 }

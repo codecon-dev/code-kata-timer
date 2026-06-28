@@ -18,7 +18,12 @@ npm install
 npm run dev
 ```
 
-3. Acesse no navegador:
+3. Em outro terminal, acompanhe o Sass e gere o CSS automaticamente:
+```bash
+npm run watch:styles
+```
+
+4. Acesse no navegador:
 ```
 http://localhost:1234
 ```

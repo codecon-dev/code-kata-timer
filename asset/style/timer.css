@@ -1,158 +1,213 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap");
 :root {
-    --primary-bg-color: #242424;
-    --primary-text-color: #46ffbe;
-    --secondary-bg-color: #46ffbe;
-    --secondary-text-color: #444444;
+  --primary-bg-color: #242424;
+  --primary-text-color: #46ffbe;
+  --secondary-bg-color: #46ffbe;
+  --secondary-text-color: #444444;
+  --button-background-color: transparent;
+  --button-icon-filter: inherit;
+  --button-border: 1px solid #fff;
+  --primary-dark-color: #1ea97a;
+}
+
+.versus-theme {
+  --primary-bg-color: #ED5026;
+  --primary-text-color: #FFFFFF;
+  --secondary-bg-color: #000000;
+  --secondary-text-color: #444444;
+  --button-background-color: transparent;
+  --button-icon-filter: brightness(100);
+  --button-border: 1px solid #fff;
+}
+.versus-theme .timer-logo {
+  display: block;
+  width: 380px;
 }
 
 * {
-    font-family: 'Orbitron', sans-serif;
-    box-sizing: border-box;
+  font-family: "Orbitron", sans-serif;
+  box-sizing: border-box;
 }
 
 body,
 html {
-    background-color: var(--primary-bg-color);
-    color: var(--primary-text-color);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 48px;
-    margin: 0;
-    height: 100dvh;
-    width: 100dvw;
-}
-body::-moz-selection,
-html::-moz-selection {
-    background: var(--secondary-bg-color);
-    color: var(--secondary-text-color);
+  background-color: var(--primary-bg-color);
+  color: var(--primary-text-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 48px;
+  margin: 0;
+  height: 100dvh;
+  width: 100dvw;
 }
 body::selection,
 html::selection {
-    background: var(--secondary-bg-color);
-    color: var(--secondary-text-color);
+  background: var(--secondary-bg-color);
+  color: var(--secondary-text-color);
 }
 body ::-moz-selection,
 html ::-moz-selection {
-    background: var(--secondary-bg-color);
-    color: var(--secondary-text-color);
+  background: var(--secondary-bg-color);
+  color: var(--secondary-text-color);
 }
 body.inverted,
 html.inverted {
-    background-color: var(--primary-text-color);
-    color: var(--primary-bg-color);
+  background-color: var(--secondary-bg-color);
+  color: var(--primary-bg-color);
 }
 body.inverted .input-stopwatch-container input,
 html.inverted .input-stopwatch-container input {
-    color: var(--primary-bg-color);
+  color: var(--primary-bg-color);
 }
 
 .countdown-container {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    background: var(--primary-bg-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    transition: all 0.5s ease;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: var(--primary-bg-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transition: all 0.5s ease;
 }
 .countdown-container .countdown-number {
-    font-size: 202px;
-    transition: all 0.5s ease;
+  font-size: 202px;
+  transition: all 0.5s ease;
 }
 .countdown-container.odd {
-    background: var(--secondary-bg-color);
-    color: var(--secondary-text-color);
+  background: var(--secondary-bg-color);
+  color: var(--secondary-text-color);
 }
 .countdown-container.even {
-    background: var(--primary-bg-color);
-    color: var(--primary-text-color);
+  background: var(--primary-bg-color);
+  color: var(--primary-text-color);
 }
 .countdown-container.inverted {
-    background: var(--primary-text-color);
-    color: var(--primary-bg-color);
+  background: var(--secondary-bg-color);
+  color: var(--primary-bg-color);
 }
 .countdown-container.inverted .action-button-container button {
-    border-color: var(--primary-bg-color);
+  border-color: var(--primary-bg-color);
 }
 
 .input-stopwatch-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    transition: all 0.5s ease;
-    font-size: 112px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.5s ease;
+  font-size: 112px;
 }
 @media screen and (max-width: 768px) {
-    .input-stopwatch-container {
-        font-size: 56px;
-    }
+  .input-stopwatch-container {
+    font-size: 56px;
+  }
 }
 .input-stopwatch-container input {
-    width: auto;
-    min-width: 1px;
-    max-width: 2ch;
-    margin: 0;
-    padding: 0;
-    color: var(--primary-text-color);
-    border: none;
-    background: none;
-    outline: none;
-    text-align: center;
-    font-size: inherit;
-    border-radius: 5px;
+  width: auto;
+  min-width: 1px;
+  max-width: 2ch;
+  margin: 0;
+  padding: 0;
+  color: var(--primary-text-color);
+  border: none;
+  background: none;
+  outline: none;
+  text-align: center;
+  font-size: inherit;
+  border-radius: 5px;
 }
-.input-stopwatch-container input::-webkit-outer-spin-button,
-.input-stopwatch-container input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+.input-stopwatch-container input::-webkit-outer-spin-button, .input-stopwatch-container input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
-.input-stopwatch-container input[type='number'] {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: textfield;
+.input-stopwatch-container input[type=number] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
 }
 
 .action-button-container {
-    display: flex;
-    flex-direction: row;
-    gap: 32px;
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
 }
-.action-button-container button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    height: 32px;
-    width: 32px;
-    background-color: transparent;
-    border: 1px solid white;
-    border-radius: 99px;
-    color: inherit;
-    cursor: pointer;
-    transition: all 0.5s ease;
+
+button.as-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  height: 32px;
+  width: 32px;
+  background-color: var(--button-background-color);
+  border: var(--button-border);
+  border-radius: 99px;
+  color: inherit;
+  cursor: pointer;
+  transition: all 0.5s ease;
+  font-size: 20px;
 }
-.action-button-container button img {
-    max-width: 100%;
-    max-height: 100%;
-    display: block;
+button.as-icon img {
+  max-width: 20px;
+  max-height: 20px;
+  display: block;
+  filter: var(--button-icon-filter);
 }
-.action-button-container button:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+button.as-icon:hover {
+  transform: scale(1.05);
 }
-.action-button-container button:active,
-.action-button-container button:focus,
-.action-button-container button:focus-visible,
-.action-button-container button:focus-within {
-    box-shadow: 0 0 10px var(--secondary-bg-color);
-    background-color: rgba(255, 255, 255, 0.15);
-    outline: none;
+button.as-icon:active, button.as-icon:focus, button.as-icon:focus-visible, button.as-icon:focus-within {
+  box-shadow: 0 0 10px var(--secondary-bg-color);
+  background-color: rgba(255, 255, 255, 0.15);
+  outline: none;
 }
 
 .hide {
-    display: none !important;
-} /*# sourceMappingURL=timer.css.map */
+  display: none !important;
+}
+
+.timer-logo {
+  display: none;
+}
+
+.theme-menu-container {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 10;
+}
+
+.theme-dropdown {
+  position: absolute;
+  bottom: 60px;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  min-width: 180px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+.theme-dropdown button {
+  border: none;
+  background: transparent;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: white;
+  font-size: 14px;
+  text-align: left;
+  transition: all 0.3s ease;
+}
+.theme-dropdown button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/*# sourceMappingURL=timer.css.map */

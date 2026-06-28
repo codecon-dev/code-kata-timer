@@ -10,6 +10,12 @@
 </head>
 
 <body class="js-body">
+    <img
+        src="./asset/images/logo.svg"
+        alt="Logo"
+        class="timer-logo"
+    />
+
     <div class="input-stopwatch-container">
         <input type="number" min="00" disabled class="js-hour-input" />
         :
@@ -18,32 +24,48 @@
         <input type="number" min="00" disabled class="js-seconds-input" />
     </div>
 
+    <div class="js-theme-menu-container theme-menu-container">
+        <button class="theme-menu-button js-theme-menu-button as-icon">
+            ⋮
+        </button>
+
+        <div class="theme-dropdown js-theme-dropdown hide">
+            <button class="js-default-theme-button">
+                Standard Theme
+            </button>
+
+            <button class="js-versus-theme-button">
+                Versus Theme
+            </button>
+        </div>
+    </div>
+
     <div class="action-button-container js-stopwatch-action-buttons">
-        <button class="js-enter-fullscreen-button">
+        <button class="as-icon js-enter-fullscreen-button">
             <img src="./asset/images/full-screen.svg" alt="Colocar em tela cheia" />
         </button>
-        <button class="js-exit-fullscreen-button hide">
+        <button class="as-icon js-exit-fullscreen-button hide">
             <img src="./asset/images/exit-full-screen.svg" alt="Colocar em tela cheia" />
         </button>
-        <button class="js-edit-button">
+        <button class="as-icon js-edit-button">
             <img src="./asset/images/edit.svg" alt="Editar" />
         </button>
-        <button class="js-stop-button hide">
+        <button class="as-icon js-stop-button hide">
             <img src="./asset/images/reset.svg" alt="Resetar" />
         </button>
-        <button class="js-start-button">
+        <button class="as-icon js-start-button">
             <img src="./asset/images/play.svg" alt="Iniciar" />
         </button>
-        <button class="js-pause-button hide">
+        <button class="as-icon js-pause-button hide">
             <img src="./asset/images/pause.svg" alt="Pausar" />
         </button>
     </div>
 
     <div class="action-button-container js-edit-container-stopwatch hide">
-        <button class="js-cancel-edit-button">
+        <button class="as-icon js-cancel-edit-button">
             <img src="./asset/images/cancel.svg" alt="Cancelar" />
         </button>
-        <button class="js-finish-edit-button">
+        <button class="as-icon js-finish-edit-button">
             <img src="./asset/images/ok.svg" alt="Finalizar" />
         </button>
     </div>
@@ -51,12 +73,12 @@
     <div class="js-countdown-container countdown-container hide">
         <span class="js-countdown-number countdown-number"></span>
         <div class="action-button-container">
-            <button class="js-close-countdown-button">
+            <button class="as-icon js-close-countdown-button">
                 <img src="./asset/images/cancel.svg" alt="Reiniciar" />
             </button>
         </div>
     </div>
+
     <script type="module" src="./asset/javascript/TimeController.js"></script>
 </body>
-
 </html>
