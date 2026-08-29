@@ -1,5 +1,3 @@
-import tickTackSoundUrl from '../sound/tick-tack.wav';
-import stopSoundUrl from '../sound/stop.mp3';
 import './helper.js';
 import { TimerStatus } from './TimerStatus.js';
 import {
@@ -10,17 +8,22 @@ import {
     secondsToHour,
     secondsToMinute,
 } from './TimeUtils.js';
-import { ThemeController } from './ThemeController.js';
 
-function TimerController(reference) {
+export const DEFAULT_SECONDS = 30;
+export const COUNTDOWN_THRESHOLD = 10;
+const FINISHED_MESSAGE_DELAY = 1000;
+export const FINISHED_MESSAGE = 'ACABOU!';
+
+function TimerController(reference, hooks = {}) {
+    const nameInput = reference.querySelector('.js-timer-name');
     const hourInput = reference.querySelector('.js-hour-input');
     const minuteInput = reference.querySelector('.js-minute-input');
     const secondInput = reference.querySelector('.js-seconds-input');
-    const themeButton = reference.querySelector('.js-theme-menu-container');
+
+    const clockContainer = reference.querySelector('.input-stopwatch-container');
+    const countdownNumber = reference.querySelector('.js-timer-countdown');
 
     const actionButtonsContainer = reference.querySelector('.js-stopwatch-action-buttons');
-    const enterFullscreenButton = actionButtonsContainer.querySelector('.js-enter-fullscreen-button');
-    const exitFullscreenButton = actionButtonsContainer.querySelector('.js-exit-fullscreen-button');
     const startButton = actionButtonsContainer.querySelector('.js-start-button');
     const stopButton = actionButtonsContainer.querySelector('.js-stop-button');
     const pauseButton = actionButtonsContainer.querySelector('.js-pause-button');
@@ -30,40 +33,36 @@ function TimerController(reference) {
     const cancelEditButton = editActionButtonsContainer.querySelector('.js-cancel-edit-button');
     const finishEditButton = editActionButtonsContainer.querySelector('.js-finish-edit-button');
 
-    const countdownContainerReference = reference.querySelector('.js-countdown-container');
-    const countdownNumber = countdownContainerReference.querySelector('.js-countdown-number');
-    const closeCountdownButton = countdownContainerReference.querySelector('.js-close-countdown-button');
-
-    const DEFAULT_INTERVAL = 1000;
-    const DEFAULT_SECONDS = 30;
-
-    const tickTackSound = new Audio(tickTackSoundUrl);
-    const stopSound = new Audio(stopSoundUrl);
-    tickTackSound.addEventListener('error', e => {
-        console.error('Erro ao carregar tick-tack.wav:', e);
-    });
-
-    stopSound.addEventListener('error', e => {
-        console.error('Erro ao carregar stop.mp3:', e);
-    });
-
-    let lastTimerStatus = TimerStatus.STOPPED;
+    let status = TimerStatus.STOPPED;
+    let duration = DEFAULT_SECONDS;
+    let remaining = DEFAULT_SECONDS;
+    let deadline = null;
     let previousTimerValue = DEFAULT_SECONDS;
-    let timerIntervalId = null;
-    let preventOpenCountdown = false;
+    let resetTimeoutId = null;
 
     function init() {
         bindInputs();
         bindButtons();
-        bindFullscreenEvents();
-        setInputValues(DEFAULT_SECONDS);
-        new ThemeController(reference);
+        setRemaining(DEFAULT_SECONDS);
+    }
+
+    function notifyChange() {
+        if (hooks.onChange) hooks.onChange();
     }
 
     var bindInputs = function () {
+        if (nameInput) {
+            nameInput.addEventListener('input', notifyChange);
+            nameInput.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    nameInput.blur();
+                }
+            });
+        }
+
         hourInput.addEventListener('input', function () {
-            let maxHours = 99;
-            validateInput(hourInput, maxHours);
+            validateInput(hourInput, 99);
         });
 
         hourInput.addEventListener('keydown', function (event) {
@@ -75,8 +74,7 @@ function TimerController(reference) {
         });
 
         minuteInput.addEventListener('input', function () {
-            let maxMinutes = 59;
-            validateInput(minuteInput, maxMinutes);
+            validateInput(minuteInput, 59);
         });
 
         minuteInput.addEventListener('keydown', function (event) {
@@ -88,8 +86,7 @@ function TimerController(reference) {
         });
 
         secondInput.addEventListener('input', function () {
-            let maxSeconds = 59;
-            validateInput(secondInput, maxSeconds);
+            validateInput(secondInput, 59);
         });
 
         secondInput.addEventListener('keydown', function (event) {
@@ -101,17 +98,6 @@ function TimerController(reference) {
             }
         });
     };
-
-    function bindFullscreenEvents() {
-        document.addEventListener('fullscreenchange', handleButtonFullscreenChange);
-        document.addEventListener('visibilitychange', handleVisibilityChange);
-    }
-
-    function handleVisibilityChange() {
-        if (document.hidden) return;
-
-        updatePageTitle();
-    }
 
     function validateInput(input, maxValue) {
         let value = parseInt(input.value) || 0;
@@ -130,14 +116,12 @@ function TimerController(reference) {
         startButton.addEventListener('click', start);
         stopButton.addEventListener('click', stop);
         pauseButton.addEventListener('click', pause);
-
-        enterFullscreenButton.addEventListener('click', handleFullscreen);
-        exitFullscreenButton.addEventListener('click', handleFullscreen);
-        closeCountdownButton.addEventListener('click', closeCountdownContainer);
     }
 
     function openEditInput() {
-        lastTimerStatus = TimerStatus.EDITING;
+        if (TimerStatus.isRunning(status) || TimerStatus.isCountdown(status)) return;
+
+        status = TimerStatus.EDITING;
         previousTimerValue = getInputsValueAsSeconds();
 
         toggleDisableInputs(false);
@@ -154,188 +138,117 @@ function TimerController(reference) {
     }
 
     function finishEditInput() {
-        lastTimerStatus = TimerStatus.PAUSED;
         toggleDisableInputs(true);
         toggleButtonsContainer(false);
-        window.getSelection().removeAllRanges();
+
+        if (window.getSelection()) window.getSelection().removeAllRanges();
 
         let seconds = getInputsValueAsSeconds();
 
-        if (seconds <= 0) {
-            setInputValues(DEFAULT_SECONDS);
-        }
+        if (seconds <= 0) seconds = DEFAULT_SECONDS;
+
+        status = TimerStatus.STOPPED;
+        duration = seconds;
+        setRemaining(seconds);
+        notifyChange();
+    }
+
+    function isEditing() {
+        return status === TimerStatus.EDITING;
+    }
+
+    function isActive() {
+        return TimerStatus.isRunning(status) || TimerStatus.isCountdown(status);
     }
 
     function start() {
-        const canStart = TimerStatus.isStopped(lastTimerStatus) || TimerStatus.isPaused(lastTimerStatus);
+        const canStart = TimerStatus.isStopped(status) || TimerStatus.isPaused(status);
 
         if (!canStart) return;
 
-        reference.classList.remove('inverted');
-        countdownContainerReference.classList.remove('inverted');
+        clearTimeout(resetTimeoutId);
+        hideCountdownNumber();
+        setInverted(false);
+
+        if (remaining <= 0) setRemaining(duration);
+
+        deadline = Date.now() + remaining * 1000;
+        status = remaining <= COUNTDOWN_THRESHOLD ? TimerStatus.COUNTDOWN : TimerStatus.RUNNING;
+
         startButton.hideElement();
         pauseButton.showElement();
         stopButton.showElement();
         editButton.hideElement();
 
-        lastTimerStatus = TimerStatus.RUNNING;
-        initTimer();
-    }
-
-    function initTimer() {
-        timerIntervalId = setInterval(() => {
-            var canStart =
-                TimerStatus.isRunning(lastTimerStatus) ||
-                TimerStatus.isCountdown(lastTimerStatus) ||
-                TimerStatus.isPaused(lastTimerStatus);
-
-            if (!canStart) {
-                clearInterval(timerIntervalId);
-                return;
-            }
-
-            let seconds = getInputsValueAsSeconds();
-            seconds--;
-            if (seconds <= 10) {
-                lastTimerStatus = TimerStatus.COUNTDOWN;
-                playCountdownSound();
-
-                if (!preventOpenCountdown) {
-                    themeButton.hideElement();
-                    executeCountdown(seconds);
-                }
-            }
-
-            setInputValues(seconds);
-
-            if (seconds == 0) {
-                preventOpenCountdown = false;
-                lastTimerStatus = TimerStatus.STOPPED;
-
-                showDefaultButtons();
-                playStopSound();
-                clearInterval(timerIntervalId);
-            }
-        }, DEFAULT_INTERVAL);
-    }
-
-    function playCountdownSound() {
-        tickTackSound.volume = 0.5;
-        tickTackSound.loop = false;
-        tickTackSound.currentTime = 0;
-        tickTackSound.play();
-    }
-
-    function playStopSound() {
-        stopSound.volume = 0.5;
-        stopSound.loop = false;
-        stopSound.currentTime = 0;
-        stopSound.play();
-
-        setTimeout(() => {
-            const fade = setInterval(() => {
-                if (stopSound.volume > 0.05) {
-                    stopSound.volume -= 0.05;
-                    return;
-                }
-
-                stopSound.volume = 0;
-                stopSound.pause();
-                stopSound.currentTime = 0;
-                clearInterval(fade);
-                setInputValues(DEFAULT_SECONDS);
-                preventOpenCountdown = false;
-            }, 200);
-        }, 3000);
-    }
-
-    function executeCountdown(seconds) {
-        countdownContainerReference.showElement();
-        countdownNumber.textContent = seconds;
-
-        countdownContainerReference.classList.toggle('even');
-        countdownContainerReference.classList.toggle('odd');
-
-        if (seconds % 2 === 0) {
-            reference.classList.add('inverted');
-            countdownContainerReference.classList.add('inverted');
-
-            return;
-        }
-
-        reference.classList.remove('inverted');
-        countdownContainerReference.classList.remove('inverted');
-    }
-
-    function stop() {
-        if (TimerStatus.isStopped(lastTimerStatus)) return;
-
-        preventOpenCountdown = false;
-        lastTimerStatus = TimerStatus.STOPPED;
-        reference.classList.remove('inverted');
-        countdownContainerReference.classList.remove('inverted');
-        showDefaultButtons();
-        setInputValues(DEFAULT_SECONDS);
-        clearInterval(timerIntervalId);
+        notifyChange();
     }
 
     function pause() {
-        const shouldNotPause = lastTimerStatus !== TimerStatus.RUNNING && lastTimerStatus !== TimerStatus.COUNTDOWN;
-        if (shouldNotPause) return;
+        if (!isActive()) return;
 
-        lastTimerStatus = TimerStatus.PAUSED;
+        status = TimerStatus.PAUSED;
+        deadline = null;
 
         startButton.showElement();
         pauseButton.hideElement();
 
-        clearInterval(timerIntervalId);
+        notifyChange();
     }
 
-    function isInFullscreen() {
-        return !!document.fullscreenElement;
+    function stop() {
+        clearTimeout(resetTimeoutId);
+
+        status = TimerStatus.STOPPED;
+        deadline = null;
+        setInverted(false);
+        hideCountdownNumber();
+        showDefaultButtons();
+        setRemaining(duration);
+        notifyChange();
     }
 
-    function handleButtonFullscreenChange() {
-        if (isInFullscreen()) {
-            exitFullscreenButton.showElement();
-            enterFullscreenButton.hideElement();
-            return;
+    function tick(now) {
+        if (!isActive()) return null;
+
+        const next = Math.max(0, Math.round((deadline - now) / 1000));
+
+        if (next === remaining) return null;
+
+        setRemaining(next);
+
+        if (remaining > 0) {
+            if (remaining <= COUNTDOWN_THRESHOLD) status = TimerStatus.COUNTDOWN;
+            return { second: remaining, finished: false };
         }
 
-        enterFullscreenButton.showElement();
-        exitFullscreenButton.hideElement();
+        finish();
+
+        return { second: 0, finished: true };
     }
 
-    function handleFullscreen() {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-            return;
-        }
+    function finish() {
+        status = TimerStatus.STOPPED;
+        deadline = null;
+        showDefaultButtons();
 
-        document.exitFullscreen();
+        if (hooks.onFinish) hooks.onFinish();
+
+        resetTimeoutId = setTimeout(() => {
+            if (hooks.onFinishedMessage) hooks.onFinishedMessage();
+        }, FINISHED_MESSAGE_DELAY);
+
+        notifyChange();
     }
 
-    function closeCountdownContainer() {
-        preventOpenCountdown = true;
-        reference.classList.remove('inverted');
-        countdownContainerReference.classList.remove('inverted');
-        countdownContainerReference.hideElement();
-        countdownContainerReference.classList.remove('even', 'odd');
-        countdownNumber.textContent = '';
-        stopSound.pause();
-        stopSound.currentTime = 0;
-        stopSound.volume = 0;
-        themeButton.showElement();
-    }
-
-    function toggleButtonsContainer(isEditing) {
-        if (isEditing) {
+    function toggleButtonsContainer(editing) {
+        if (editing) {
             actionButtonsContainer.hideElement();
             editActionButtonsContainer.showElement();
-        } else {
-            actionButtonsContainer.showElement();
-            editActionButtonsContainer.hideElement();
+            return;
         }
+
+        actionButtonsContainer.showElement();
+        editActionButtonsContainer.hideElement();
     }
 
     function toggleDisableInputs(disable) {
@@ -354,10 +267,7 @@ function TimerController(reference) {
     function getInputsValueAsSeconds() {
         const { seconds, minutes, hours } = getInputValues();
 
-        const minutesAsSeconds = minuteToSeconds(minutes);
-        const hourAsSeconds = hourToSeconds(hours);
-
-        return seconds + minutesAsSeconds + hourAsSeconds;
+        return seconds + minuteToSeconds(minutes) + hourToSeconds(hours);
     }
 
     function getInputValues() {
@@ -369,29 +279,142 @@ function TimerController(reference) {
     }
 
     function setInputValues(totalSeconds = 0) {
-        const hours = secondsToHour(totalSeconds);
-        const minutes = secondsToMinute(totalSeconds);
-        const seconds = remainingSeconds(totalSeconds);
-
-        hourInput.value = formatTimeUnit(hours);
-        minuteInput.value = formatTimeUnit(minutes);
-        secondInput.value = formatTimeUnit(seconds);
-
-        updatePageTitle();
+        hourInput.value = formatTimeUnit(secondsToHour(totalSeconds));
+        minuteInput.value = formatTimeUnit(secondsToMinute(totalSeconds));
+        secondInput.value = formatTimeUnit(remainingSeconds(totalSeconds));
     }
 
-    function updatePageTitle() {
-        const { seconds, minutes, hours } = getInputValues();
-        document.title = `${formatTimeUnit(hours)}:${formatTimeUnit(minutes)}:${formatTimeUnit(seconds)} - Timer <Codecon>`;
+    function setRemaining(totalSeconds) {
+        remaining = Math.max(0, totalSeconds);
+        setInputValues(remaining);
+    }
+
+    function setInverted(inverted) {
+        reference.classList.toggle('inverted', !!inverted);
+    }
+
+    function showCountdownNumber(seconds) {
+        if (!countdownNumber) return;
+
+        countdownNumber.textContent = seconds;
+        countdownNumber.classList.remove('is-message');
+        countdownNumber.showElement();
+        reference.classList.remove('is-finished');
+        clockContainer.hideElement();
+        reference.classList.add('is-countdown');
+    }
+
+    function showFinishedMessage() {
+        if (!countdownNumber) return;
+
+        setInverted(false);
+        countdownNumber.textContent = FINISHED_MESSAGE;
+        countdownNumber.classList.add('is-message');
+        countdownNumber.showElement();
+        clockContainer.hideElement();
+        reference.classList.add('is-countdown', 'is-finished');
+    }
+
+    function hideCountdownNumber() {
+        if (!countdownNumber) return;
+
+        countdownNumber.textContent = '';
+        countdownNumber.classList.remove('is-message');
+        countdownNumber.hideElement();
+        clockContainer.showElement();
+        reference.classList.remove('is-countdown', 'is-finished');
+    }
+
+    function getName() {
+        return nameInput ? nameInput.value.trim() : '';
+    }
+
+    function setName(name) {
+        if (nameInput) nameInput.value = name;
+    }
+
+    function setPlaceholder(placeholder) {
+        if (nameInput) nameInput.placeholder = placeholder;
+    }
+
+    function serialize() {
+        return {
+            name: getName(),
+            duration,
+            remaining,
+            status,
+            endsAt: isActive() ? deadline : null,
+        };
+    }
+
+    function restore(data = {}) {
+        clearTimeout(resetTimeoutId);
+        setInverted(false);
+        hideCountdownNumber();
+
+        setName(data.name || '');
+        duration = data.duration > 0 ? data.duration : DEFAULT_SECONDS;
+
+        const wasActive = data.status === TimerStatus.RUNNING || data.status === TimerStatus.COUNTDOWN;
+
+        if (wasActive && data.endsAt) {
+            const left = Math.round((data.endsAt - Date.now()) / 1000);
+
+            if (left > 0) {
+                setRemaining(left);
+                deadline = data.endsAt;
+                status = left <= COUNTDOWN_THRESHOLD ? TimerStatus.COUNTDOWN : TimerStatus.RUNNING;
+
+                startButton.hideElement();
+                pauseButton.showElement();
+                stopButton.showElement();
+                editButton.hideElement();
+                return;
+            }
+
+            status = TimerStatus.STOPPED;
+            deadline = null;
+            showDefaultButtons();
+            setRemaining(duration);
+            return;
+        }
+
+        deadline = null;
+        status = data.status === TimerStatus.PAUSED ? TimerStatus.PAUSED : TimerStatus.STOPPED;
+        setRemaining(data.remaining > 0 ? data.remaining : duration);
+        showDefaultButtons();
+
+        if (TimerStatus.isPaused(status)) stopButton.showElement();
+    }
+
+    function destroy() {
+        clearTimeout(resetTimeoutId);
     }
 
     init();
-}
 
-document.addEventListener('DOMContentLoaded', function () {
-    let reference = document.querySelector('.js-body');
-    const timerController = new TimerController(reference);
-    window.timerController = timerController;
-});
+    return {
+        element: reference,
+        start,
+        pause,
+        stop,
+        tick,
+        getName,
+        setName,
+        setPlaceholder,
+        setInverted,
+        showCountdownNumber,
+        showFinishedMessage,
+        hideCountdownNumber,
+        isActive,
+        isEditing,
+        getStatus: () => status,
+        getRemaining: () => remaining,
+        getDuration: () => duration,
+        serialize,
+        restore,
+        destroy,
+    };
+}
 
 export default TimerController;
