@@ -9,19 +9,71 @@
     <title>Timer <Codecon></title>
 </head>
 
-<body class="js-body">
-    <img
-        src="./asset/images/logo.svg"
-        alt="Logo"
-        class="timer-logo"
-    />
+<body class="js-body timers-1">
+    <template class="js-timer-template">
+        <div class="timer-card js-timer-card">
+            <input
+                type="text"
+                class="timer-name js-timer-name"
+                maxlength="24"
+                placeholder="Timer"
+                aria-label="Nome do timer"
+            />
 
-    <div class="input-stopwatch-container">
-        <input type="number" min="00" disabled class="js-hour-input" />
-        :
-        <input type="number" min="00" disabled class="js-minute-input" />
-        :
-        <input type="number" min="00" disabled class="js-seconds-input" />
+            <div class="input-stopwatch-container">
+                <input type="number" min="00" disabled class="js-hour-input" aria-label="Horas" />
+                :
+                <input type="number" min="00" disabled class="js-minute-input" aria-label="Minutos" />
+                :
+                <input type="number" min="00" disabled class="js-seconds-input" aria-label="Segundos" />
+            </div>
+
+            <span class="timer-countdown js-timer-countdown hide" aria-hidden="true"></span>
+
+            <div class="action-button-container js-stopwatch-action-buttons">
+                <button class="as-icon js-edit-button">
+                    <img src="./asset/images/edit.svg" alt="Editar" />
+                </button>
+                <button class="as-icon js-stop-button hide">
+                    <img src="./asset/images/reset.svg" alt="Resetar" />
+                </button>
+                <button class="as-icon js-start-button">
+                    <img src="./asset/images/play.svg" alt="Iniciar" />
+                </button>
+                <button class="as-icon js-pause-button hide">
+                    <img src="./asset/images/pause.svg" alt="Pausar" />
+                </button>
+            </div>
+
+            <div class="action-button-container js-edit-container-stopwatch hide">
+                <button class="as-icon js-cancel-edit-button">
+                    <img src="./asset/images/cancel.svg" alt="Cancelar" />
+                </button>
+                <button class="as-icon js-finish-edit-button">
+                    <img src="./asset/images/ok.svg" alt="Finalizar" />
+                </button>
+            </div>
+        </div>
+    </template>
+
+    <div class="timers-grid js-timers-grid"></div>
+
+    <div class="action-button-container global-controls js-global-controls">
+        <button class="as-icon js-enter-fullscreen-button" title="Tela cheia">
+            <img src="./asset/images/full-screen.svg" alt="Colocar em tela cheia" />
+        </button>
+        <button class="as-icon js-exit-fullscreen-button hide" title="Sair da tela cheia">
+            <img src="./asset/images/exit-full-screen.svg" alt="Sair da tela cheia" />
+        </button>
+        <button class="as-icon js-stop-all-button hide" title="Resetar todos">
+            <img src="./asset/images/reset.svg" alt="Resetar todos" />
+        </button>
+        <button class="as-icon js-start-all-button hide" title="Iniciar todos">
+            <img src="./asset/images/play.svg" alt="Iniciar todos" />
+        </button>
+        <button class="as-icon js-pause-all-button hide" title="Pausar todos">
+            <img src="./asset/images/pause.svg" alt="Pausar todos" />
+        </button>
     </div>
 
     <div class="js-theme-menu-container theme-menu-container">
@@ -30,6 +82,16 @@
         </button>
 
         <div class="theme-dropdown js-theme-dropdown hide">
+            <span class="theme-dropdown-label">Timers</span>
+
+            <div class="layout-options">
+                <button class="js-layout-button layout-button is-active" data-timers="1">1</button>
+                <button class="js-layout-button layout-button" data-timers="2">2</button>
+                <button class="js-layout-button layout-button" data-timers="4">4</button>
+            </div>
+
+            <span class="theme-dropdown-label">Tema</span>
+
             <button class="js-default-theme-button">
                 Standard Theme
             </button>
@@ -40,45 +102,18 @@
         </div>
     </div>
 
-    <div class="action-button-container js-stopwatch-action-buttons">
-        <button class="as-icon js-enter-fullscreen-button">
-            <img src="./asset/images/full-screen.svg" alt="Colocar em tela cheia" />
-        </button>
-        <button class="as-icon js-exit-fullscreen-button hide">
-            <img src="./asset/images/exit-full-screen.svg" alt="Colocar em tela cheia" />
-        </button>
-        <button class="as-icon js-edit-button">
-            <img src="./asset/images/edit.svg" alt="Editar" />
-        </button>
-        <button class="as-icon js-stop-button hide">
-            <img src="./asset/images/reset.svg" alt="Resetar" />
-        </button>
-        <button class="as-icon js-start-button">
-            <img src="./asset/images/play.svg" alt="Iniciar" />
-        </button>
-        <button class="as-icon js-pause-button hide">
-            <img src="./asset/images/pause.svg" alt="Pausar" />
-        </button>
-    </div>
-
-    <div class="action-button-container js-edit-container-stopwatch hide">
-        <button class="as-icon js-cancel-edit-button">
-            <img src="./asset/images/cancel.svg" alt="Cancelar" />
-        </button>
-        <button class="as-icon js-finish-edit-button">
-            <img src="./asset/images/ok.svg" alt="Finalizar" />
-        </button>
-    </div>
-
     <div class="js-countdown-container countdown-container hide">
         <span class="js-countdown-number countdown-number"></span>
         <div class="action-button-container">
+            <button class="as-icon js-restart-countdown-button hide" title="Reiniciar">
+                <img src="./asset/images/reset.svg" alt="Reiniciar" />
+            </button>
             <button class="as-icon js-close-countdown-button">
-                <img src="./asset/images/cancel.svg" alt="Reiniciar" />
+                <img src="./asset/images/cancel.svg" alt="Fechar contagem regressiva" />
             </button>
         </div>
     </div>
 
-    <script type="module" src="./asset/javascript/TimeController.js"></script>
+    <script type="module" src="./asset/javascript/TimerApp.js"></script>
 </body>
 </html>

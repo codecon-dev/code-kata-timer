@@ -1,3 +1,8 @@
+export const THEMES = {
+    DEFAULT: 'default',
+    VERSUS: 'versus',
+};
+
 export function ThemeController(reference) {
     const body = reference;
 
@@ -6,6 +11,9 @@ export function ThemeController(reference) {
 
     const defaultThemeButton = body.querySelector('.js-default-theme-button');
     const versusThemeButton = body.querySelector('.js-versus-theme-button');
+
+    let currentTheme = THEMES.DEFAULT;
+    let onChangeCallback = null;
 
     function init() {
         if (!themeMenuButton || !themeDropdown || !defaultThemeButton || !versusThemeButton) {
@@ -17,29 +25,43 @@ export function ThemeController(reference) {
 
     function bindButtons() {
         themeMenuButton.addEventListener('click', toggleThemeMenu);
-        defaultThemeButton.addEventListener('click', setDefaultTheme);
-        versusThemeButton.addEventListener('click', setVersusTheme);
+        defaultThemeButton.addEventListener('click', () => selectTheme(THEMES.DEFAULT));
+        versusThemeButton.addEventListener('click', () => selectTheme(THEMES.VERSUS));
     }
 
     function toggleThemeMenu() {
         themeDropdown.classList.toggle('hide');
     }
 
-    function setDefaultTheme() {
-        body.classList.remove('versus-theme');
-        body.classList.remove('inverted');
-        closeThemeMenu();
+    function selectTheme(theme) {
+        setTheme(theme);
+        closeMenu();
+
+        if (onChangeCallback) onChangeCallback(currentTheme);
     }
 
-    function setVersusTheme() {
-        body.classList.add('versus-theme');
+    function setTheme(theme) {
+        currentTheme = theme === THEMES.VERSUS ? THEMES.VERSUS : THEMES.DEFAULT;
+
+        body.classList.toggle('versus-theme', currentTheme === THEMES.VERSUS);
         body.classList.remove('inverted');
-        closeThemeMenu();
     }
 
-    function closeThemeMenu() {
-        themeDropdown.classList.add('hide');
+    function closeMenu() {
+        if (themeDropdown) themeDropdown.classList.add('hide');
+    }
+
+    function getTheme() {
+        return currentTheme;
+    }
+
+    function onChange(callback) {
+        onChangeCallback = callback;
     }
 
     init();
+
+    return { setTheme, getTheme, closeMenu, onChange };
 }
+
+export default ThemeController;

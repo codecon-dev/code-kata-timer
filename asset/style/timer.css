@@ -8,8 +8,40 @@
   --button-icon-filter: inherit;
   --button-border: 1px solid #fff;
   --primary-dark-color: #1ea97a;
+  --clock-font-size: min(13vw, 36vh);
+  --timer-name-font-size: min(3vw, 32px);
+  --timers-columns: 1;
+  --timers-rows: 1;
 }
 
+body.timers-2 {
+  --clock-font-size: min(6.6vw, 30vh);
+  --timer-name-font-size: min(2vw, 26px);
+  --timers-columns: 2;
+  --timers-rows: 1;
+}
+
+body.timers-4 {
+  --clock-font-size: min(6.6vw, 16vh);
+  --timer-name-font-size: min(1.6vw, 22px);
+  --timers-columns: 2;
+  --timers-rows: 2;
+}
+
+@media screen and (max-width: 768px) {
+  body.timers-2,
+  body.timers-4 {
+    --clock-font-size: min(16vw, 18vh);
+    --timer-name-font-size: 16px;
+    --timers-columns: 1;
+  }
+  body.timers-2 {
+    --timers-rows: 2;
+  }
+  body.timers-4 {
+    --timers-rows: 4;
+  }
+}
 .versus-theme {
   --primary-bg-color: #ED5026;
   --primary-text-color: #FFFFFF;
@@ -18,10 +50,6 @@
   --button-background-color: transparent;
   --button-icon-filter: brightness(100);
   --button-border: 1px solid #fff;
-}
-.versus-theme .timer-logo {
-  display: block;
-  width: 380px;
 }
 
 * {
@@ -37,10 +65,11 @@ html {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 48px;
+  gap: 16px;
   margin: 0;
   height: 100dvh;
   width: 100dvw;
+  overflow: hidden;
 }
 body::selection,
 html::selection {
@@ -62,6 +91,82 @@ html.inverted .input-stopwatch-container input {
   color: var(--primary-bg-color);
 }
 
+.timers-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--timers-columns), minmax(0, 1fr));
+  grid-auto-rows: minmax(0, 1fr);
+  gap: 32px 96px;
+  align-items: stretch;
+  justify-items: stretch;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  padding: 32px 64px 96px;
+}
+
+.timer-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+  padding: 16px 24px;
+  border-radius: 16px;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+.timer-card.inverted {
+  background-color: var(--secondary-bg-color);
+  color: var(--primary-bg-color);
+}
+.timer-card.inverted .input-stopwatch-container input,
+.timer-card.inverted .timer-name {
+  color: var(--primary-bg-color);
+}
+.timer-card.inverted .action-button-container button {
+  border-color: var(--primary-bg-color);
+}
+
+.timer-countdown {
+  font-size: calc(var(--clock-font-size) * 1.7);
+  line-height: 1;
+  transition: color 0.25s ease;
+}
+.timer-countdown.is-message {
+  font-size: calc(var(--clock-font-size) * 0.75);
+  letter-spacing: 0.08em;
+}
+
+.timer-card.is-countdown {
+  box-shadow: 0 0 0 2px currentColor inset;
+}
+
+.timer-name {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  outline: none;
+  color: inherit;
+  font-size: var(--timer-name-font-size);
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+.timer-name::placeholder {
+  color: currentColor;
+  opacity: 0.4;
+}
+.timer-name:focus {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 .countdown-container {
   width: 100%;
   height: 100%;
@@ -74,8 +179,13 @@ html.inverted .input-stopwatch-container input {
   transition: all 0.5s ease;
 }
 .countdown-container .countdown-number {
-  font-size: 202px;
+  font-size: min(30vw, 60vh);
+  line-height: 1;
   transition: all 0.5s ease;
+}
+.countdown-container .countdown-number.is-message {
+  font-size: min(12vw, 18vh);
+  letter-spacing: 0.08em;
 }
 .countdown-container.odd {
   background: var(--secondary-bg-color);
@@ -98,18 +208,15 @@ html.inverted .input-stopwatch-container input {
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: all 0.5s ease;
-  font-size: 112px;
-}
-@media screen and (max-width: 768px) {
-  .input-stopwatch-container {
-    font-size: 56px;
-  }
+  transition: color 0.5s ease;
+  font-size: var(--clock-font-size);
+  line-height: 1.1;
 }
 .input-stopwatch-container input {
-  width: auto;
-  min-width: 1px;
+  width: 2ch;
+  min-width: 2ch;
   max-width: 2ch;
+  font-variant-numeric: tabular-nums;
   margin: 0;
   padding: 0;
   color: var(--primary-text-color);
@@ -166,12 +273,50 @@ button.as-icon:active, button.as-icon:focus, button.as-icon:focus-visible, butto
   outline: none;
 }
 
+.global-controls {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  align-items: center;
+  z-index: 5;
+}
+
 .hide {
   display: none !important;
 }
 
-.timer-logo {
-  display: none;
+.theme-dropdown-label {
+  padding: 0 12px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.layout-options {
+  display: flex;
+  gap: 8px;
+  padding: 0 4px;
+}
+.layout-options .layout-button {
+  flex: 1;
+  padding: 8px 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: transparent;
+  color: white;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.layout-options .layout-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+.layout-options .layout-button.is-active {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.6);
 }
 
 .theme-menu-container {

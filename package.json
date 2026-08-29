@@ -38,7 +38,8 @@
       "^.+\\.(wav|mp3)$": "<rootDir>/asset/javascript/__mocks__/fileMock.js"
     },
     "setupFiles": [
-      "<rootDir>/asset/javascript/__mocks__/audioMock.js"
+      "<rootDir>/asset/javascript/__mocks__/audioMock.js",
+      "<rootDir>/asset/javascript/__mocks__/browserApiMocks.js"
     ]
   },
   "targets": {
