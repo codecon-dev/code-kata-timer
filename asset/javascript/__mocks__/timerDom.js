@@ -10,6 +10,7 @@ export const TIMER_CARD_MARKUP = `
         </div>
         <span class="timer-countdown js-timer-countdown hide"></span>
         <div class="action-button-container js-stopwatch-action-buttons">
+            <button class="as-icon js-counter-toggle-button"></button>
             <button class="as-icon js-edit-button"></button>
             <button class="as-icon js-stop-button hide"></button>
             <button class="as-icon js-start-button"></button>
@@ -18,6 +19,12 @@ export const TIMER_CARD_MARKUP = `
         <div class="action-button-container js-edit-container-stopwatch hide">
             <button class="as-icon js-cancel-edit-button"></button>
             <button class="as-icon js-finish-edit-button"></button>
+        </div>
+
+        <div class="timer-counter js-timer-counter hide">
+            <button class="as-icon js-counter-decrement-button">−</button>
+            <input type="number" class="timer-counter-value js-counter-value" value="0" />
+            <button class="as-icon js-counter-increment-button">+</button>
         </div>
     </div>
 `;
@@ -30,6 +37,8 @@ export const APP_MARKUP = `
     <div class="action-button-container global-controls js-global-controls">
         <button class="as-icon js-enter-fullscreen-button"></button>
         <button class="as-icon js-exit-fullscreen-button hide"></button>
+        <button class="as-icon js-hide-controls-button"></button>
+        <button class="as-icon js-show-controls-button hide"></button>
         <button class="as-icon js-stop-all-button hide"></button>
         <button class="as-icon js-start-all-button hide"></button>
         <button class="as-icon js-pause-all-button hide"></button>

@@ -28,6 +28,12 @@ function TimerController(reference, hooks = {}) {
     const stopButton = actionButtonsContainer.querySelector('.js-stop-button');
     const pauseButton = actionButtonsContainer.querySelector('.js-pause-button');
     const editButton = actionButtonsContainer.querySelector('.js-edit-button');
+    const counterToggleButton = actionButtonsContainer.querySelector('.js-counter-toggle-button');
+
+    const counterContainer = reference.querySelector('.js-timer-counter');
+    const counterInput = reference.querySelector('.js-counter-value');
+    const counterDecrementButton = reference.querySelector('.js-counter-decrement-button');
+    const counterIncrementButton = reference.querySelector('.js-counter-increment-button');
 
     const editActionButtonsContainer = reference.querySelector('.js-edit-container-stopwatch');
     const cancelEditButton = editActionButtonsContainer.querySelector('.js-cancel-edit-button');
@@ -39,10 +45,13 @@ function TimerController(reference, hooks = {}) {
     let deadline = null;
     let previousTimerValue = DEFAULT_SECONDS;
     let resetTimeoutId = null;
+    let counterEnabled = false;
+    let counterValue = 0;
 
     function init() {
         bindInputs();
         bindButtons();
+        bindCounter();
         setRemaining(DEFAULT_SECONDS);
     }
 
@@ -116,6 +125,55 @@ function TimerController(reference, hooks = {}) {
         startButton.addEventListener('click', start);
         stopButton.addEventListener('click', stop);
         pauseButton.addEventListener('click', pause);
+    }
+
+    function bindCounter() {
+        if (!counterContainer) return;
+
+        if (counterToggleButton) counterToggleButton.addEventListener('click', toggleCounter);
+        if (counterDecrementButton) counterDecrementButton.addEventListener('click', decrementCounter);
+        if (counterIncrementButton) counterIncrementButton.addEventListener('click', incrementCounter);
+
+        if (counterInput) {
+            counterInput.addEventListener('change', () => setCounter(counterInput.value));
+            counterInput.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    counterInput.blur();
+                }
+            });
+        }
+    }
+
+    function toggleCounter() {
+        setCounterEnabled(!counterEnabled);
+        notifyChange();
+    }
+
+    function setCounterEnabled(enabled) {
+        counterEnabled = !!enabled;
+
+        if (counterContainer) counterContainer.classList.toggle('hide', !counterEnabled);
+        if (counterToggleButton) counterToggleButton.classList.toggle('is-active', counterEnabled);
+        reference.classList.toggle('has-counter', counterEnabled);
+    }
+
+    function setCounter(value) {
+        const parsed = parseInt(value, 10);
+
+        counterValue = Number.isFinite(parsed) ? parsed : 0;
+
+        if (counterInput) counterInput.value = counterValue;
+
+        notifyChange();
+    }
+
+    function incrementCounter() {
+        setCounter(counterValue + 1);
+    }
+
+    function decrementCounter() {
+        setCounter(counterValue - 1);
     }
 
     function openEditInput() {
@@ -344,7 +402,22 @@ function TimerController(reference, hooks = {}) {
             remaining,
             status,
             endsAt: isActive() ? deadline : null,
+            counter: {
+                enabled: counterEnabled,
+                value: counterValue,
+            },
         };
+    }
+
+    function restoreCounter(counter) {
+        const enabled = !!(counter && counter.enabled);
+        const parsed = counter ? parseInt(counter.value, 10) : 0;
+
+        counterEnabled = enabled;
+        counterValue = Number.isFinite(parsed) ? parsed : 0;
+
+        if (counterInput) counterInput.value = counterValue;
+        setCounterEnabled(counterEnabled);
     }
 
     function restore(data = {}) {
@@ -353,6 +426,7 @@ function TimerController(reference, hooks = {}) {
         hideCountdownNumber();
 
         setName(data.name || '');
+        restoreCounter(data.counter);
         duration = data.duration > 0 ? data.duration : DEFAULT_SECONDS;
 
         const wasActive = data.status === TimerStatus.RUNNING || data.status === TimerStatus.COUNTDOWN;
@@ -411,6 +485,13 @@ function TimerController(reference, hooks = {}) {
         getStatus: () => status,
         getRemaining: () => remaining,
         getDuration: () => duration,
+        getCounter: () => counterValue,
+        setCounter,
+        incrementCounter,
+        decrementCounter,
+        isCounterEnabled: () => counterEnabled,
+        setCounterEnabled,
+        toggleCounter,
         serialize,
         restore,
         destroy,

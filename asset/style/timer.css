@@ -143,6 +143,55 @@ html.inverted .input-stopwatch-container input {
   box-shadow: 0 0 0 2px currentColor inset;
 }
 
+.timer-counter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.timer-counter .timer-counter-value {
+  width: 4ch;
+  min-width: 4ch;
+  margin: 0;
+  padding: 0 4px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: none;
+  outline: none;
+  color: inherit;
+  font-size: calc(var(--clock-font-size) * 0.45);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  text-align: center;
+  transition: border-color 0.3s ease;
+}
+.timer-counter .timer-counter-value::-webkit-outer-spin-button, .timer-counter .timer-counter-value::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.timer-counter .timer-counter-value[type=number] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+.timer-counter .timer-counter-value:focus {
+  border-bottom-color: currentColor;
+}
+
+body.controls-hidden .timer-card .action-button-container {
+  display: none !important;
+}
+
+.timer-card.inverted .timer-counter-value {
+  color: var(--primary-bg-color);
+}
+
+button.as-icon.is-active {
+  background-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 1px currentColor inset;
+}
+
 .timer-name {
   width: 100%;
   max-width: 100%;
@@ -354,5 +403,3 @@ button.as-icon:active, button.as-icon:focus, button.as-icon:focus-visible, butto
 .theme-dropdown button:hover {
   background: rgba(255, 255, 255, 0.1);
 }
-
-/*# sourceMappingURL=timer.css.map */

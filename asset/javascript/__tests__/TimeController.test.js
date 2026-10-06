@@ -211,4 +211,63 @@ describe('TimerController', () => {
         expect(timer.getStatus()).toBe(TimerStatus.STOPPED);
         expect(timer.getRemaining()).toBe(300);
     });
+
+    it('liga e desliga o contador pelo botão do card', () => {
+        const counter = card.querySelector('.js-timer-counter');
+
+        expect(timer.isCounterEnabled()).toBe(false);
+        expect(counter.classList.contains('hide')).toBe(true);
+
+        card.querySelector('.js-counter-toggle-button').click();
+
+        expect(timer.isCounterEnabled()).toBe(true);
+        expect(counter.classList.contains('hide')).toBe(false);
+
+        card.querySelector('.js-counter-toggle-button').click();
+
+        expect(timer.isCounterEnabled()).toBe(false);
+        expect(counter.classList.contains('hide')).toBe(true);
+    });
+
+    it('incrementa, decrementa e aceita valor digitado no contador', () => {
+        const input = card.querySelector('.js-counter-value');
+
+        card.querySelector('.js-counter-increment-button').click();
+        card.querySelector('.js-counter-increment-button').click();
+        expect(timer.getCounter()).toBe(2);
+        expect(input.value).toBe('2');
+
+        card.querySelector('.js-counter-decrement-button').click();
+        expect(timer.getCounter()).toBe(1);
+
+        input.value = '15';
+        input.dispatchEvent(new Event('change'));
+        expect(timer.getCounter()).toBe(15);
+
+        input.value = 'abc';
+        input.dispatchEvent(new Event('change'));
+        expect(timer.getCounter()).toBe(0);
+    });
+
+    it('serializa e restaura o contador', () => {
+        timer.toggleCounter();
+        timer.setCounter(7);
+
+        expect(timer.serialize().counter).toEqual({ enabled: true, value: 7 });
+
+        const otherCard = mountTimerCard();
+        const other = TimerController(otherCard);
+        other.restore({ duration: 30, remaining: 30, status: 'STOPPED', counter: { enabled: true, value: 7 } });
+
+        expect(other.isCounterEnabled()).toBe(true);
+        expect(other.getCounter()).toBe(7);
+        expect(otherCard.querySelector('.js-counter-value').value).toBe('7');
+
+        other.restore({ duration: 30, remaining: 30, status: 'STOPPED' });
+
+        expect(other.isCounterEnabled()).toBe(false);
+        expect(other.getCounter()).toBe(0);
+
+        other.destroy();
+    });
 });

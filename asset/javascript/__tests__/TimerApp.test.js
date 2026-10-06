@@ -178,4 +178,32 @@ describe('TimerApp', () => {
 
         expect(restored.getLayout()).toBe(1);
     });
+
+    it('esconde e mostra os controles individuais pelo botão de olho', () => {
+        const hideButton = body.querySelector('.js-hide-controls-button');
+        const showButton = body.querySelector('.js-show-controls-button');
+
+        expect(app.isControlsHidden()).toBe(false);
+
+        hideButton.click();
+
+        expect(app.isControlsHidden()).toBe(true);
+        expect(body.classList.contains('controls-hidden')).toBe(true);
+        expect(hideButton.classList.contains('hide')).toBe(true);
+        expect(showButton.classList.contains('hide')).toBe(false);
+
+        showButton.click();
+
+        expect(app.isControlsHidden()).toBe(false);
+        expect(body.classList.contains('controls-hidden')).toBe(false);
+    });
+
+    it('restaura o estado de controles escondidos', () => {
+        body.querySelector('.js-hide-controls-button').click();
+
+        const restored = TimerApp(mountApp());
+
+        expect(restored.isControlsHidden()).toBe(true);
+        expect(document.body.classList.contains('controls-hidden')).toBe(true);
+    });
 });
