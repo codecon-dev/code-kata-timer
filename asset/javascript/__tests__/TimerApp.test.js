@@ -206,4 +206,20 @@ describe('TimerApp', () => {
         expect(restored.isControlsHidden()).toBe(true);
         expect(document.body.classList.contains('controls-hidden')).toBe(true);
     });
+
+    it('mostra a contagem regressiva em todos os timers que chegam nos segundos finais juntos', () => {
+        selectLayout(2);
+        const [first, second] = app.getTimers();
+
+        first.restore({ duration: 30, remaining: 12, status: 'PAUSED' });
+        second.restore({ duration: 30, remaining: 12, status: 'PAUSED' });
+        body.querySelector('.js-start-all-button').click();
+
+        jest.advanceTimersByTime(3000);
+
+        const numbers = Array.from(body.querySelectorAll('.js-timer-countdown'));
+
+        expect(numbers.every(number => !number.classList.contains('hide'))).toBe(true);
+        expect(numbers.map(number => number.textContent)).toEqual(['9', '9']);
+    });
 });

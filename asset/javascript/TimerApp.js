@@ -229,7 +229,7 @@ export function TimerApp(reference) {
 
         let shouldPlayTick = false;
         let shouldPlayStop = false;
-        let countdownTimer = null;
+        const countdownTimers = [];
 
         timers.forEach(timer => {
             const result = timer.tick(now);
@@ -243,14 +243,14 @@ export function TimerApp(reference) {
 
             if (result.second <= COUNTDOWN_THRESHOLD) {
                 shouldPlayTick = true;
-                if (!countdownTimer) countdownTimer = timer;
+                countdownTimers.push(timer);
             }
         });
 
         if (shouldPlayStop) sound.playStop();
         if (shouldPlayTick && !shouldPlayStop) sound.playTick();
 
-        if (countdownTimer) renderCountdown(countdownTimer);
+        countdownTimers.forEach(renderCountdown);
         updatePageTitle();
         persist();
         ensureTicking();
