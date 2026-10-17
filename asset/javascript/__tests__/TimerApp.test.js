@@ -178,4 +178,48 @@ describe('TimerApp', () => {
 
         expect(restored.getLayout()).toBe(1);
     });
+
+    it('esconde e mostra os controles individuais pelo botão de olho', () => {
+        const hideButton = body.querySelector('.js-hide-controls-button');
+        const showButton = body.querySelector('.js-show-controls-button');
+
+        expect(app.isControlsHidden()).toBe(false);
+
+        hideButton.click();
+
+        expect(app.isControlsHidden()).toBe(true);
+        expect(body.classList.contains('controls-hidden')).toBe(true);
+        expect(hideButton.classList.contains('hide')).toBe(true);
+        expect(showButton.classList.contains('hide')).toBe(false);
+
+        showButton.click();
+
+        expect(app.isControlsHidden()).toBe(false);
+        expect(body.classList.contains('controls-hidden')).toBe(false);
+    });
+
+    it('restaura o estado de controles escondidos', () => {
+        body.querySelector('.js-hide-controls-button').click();
+
+        const restored = TimerApp(mountApp());
+
+        expect(restored.isControlsHidden()).toBe(true);
+        expect(document.body.classList.contains('controls-hidden')).toBe(true);
+    });
+
+    it('mostra a contagem regressiva em todos os timers que chegam nos segundos finais juntos', () => {
+        selectLayout(2);
+        const [first, second] = app.getTimers();
+
+        first.restore({ duration: 30, remaining: 12, status: 'PAUSED' });
+        second.restore({ duration: 30, remaining: 12, status: 'PAUSED' });
+        body.querySelector('.js-start-all-button').click();
+
+        jest.advanceTimersByTime(3000);
+
+        const numbers = Array.from(body.querySelectorAll('.js-timer-countdown'));
+
+        expect(numbers.every(number => !number.classList.contains('hide'))).toBe(true);
+        expect(numbers.map(number => number.textContent)).toEqual(['9', '9']);
+    });
 });

@@ -31,6 +31,9 @@
             <span class="timer-countdown js-timer-countdown hide" aria-hidden="true"></span>
 
             <div class="action-button-container js-stopwatch-action-buttons">
+                <button class="as-icon js-counter-toggle-button" title="Mostrar/ocultar contador">
+                    <img src="./asset/images/counter.svg" alt="Contador" />
+                </button>
                 <button class="as-icon js-edit-button">
                     <img src="./asset/images/edit.svg" alt="Editar" />
                 </button>
@@ -53,6 +56,17 @@
                     <img src="./asset/images/ok.svg" alt="Finalizar" />
                 </button>
             </div>
+
+            <div class="timer-counter js-timer-counter hide">
+                <button class="as-icon js-counter-decrement-button" title="Diminuir contador">−</button>
+                <input
+                    type="number"
+                    class="timer-counter-value js-counter-value"
+                    value="0"
+                    aria-label="Contador"
+                />
+                <button class="as-icon js-counter-increment-button" title="Aumentar contador">+</button>
+            </div>
         </div>
     </template>
 
@@ -64,6 +78,12 @@
         </button>
         <button class="as-icon js-exit-fullscreen-button hide" title="Sair da tela cheia">
             <img src="./asset/images/exit-full-screen.svg" alt="Sair da tela cheia" />
+        </button>
+        <button class="as-icon js-hide-controls-button" title="Esconder controles dos timers">
+            <img src="./asset/images/eye-off.svg" alt="Esconder controles dos timers" />
+        </button>
+        <button class="as-icon js-show-controls-button hide" title="Mostrar controles dos timers">
+            <img src="./asset/images/eye.svg" alt="Mostrar controles dos timers" />
         </button>
         <button class="as-icon js-stop-all-button hide" title="Resetar todos">
             <img src="./asset/images/reset.svg" alt="Resetar todos" />

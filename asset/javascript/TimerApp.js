@@ -20,6 +20,8 @@ export function TimerApp(reference) {
     const stopAllButton = globalControls.querySelector('.js-stop-all-button');
     const enterFullscreenButton = globalControls.querySelector('.js-enter-fullscreen-button');
     const exitFullscreenButton = globalControls.querySelector('.js-exit-fullscreen-button');
+    const hideControlsButton = globalControls.querySelector('.js-hide-controls-button');
+    const showControlsButton = globalControls.querySelector('.js-show-controls-button');
 
     const layoutButtons = Array.from(reference.querySelectorAll('.js-layout-button'));
     const themeMenuContainer = reference.querySelector('.js-theme-menu-container');
@@ -31,6 +33,7 @@ export function TimerApp(reference) {
     let timers = [];
     let layout = DEFAULT_LAYOUT;
     let tickIntervalId = null;
+    let controlsHidden = false;
 
     function init() {
         bindGlobalButtons();
@@ -48,6 +51,7 @@ export function TimerApp(reference) {
 
         if (state && AVAILABLE_LAYOUTS.includes(state.layout)) {
             theme.setTheme(state.theme);
+            setControlsHidden(!!state.controlsHidden);
             applyLayout(state.layout, state.timers || []);
             return;
         }
@@ -66,6 +70,23 @@ export function TimerApp(reference) {
 
         enterFullscreenButton.addEventListener('click', handleFullscreen);
         exitFullscreenButton.addEventListener('click', handleFullscreen);
+
+        hideControlsButton.addEventListener('click', () => {
+            setControlsHidden(true);
+            persist();
+        });
+        showControlsButton.addEventListener('click', () => {
+            setControlsHidden(false);
+            persist();
+        });
+    }
+
+    function setControlsHidden(hidden) {
+        controlsHidden = !!hidden;
+
+        reference.classList.toggle('controls-hidden', controlsHidden);
+        hideControlsButton.classList.toggle('hide', controlsHidden);
+        showControlsButton.classList.toggle('hide', !controlsHidden);
     }
 
     function bindLayoutButtons() {
@@ -208,7 +229,7 @@ export function TimerApp(reference) {
 
         let shouldPlayTick = false;
         let shouldPlayStop = false;
-        let countdownTimer = null;
+        const countdownTimers = [];
 
         timers.forEach(timer => {
             const result = timer.tick(now);
@@ -222,14 +243,14 @@ export function TimerApp(reference) {
 
             if (result.second <= COUNTDOWN_THRESHOLD) {
                 shouldPlayTick = true;
-                if (!countdownTimer) countdownTimer = timer;
+                countdownTimers.push(timer);
             }
         });
 
         if (shouldPlayStop) sound.playStop();
         if (shouldPlayTick && !shouldPlayStop) sound.playTick();
 
-        if (countdownTimer) renderCountdown(countdownTimer);
+        countdownTimers.forEach(renderCountdown);
         updatePageTitle();
         persist();
         ensureTicking();
@@ -306,6 +327,7 @@ export function TimerApp(reference) {
         saveState({
             layout,
             theme: theme.getTheme(),
+            controlsHidden,
             timers: serializeTimers(),
         });
     }
@@ -316,6 +338,8 @@ export function TimerApp(reference) {
         getTimers: () => timers,
         getLayout: () => layout,
         setLayout: total => applyLayout(total, serializeTimers()),
+        isControlsHidden: () => controlsHidden,
+        setControlsHidden,
     };
 }
 
